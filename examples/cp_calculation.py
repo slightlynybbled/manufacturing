@@ -1,7 +1,8 @@
 import logging
-from manufacturing.analysis import calc_cp, calc_cpk, normality_test
+from manufacturing.analysis import calc_cp, calc_cpk
+from manufacturing.visual import show_cpk
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 data_set = [
     2.22733878, -0.59642503, 0.38748058, 0.04096949, -0.59172204,
@@ -13,10 +14,11 @@ data_set = [
 ]
 
 spec_limits = {
-    'upper_spec_limit': 4.0,
+    'upper_spec_limit': 3.0,
     'lower_spec_limit': -2.0
 }
 
-normality_test(data_set)
 calc_cp(data_set, **spec_limits)
 calc_cpk(data_set, **spec_limits)
+
+show_cpk(data_set, **spec_limits)

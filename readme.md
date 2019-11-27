@@ -15,3 +15,5 @@ todo
  * Trend analysis
  * In-control/out-of-control analysis
  * Gage R&R package
+ * Import from CSV
+ * Import from MS Excel

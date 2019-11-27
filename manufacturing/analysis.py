@@ -10,7 +10,8 @@ from manufacturing.util import coerce
 _logger = logging.getLogger(__name__)
 
 
-def normality_test(data: (List[int], List[float], pd.Series, np.array), alpha: float = 0.05):
+def normality_test(data: (List[int], List[float], pd.Series, np.array),
+                   alpha: float = 0.05):
     _logger.debug('checking data for normality')
 
     stat, p = shapiro(data)
@@ -41,10 +42,12 @@ def normality_test(data: (List[int], List[float], pd.Series, np.array), alpha: f
     return is_normal
 
 
-def calc_cp(data: (List[int], List[float], pd.Series, np.array), upper_spec_limit: (int, float),
-            lower_spec_limit: (int, float)):
+def calc_cp(data: (List[int], List[float], pd.Series, np.array),
+            upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
     _logger.debug('calculating cp...')
     data = coerce(data)
+
+    normality_test(data)
 
     cp = (upper_spec_limit - lower_spec_limit) / 6 * data.std()
 
@@ -53,54 +56,69 @@ def calc_cp(data: (List[int], List[float], pd.Series, np.array), upper_spec_limi
     return cp
 
 
-def calc_cpu(data: (List[int], List[float], pd.Series, np.array), upper_spec_limit: (int, float)):
+def calc_cpu(data: (List[int], List[float], pd.Series, np.array),
+             upper_spec_limit: (int, float), skip_normality_test: bool = True):
     _logger.debug('calculating cpu...')
     data = coerce(data)
+
+    if not skip_normality_test:
+        normality_test(data)
 
     mean = data.mean()
     std_dev = data.std()
 
     cpu = (upper_spec_limit - mean) / (3 * std_dev)
 
-    _logger.debug(f'dataset of length {len(data)}, mean={mean}, std_dev={std_dev}')
+    _logger.debug(f'dataset of length {len(data)}, '
+                  f'mean={mean}, '
+                  f'std_dev={std_dev}')
     _logger.debug(f'cpu = {cpu}')
 
     return cpu
 
 
 def calc_cpl(data: (List[int], List[float], pd.Series, np.array),
-             lower_spec_limit: (int, float)):
+             lower_spec_limit: (int, float), skip_normality_test = True):
     _logger.debug('calculating cpl...')
     data = coerce(data)
+
+    if not skip_normality_test:
+        normality_test(data)
 
     mean = data.mean()
     std_dev = data.std()
 
     cpl = (mean - lower_spec_limit) / (3 * std_dev)
 
-    _logger.debug(f'dataset of length {len(data)}, mean={mean}, std_dev={std_dev}')
+    _logger.debug(f'dataset of length {len(data)}, '
+                  f'mean={mean}, '
+                  f'std_dev={std_dev}')
     _logger.debug(f'cpl = {cpl}')
 
     return cpl
 
 
-def calc_cpk(data: (List[int], List[float], pd.Series, np.array), upper_spec_limit: (int, float),
-             lower_spec_limit: (int, float)):
+def calc_cpk(data: (List[int], List[float], pd.Series, np.array),
+             upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
     _logger.debug('calculating cpk...')
     data = coerce(data)
 
-    zupper = abs(calc_cpu(data=data, upper_spec_limit=upper_spec_limit))
-    zlower = abs(calc_cpl(data=data, lower_spec_limit=lower_spec_limit))
+    normality_test(data)
+
+    zupper = abs(calc_cpu(data=data, upper_spec_limit=upper_spec_limit, skip_normality_test=True))
+    zlower = abs(calc_cpl(data=data, lower_spec_limit=lower_spec_limit, skip_normality_test=True))
 
     cpk = min(zupper, zlower)
 
-    _logger.debug(f'dataset of length {len(data)}, zupper={zupper:.03f}, zlower={zlower:.03f}')
+    _logger.debug(f'dataset of length {len(data)}, '
+                  f'zupper={zupper:.03f}, '
+                  f'zlower={zlower:.03f}')
     _logger.debug(f'cpk = {cpk:.03f}')
 
     ratio = zupper / zlower
     if ratio < 1:
         ratio = 1.0 / ratio
-    if ratio > 1.2:
+    if ratio > 1.5:
         _logger.warning(f'the zupper and zlower limits are strongly '
                         f'imbalanced, indicating that the process is off-center '
                         f'with reference to the limits')
