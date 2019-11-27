@@ -14,11 +14,11 @@ data_set = [
 ]
 
 spec_limits = {
-    'upper_spec_limit': 3.0,
-    'lower_spec_limit': -2.0
+    'upper_spec_limit': 2.0,
+    'lower_spec_limit': -3.0
 }
 
-calc_cp(data_set, **spec_limits)
-calc_cpk(data_set, **spec_limits)
+#calc_cp(data_set, **spec_limits)
+#calc_cpk(data_set, **spec_limits)
 
 show_cpk(data_set, **spec_limits)

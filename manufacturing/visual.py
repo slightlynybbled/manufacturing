@@ -32,33 +32,33 @@ def show_cpk(data: (List[int], List[float], pd.Series, np.array),
     bottom, top = ax.get_ylim()
 
     ax.axvline(mean, linestyle='--')
-    ax.text(mean, top, s='$\mu$', ha='center')
+    ax.text(mean, top * 1.01, s='$\mu$', ha='center')
 
     ax.axvline(mean + std, alpha=0.6, linestyle='--')
-    ax.text(mean + std, top, s='$\sigma$', ha='center')
+    ax.text(mean + std, top * 1.01, s='$\sigma$', ha='center')
 
     ax.axvline(mean - std, alpha=0.6, linestyle='--')
-    ax.text(mean - std, top, s='$-\sigma$', ha='center')
+    ax.text(mean - std, top * 1.01, s='$-\sigma$', ha='center')
 
     ax.axvline(mean + 2 * std, alpha=0.4, linestyle='--')
-    ax.text(mean + 2 * std, top, s='$2\sigma$', ha='center')
+    ax.text(mean + 2 * std, top * 1.01, s='$2\sigma$', ha='center')
 
     ax.axvline(mean - 2 * std, alpha=0.4, linestyle='--')
-    ax.text(mean - 2 * std, top, s='-$2\sigma$', ha='center')
+    ax.text(mean - 2 * std, top * 1.01, s='-$2\sigma$', ha='center')
 
     ax.axvline(mean + 3 * std, alpha=0.2, linestyle='--')
-    ax.text(mean + 3 * std, top, s='$3\sigma$', ha='center')
+    ax.text(mean + 3 * std, top * 1.01, s='$3\sigma$', ha='center')
 
     ax.axvline(mean - 3 * std, alpha=0.2, linestyle='--')
-    ax.text(mean - 3 * std, top, s='-$3\sigma$', ha='center')
+    ax.text(mean - 3 * std, top * 1.01, s='-$3\sigma$', ha='center')
 
-    ax.axvline(lower_spec_limit, color='red', alpha=0.2)
-    ax.axvline(upper_spec_limit, color='red', alpha=0.2)
+    ax.axvline(lower_spec_limit, color='red', alpha=0.25, label='limits')
+    ax.axvline(upper_spec_limit, color='red', alpha=0.25)
 
-    lower_sigma_level = lower_spec_limit / std
+    lower_sigma_level = mean - lower_spec_limit / std
     ax.text(lower_spec_limit, top * 0.95, s=f'${lower_sigma_level:.01f}\sigma$', ha='center')
 
-    upper_sigma_level = upper_spec_limit / std
+    upper_sigma_level = upper_spec_limit / std - mean
     ax.text(upper_spec_limit, top * 0.95, s=f'${upper_sigma_level:.01f}\sigma$', ha='center')
 
     ax.fill_between(x, pdf, where=x < lower_spec_limit, facecolor='red', alpha=0.5)
@@ -71,15 +71,20 @@ def show_cpk(data: (List[int], List[float], pd.Series, np.array),
     higher_percent_text = f'{higher_percent:.02f}% > HSL' if higher_percent > threshold_percent else None
 
     left, right = ax.get_xlim()
+    bottom, top = ax.get_ylim()
     cpk = calc_cpk(data, upper_spec_limit=upper_spec_limit, lower_spec_limit=lower_spec_limit)
-    ax.text(right * 0.95, top * 0.85, s=f'Cpk = {cpk:.02f}', ha='right')
+
+    strings = [f'Cpk = {cpk:.02f}']
 
     if lower_percent_text:
-        ax.text(right * 0.95, top * 0.8, s=lower_percent_text, ha='right', color='red')
+        strings.append(lower_percent_text)
     if higher_percent_text:
-        ax.text(right * 0.95, top * 0.75, s=higher_percent_text, ha='right', color='red')
+        strings.append(higher_percent_text)
 
-    ax.legend()
+    props = dict(boxstyle='round', facecolor='white', alpha=0.75, edgecolor='grey')
+    ax.text(right - (right - left) * 0.05, 0.8 * top, '\n'.join(strings), bbox=props, ha='right')
+
+    ax.legend(loc='center right')
 
     if show:
         plt.show()
