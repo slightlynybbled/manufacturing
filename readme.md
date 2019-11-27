@@ -8,8 +8,8 @@ todo
 
 # Features
 
- * Cp and Cpk analysis
- * Cp and Cpk plots/histograms
+ * Cp and ~~Cpk~~ analysis
+ * Cp and ~~Cpk~~ plots/histograms
  * Pp and Ppk analysis
  * Pp and Ppk plots/histograms
  * Trend analysis
