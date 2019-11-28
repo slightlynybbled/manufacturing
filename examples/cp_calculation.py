@@ -14,8 +14,8 @@ data_set = [
 ]
 
 spec_limits = {
-    'upper_spec_limit': 5.0,
-    'lower_spec_limit': -5.0
+    'upper_spec_limit': 2.5,
+    'lower_spec_limit': -2.5
 }
 
 #calc_cp(data_set, **spec_limits)

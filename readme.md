@@ -17,3 +17,9 @@ todo
  * Gage R&R package
  * Import from CSV
  * Import from MS Excel
+
+# Gallery
+
+# ![Cpk example](images/example1.png)
+
+# ![Cpk example](images/example2.png)

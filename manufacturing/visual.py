@@ -52,15 +52,6 @@ def show_cpk(data: (List[int], List[float], pd.Series, np.array),
     ax.axvline(mean - 3 * std, alpha=0.2, linestyle='--')
     ax.text(mean - 3 * std, top * 1.01, s='-$3\sigma$', ha='center')
 
-    ax.axvline(lower_spec_limit, color='red', alpha=0.25, label='limits')
-    ax.axvline(upper_spec_limit, color='red', alpha=0.25)
-
-    lower_sigma_level = mean - lower_spec_limit / std
-    ax.text(lower_spec_limit, top * 0.95, s=f'${lower_sigma_level:.01f}\sigma$', ha='center')
-
-    upper_sigma_level = upper_spec_limit / std - mean
-    ax.text(upper_spec_limit, top * 0.95, s=f'${upper_sigma_level:.01f}\sigma$', ha='center')
-
     ax.fill_between(x, pdf, where=x < lower_spec_limit, facecolor='red', alpha=0.5)
     ax.fill_between(x, pdf, where=x > upper_spec_limit, facecolor='red', alpha=0.5)
 
@@ -73,6 +64,20 @@ def show_cpk(data: (List[int], List[float], pd.Series, np.array),
     left, right = ax.get_xlim()
     bottom, top = ax.get_ylim()
     cpk = calc_cpk(data, upper_spec_limit=upper_spec_limit, lower_spec_limit=lower_spec_limit)
+
+    lower_sigma_level = (mean - lower_spec_limit) / std
+    if lower_sigma_level < 6.0:
+        ax.axvline(lower_spec_limit, color='red', alpha=0.25, label='limits')
+        ax.text(lower_spec_limit, top * 0.95, s=f'$-{lower_sigma_level:.01f}\sigma$', ha='center')
+    else:
+        ax.text(left, top * 0.95, s=f'limit > $-6\sigma$', ha='left')
+
+    upper_sigma_level = (upper_spec_limit - mean) / std
+    if upper_sigma_level < 6.0:
+        ax.axvline(upper_spec_limit, color='red', alpha=0.25)
+        ax.text(upper_spec_limit, top * 0.95, s=f'${upper_sigma_level:.01f}\sigma$', ha='center')
+    else:
+        ax.text(right, top * 0.95, s=f'limit > $6\sigma$', ha='right')
 
     strings = [f'Cpk = {cpk:.02f}']
 
