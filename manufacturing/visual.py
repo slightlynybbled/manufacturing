@@ -17,6 +17,16 @@ def show_cpk(data: (List[int], List[float], pd.Series, np.array),
              upper_spec_limit: (int, float), lower_spec_limit: (int, float),
              threshold_percent: float = 0.001,
              show: bool = True):
+    """
+    Shows the statistical distribution of the data along with CPK and limits.
+
+    :param data: A list, pandas.Series, or numpy.array representing the data set
+    :param upper_spec_limit: An integer or float which represents the upper control limit, commonly called the UCL
+    :param lower_spec_limit: An integer or float which represents the upper control limit, commonly called the UCL
+    :param threshold_percent: The threshold at which % of units above/below the number will display on the plot
+    :param show: True if the plot is to be shown, False if the user wishes to collect the figure
+    :return: an instance of matplotlib.pyplot.Figure
+    """
 
     data = coerce(data)
     mean = data.mean()
@@ -98,3 +108,6 @@ def show_cpk(data: (List[int], List[float], pd.Series, np.array),
         plt.show()
 
     return fig
+
+
+
