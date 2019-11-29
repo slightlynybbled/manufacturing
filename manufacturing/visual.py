@@ -56,10 +56,10 @@ def show_cpk(data: (List[int], List[float], pd.Series, np.array),
     ax.fill_between(x, pdf, where=x > upper_spec_limit, facecolor='red', alpha=0.5)
 
     lower_percent = 100.0 * stats.norm.cdf(lower_spec_limit, mean, std)
-    lower_percent_text = f'{lower_percent:.02f}% < LSL' if lower_percent > threshold_percent else None
+    lower_percent_text = f'{lower_percent:.02f}% < LCL' if lower_percent > threshold_percent else None
 
     higher_percent = 100.0 - 100.0 * stats.norm.cdf(upper_spec_limit, mean, std)
-    higher_percent_text = f'{higher_percent:.02f}% > HSL' if higher_percent > threshold_percent else None
+    higher_percent_text = f'{higher_percent:.02f}% > UCL' if higher_percent > threshold_percent else None
 
     left, right = ax.get_xlim()
     bottom, top = ax.get_ylim()
