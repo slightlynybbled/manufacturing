@@ -18,5 +18,8 @@ spec_limits = {
     'lower_spec_limit': -2.5
 }
 
-calc_cp(data_set, **spec_limits)
-calc_cpk(data_set, **spec_limits)
+cp = calc_cp(data_set, **spec_limits)
+cpk = calc_cpk(data_set, **spec_limits)
+
+print(f'cp = {cp:.3g}')
+print(f'cpk = {cpk:.3g}')

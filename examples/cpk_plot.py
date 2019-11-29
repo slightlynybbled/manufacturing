@@ -13,9 +13,4 @@ data_set = [
     1.02047743, -1.86050513, 1.22360586, -1.21395692, 0.05553756
 ]
 
-spec_limits = {
-    'upper_spec_limit': 2.5,
-    'lower_spec_limit': -2.5
-}
-
-show_cpk(data_set, **spec_limits)
+show_cpk(data_set, upper_spec_limit=2.5, lower_spec_limit=-2.5)
