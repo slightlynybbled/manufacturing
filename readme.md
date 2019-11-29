@@ -50,15 +50,19 @@ making consistent product within the specified limits.
 
 # Features
 
- * Cp and ~~Cpk~~ analysis
- * Cp and ~~Cpk~~ plots/histograms
- * Pp and Ppk analysis
- * Pp and Ppk plots/histograms
- * Trend analysis
+## Analysis
+
+ * ~~Cpk analysis~~
+ * ~~Cpk plots/histograms~~
  * In-control/out-of-control analysis
- * Gage R&R package
+ * Gage R&R analysis
+ 
+## Usability
+
  * Import from CSV
  * Import from MS Excel
+ * Create documentation using [sphinx](http://www.sphinx-doc.org/en/master/)
+ * Generate reports
 
 # Gallery
 
