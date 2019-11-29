@@ -6,7 +6,10 @@ To provide analysis tools and metrics useful in manufacturing environments.
 
 ## From `setup.py`
 
-Clone this repository and install into your python environment using `setuptools`:
+Use this method to get the latest features.  Note that this may result in an installation that
+is not stable!
+
+Clone this repository and install into your python environment using `setuptools`.
 
     $ git clone https://github.com/slightlynybbled/manufacturing
     $ cd manufacturing
