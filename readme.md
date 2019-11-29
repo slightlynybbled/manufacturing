@@ -2,6 +2,14 @@
 
 To provide analysis tools and metrics useful in manufacturing environments.
 
+# Project Maturity
+
+Every effort is being made to ensure that the results are accurate, but the user is ultimately
+responsible for any resulting analysis.
+
+The API should not be considered stable until v1.0 or greater.  Until then, breaking changes may
+be released as different API options are explored.
+
 # Installation
 
 ## From `setup.py`

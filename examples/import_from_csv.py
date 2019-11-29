@@ -1,8 +1,11 @@
+import logging
 from manufacturing import import_csv, calc_cpk, show_cpk
 
-data = import_csv('example_data.csv', columnname='value')
+logging.basicConfig(level=logging.INFO)
 
-cpk = calc_cpk(data, upper_spec_limit=2.5, lower_spec_limit=-2.5)
+data = import_csv('example_data.csv', columnname='value (lsl=-2.5 usl=2.5)')
+
+cpk = calc_cpk(**data)
 print(f'cpk = {cpk:.3g}')
 
-show_cpk(data, upper_spec_limit=2.5, lower_spec_limit=-2.5)
+show_cpk(**data)
