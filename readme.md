@@ -63,7 +63,7 @@ making consistent product within the specified limits.
 ## Usability
 
  * ~~Import from CSV~~
- * Import from MS Excel
+ * ~~Import from MS Excel~~
  * Create documentation using [sphinx](http://www.sphinx-doc.org/en/master/)
  * Generate reports
 
