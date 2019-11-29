@@ -81,15 +81,18 @@ def show_cpk(data: (List[int], List[float], pd.Series, np.array),
 
     strings = [f'Cpk = {cpk:.02f}']
 
+    strings.append(f'$\mu = {mean:.3g}$')
+    strings.append(f'$\sigma = {std:.3g}$')
+
     if lower_percent_text:
         strings.append(lower_percent_text)
     if higher_percent_text:
         strings.append(higher_percent_text)
 
     props = dict(boxstyle='round', facecolor='white', alpha=0.75, edgecolor='grey')
-    ax.text(right - (right - left) * 0.05, 0.8 * top, '\n'.join(strings), bbox=props, ha='right')
+    ax.text(right - (right - left) * 0.05, 0.85 * top, '\n'.join(strings), bbox=props, ha='right', va='top')
 
-    ax.legend(loc='center right')
+    ax.legend(loc='lower right')
 
     if show:
         plt.show()
