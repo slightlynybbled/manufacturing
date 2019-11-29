@@ -14,7 +14,7 @@ Clone this repository and install into your python environment using `setuptools
     
 ## From Wheel File
 
-Download the wheel file and install from pip:
+[Download the wheel file](https://github.com/slightlynybbled/manufacturing/releases) and install from pip:
 
     ~/downloads $ python -m pip install manufacturing-X.X.X-py3-none-any.whl
     
