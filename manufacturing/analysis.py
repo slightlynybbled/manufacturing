@@ -124,3 +124,11 @@ def calc_cpk(data: (List[int], List[float], pd.Series, np.array),
                         f'with reference to the limits')
 
     return cpk
+
+
+def control_beyond_limits(data: (List[int], List[float], pd.Series, np.array),
+             upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+    _logger.debug('identifying beyond limit data points...')
+    data = coerce(data)
+
+    return data.where((data > upper_spec_limit) | (data < lower_spec_limit)).dropna()

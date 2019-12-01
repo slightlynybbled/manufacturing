@@ -7,8 +7,9 @@ import pandas as pd
 import scipy.stats as stats
 
 
-from manufacturing.analysis import calc_cpk
+from manufacturing.analysis import calc_cpk, control_beyond_limits
 from manufacturing.util import coerce
+
 
 _logger = logging.getLogger(__name__)
 
@@ -110,4 +111,48 @@ def show_cpk(data: (List[int], List[float], pd.Series, np.array),
     return fig
 
 
+def show_control_chart(data: (List[int], List[float], pd.Series, np.array),
+             upper_spec_limit: (int, float), lower_spec_limit: (int, float),
+             show: bool = True):
+    data = coerce(data)
+    mean = data.mean()
+    std = data.std()
 
+    fig, ax = plt.subplots()
+
+    ax.plot(data)
+
+    spec_range = (upper_spec_limit - lower_spec_limit) / 2
+    spec_center = lower_spec_limit + spec_range
+    zone_c_upper_limit = spec_center + spec_range / 3
+    zone_c_lower_limit = spec_center - spec_range / 3
+    zone_b_upper_limit = spec_center + 2 * spec_range / 3
+    zone_b_lower_limit = spec_center - 2 * spec_range / 3
+    zone_a_upper_limit = spec_center + spec_range
+    zone_a_lower_limit = spec_center - spec_range
+
+    ax.axhline(spec_center, linestyle='--', alpha=0.6)
+    ax.axhline(zone_c_upper_limit, linestyle='--', alpha=0.5)
+    ax.axhline(zone_c_lower_limit, linestyle='--', alpha=0.5)
+    ax.axhline(zone_b_upper_limit, linestyle='--', alpha=0.3)
+    ax.axhline(zone_b_lower_limit, linestyle='--', alpha=0.3)
+    ax.axhline(zone_a_upper_limit, linestyle='--', alpha=0.2)
+    ax.axhline(zone_a_lower_limit, linestyle='--', alpha=0.2)
+
+    left, right = ax.get_xlim()
+    ax.text(left, zone_c_upper_limit / 2, s='Zone C', va='center')
+    ax.text(left, zone_c_lower_limit / 2, s='Zone C', va='center')
+    ax.text(left, (zone_b_upper_limit + zone_c_upper_limit) / 2, s='Zone B', va='center')
+    ax.text(left, (zone_b_lower_limit + zone_c_lower_limit) / 2, s='Zone B', va='center')
+    ax.text(left, (zone_a_upper_limit + zone_b_upper_limit) / 2, s='Zone A', va='center')
+    ax.text(left, (zone_a_lower_limit + zone_b_lower_limit) / 2, s='Zone A', va='center')
+
+    beyond_limits_data = control_beyond_limits(data=data,
+                                               upper_spec_limit=upper_spec_limit, lower_spec_limit=lower_spec_limit)
+
+    ax.plot(beyond_limits_data, 'o', color='red', label='beyond limits', zorder=-1)
+
+    ax.legend()
+
+    if show:
+        plt.show()
