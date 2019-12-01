@@ -213,3 +213,5 @@ def show_control_chart(data: (List[int], List[float], pd.Series, np.array),
 
     if show:
         plt.show()
+
+    return fig
