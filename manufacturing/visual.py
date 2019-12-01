@@ -115,8 +115,6 @@ def show_control_chart(data: (List[int], List[float], pd.Series, np.array),
              upper_spec_limit: (int, float), lower_spec_limit: (int, float),
              show: bool = True):
     data = coerce(data)
-    mean = data.mean()
-    std = data.std()
 
     fig, ax = plt.subplots()
 
@@ -131,22 +129,26 @@ def show_control_chart(data: (List[int], List[float], pd.Series, np.array),
     zone_a_upper_limit = spec_center + spec_range
     zone_a_lower_limit = spec_center - spec_range
 
-    ax.axhline(spec_center, linestyle='--', alpha=0.6)
-    ax.axhline(zone_c_upper_limit, linestyle='--', alpha=0.5)
-    ax.axhline(zone_c_lower_limit, linestyle='--', alpha=0.5)
-    ax.axhline(zone_b_upper_limit, linestyle='--', alpha=0.3)
-    ax.axhline(zone_b_lower_limit, linestyle='--', alpha=0.3)
-    ax.axhline(zone_a_upper_limit, linestyle='--', alpha=0.2)
-    ax.axhline(zone_a_lower_limit, linestyle='--', alpha=0.2)
+    ax.axhline(spec_center, linestyle='--', color='red', alpha=0.6)
+    ax.axhline(zone_c_upper_limit, linestyle='--', color='red', alpha=0.5)
+    ax.axhline(zone_c_lower_limit, linestyle='--', color='red', alpha=0.5)
+    ax.axhline(zone_b_upper_limit, linestyle='--', color='red', alpha=0.3)
+    ax.axhline(zone_b_lower_limit, linestyle='--', color='red', alpha=0.3)
+    ax.axhline(zone_a_upper_limit, linestyle='--', color='red', alpha=0.2)
+    ax.axhline(zone_a_lower_limit, linestyle='--', color='red', alpha=0.2)
 
     left, right = ax.get_xlim()
-    left_plus = (right - left) * 0.01 + left
-    ax.text(left_plus, zone_c_upper_limit / 2, s='Zone C', va='center')
-    ax.text(left_plus, zone_c_lower_limit / 2, s='Zone C', va='center')
-    ax.text(left_plus, (zone_b_upper_limit + zone_c_upper_limit) / 2, s='Zone B', va='center')
-    ax.text(left_plus, (zone_b_lower_limit + zone_c_lower_limit) / 2, s='Zone B', va='center')
-    ax.text(left_plus, (zone_a_upper_limit + zone_b_upper_limit) / 2, s='Zone A', va='center')
-    ax.text(left_plus, (zone_a_lower_limit + zone_b_lower_limit) / 2, s='Zone A', va='center')
+    right_plus = (right - left) * 0.01 + right
+
+    ax.text(right_plus, upper_spec_limit, s='UCL', va='center')
+    ax.text(right_plus, lower_spec_limit, s='LCL', va='center')
+
+    ax.text(right_plus, zone_c_upper_limit / 2, s='Zone C', va='center')
+    ax.text(right_plus, zone_c_lower_limit / 2, s='Zone C', va='center')
+    ax.text(right_plus, (zone_b_upper_limit + zone_c_upper_limit) / 2, s='Zone B', va='center')
+    ax.text(right_plus, (zone_b_lower_limit + zone_c_lower_limit) / 2, s='Zone B', va='center')
+    ax.text(right_plus, (zone_a_upper_limit + zone_b_upper_limit) / 2, s='Zone A', va='center')
+    ax.text(right_plus, (zone_a_lower_limit + zone_b_lower_limit) / 2, s='Zone A', va='center')
 
     beyond_limits_violations = control_beyond_limits(data=data,
                                                      upper_spec_limit=upper_spec_limit, lower_spec_limit=lower_spec_limit)
