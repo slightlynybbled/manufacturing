@@ -273,7 +273,7 @@ def control_zone_trend(data: (List[int], List[float], pd.Series, np.array)):
     :param data: The data to be analyzed
     :return: a pandas.Series object with all out-of-control points
     """
-    _logger.debug('identifying control zone c violations...')
+    _logger.debug('identifying control trend violations...')
     data = coerce(data)
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
@@ -292,6 +292,47 @@ def control_zone_trend(data: (List[int], List[float], pd.Series, np.array)):
         if up >= 6 or down >= 6:
             violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4, i+5, i+6]))
             _logger.info(f'trend violation found at index {i}')
+
+    if len(violations) == 0:
+        return pd.Series()
+
+    s = pd.concat(violations).drop_duplicates()
+    return s
+
+
+def control_zone_mixture(data: (List[int], List[float], pd.Series, np.array),
+                         upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+    """
+    Returns a pandas.Series containing the data in which 8 consecutive points occur with none in zone C
+
+    :param data: The data to be analyzed
+    :param upper_spec_limit: the upper control limit
+    :param lower_spec_limit: the lower control limit
+    :return: a pandas.Series object with all out-of-control points
+    """
+    _logger.debug('identifying control mixture violations...')
+    data = coerce(data)
+
+    spec_range = (upper_spec_limit - lower_spec_limit) / 2
+    spec_center = lower_spec_limit + spec_range
+    zone_c_upper_limit = spec_center + spec_range / 3
+    zone_c_lower_limit = spec_center - spec_range / 3
+
+    # looking for violations in which 2 out of 3 are in zone A or beyond
+    violations = []
+    for i in range(len(data) - 7):
+        points = [data[i], data[i+1], data[i+2], data[i+3], data[i+4], data[i+5], data[i+6], data[i+7]]
+
+        count = 0
+        for point in points:
+            if not zone_c_lower_limit < point < zone_c_upper_limit:
+                count += 1
+            else:
+                break
+
+        if count >= 8:
+            violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4, i+5, i+6, i+7]))
+            _logger.info(f'mixture violation found at index {i}')
 
     if len(violations) == 0:
         return pd.Series()

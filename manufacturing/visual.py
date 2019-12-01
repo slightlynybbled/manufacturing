@@ -8,7 +8,7 @@ import scipy.stats as stats
 
 
 from manufacturing.analysis import calc_cpk, control_beyond_limits, \
-    control_zone_a, control_zone_b, control_zone_c, control_zone_trend
+    control_zone_a, control_zone_b, control_zone_c, control_zone_trend, control_zone_mixture
 from manufacturing.util import coerce
 
 
@@ -113,13 +113,17 @@ def show_cpk(data: (List[int], List[float], pd.Series, np.array),
 
 
 def show_control_chart(data: (List[int], List[float], pd.Series, np.array),
-             upper_spec_limit: (int, float), lower_spec_limit: (int, float),
-             show: bool = True):
+                       upper_spec_limit: (int, float), lower_spec_limit: (int, float),
+                       highlight_beyond_limits: bool = True, highlight_zone_a: bool = True,
+                       highlight_zone_b: bool = True, highlight_zone_c: bool = True,
+                       highlight_trend: bool = True, highlight_mixture: bool = True,
+                       show: bool = True):
     data = coerce(data)
 
     fig, ax = plt.subplots()
 
     ax.plot(data)
+    ax.set_title('Zone Control Chart')
 
     spec_range = (upper_spec_limit - lower_spec_limit) / 2
     spec_center = lower_spec_limit + spec_range
@@ -151,28 +155,59 @@ def show_control_chart(data: (List[int], List[float], pd.Series, np.array),
     ax.text(right_plus, (zone_a_upper_limit + zone_b_upper_limit) / 2, s='Zone A', va='center')
     ax.text(right_plus, (zone_a_lower_limit + zone_b_lower_limit) / 2, s='Zone A', va='center')
 
-    beyond_limits_violations = control_beyond_limits(data=data,
-                                                     upper_spec_limit=upper_spec_limit,
-                                                     lower_spec_limit=lower_spec_limit)
-    ax.plot(beyond_limits_violations, 'o', color='red', label='beyond limits', zorder=-4, markersize=14, alpha=0.3)
+    plot_params = {'alpha': 0.3, 'zorder': -10, 'markersize': 14}
 
-    zone_a_violations = control_zone_a(data=data,
-                                       upper_spec_limit=upper_spec_limit,
-                                       lower_spec_limit=lower_spec_limit)
-    ax.plot(zone_a_violations, 'o', color='orange', label='zone a violations', zorder=-3, markersize=12, alpha=0.3)
+    if highlight_beyond_limits:
+        beyond_limits_violations = control_beyond_limits(data=data,
+                                                         upper_spec_limit=upper_spec_limit,
+                                                         lower_spec_limit=lower_spec_limit)
+        if len(beyond_limits_violations):
+            plot_params['zorder'] -= 1
+            plot_params['markersize'] -= 1
+            ax.plot(beyond_limits_violations, 'o', color='red', label='beyond limits', **plot_params)
 
-    zone_b_violations = control_zone_b(data=data,
-                                       upper_spec_limit=upper_spec_limit,
-                                       lower_spec_limit=lower_spec_limit)
-    ax.plot(zone_b_violations, 'o', color='blue', label='zone b violations', zorder=-2, markersize=10, alpha=0.3)
+    if highlight_zone_a:
+        zone_a_violations = control_zone_a(data=data,
+                                           upper_spec_limit=upper_spec_limit,
+                                           lower_spec_limit=lower_spec_limit)
+        if len(zone_a_violations):
+            plot_params['zorder'] -= 1
+            plot_params['markersize'] -= 1
+            ax.plot(zone_a_violations, 'o', color='orange', label='zone a violations', **plot_params)
 
-    zone_c_violations = control_zone_c(data=data,
-                                       upper_spec_limit=upper_spec_limit,
-                                       lower_spec_limit=lower_spec_limit)
-    ax.plot(zone_c_violations, 'o', color='green', label='zone c violations', zorder=-1, markersize=8, alpha=0.3)
+    if highlight_zone_b:
+        zone_b_violations = control_zone_b(data=data,
+                                           upper_spec_limit=upper_spec_limit,
+                                           lower_spec_limit=lower_spec_limit)
+        if len(zone_b_violations):
+            plot_params['zorder'] -= 1
+            plot_params['markersize'] -= 1
+            ax.plot(zone_b_violations, 'o', color='blue', label='zone b violations', **plot_params)
 
-    zone_trend_violations = control_zone_trend(data=data)
-    ax.plot(zone_trend_violations, 'o', color='purple', label='trend violations', zorder=-1, markersize=6, alpha=0.3)
+    if highlight_zone_c:
+        zone_c_violations = control_zone_c(data=data,
+                                           upper_spec_limit=upper_spec_limit,
+                                           lower_spec_limit=lower_spec_limit)
+        if len(zone_c_violations):
+            plot_params['zorder'] -= 1
+            plot_params['markersize'] -= 1
+            ax.plot(zone_c_violations, 'o', color='green', label='zone c violations', **plot_params)
+
+    if highlight_trend:
+        zone_trend_violations = control_zone_trend(data=data)
+        if len(zone_trend_violations):
+            plot_params['zorder'] -= 1
+            plot_params['markersize'] -= 1
+            ax.plot(zone_trend_violations, 'o', color='purple', label='trend violations', **plot_params)
+
+    if highlight_mixture:
+        zone_mixture_violations = control_zone_mixture(data=data,
+                                                       upper_spec_limit=upper_spec_limit,
+                                                       lower_spec_limit=lower_spec_limit)
+        if len(zone_mixture_violations):
+            plot_params['zorder'] -= 1
+            plot_params['markersize'] -= 1
+            ax.plot(zone_mixture_violations, 'o', color='brown', label='mixture violations', **plot_params)
 
     ax.legend()
 
