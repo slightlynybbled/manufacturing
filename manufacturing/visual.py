@@ -211,7 +211,6 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
         zone_stratification_violations = control_zone_stratification(data=data,
                                                                      upper_spec_limit=upper_control_limit,
                                                                      lower_spec_limit=lower_control_limit)
-        print(zone_stratification_violations)
         if len(zone_stratification_violations):
             plot_params['zorder'] -= 1
             plot_params['markersize'] -= 1
