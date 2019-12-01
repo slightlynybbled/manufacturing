@@ -1,8 +1,8 @@
-from manufacturing import import_excel, calc_cpk, cpk_plot
+from manufacturing import import_excel, calc_ppk, ppk_plot
 
 data = import_excel('example_data.xlsx', columnname='value (lcl=-2.5 ucl=2.5)', skiprows=3)
 
-cpk = calc_cpk(**data)
+cpk = calc_ppk(**data)
 print(f'cpk = {cpk:.3g}')
 
-cpk_plot(**data)
+ppk_plot(**data)

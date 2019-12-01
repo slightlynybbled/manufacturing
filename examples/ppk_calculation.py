@@ -1,6 +1,6 @@
 import logging
-from manufacturing.analysis import calc_cp, calc_cpk
-from manufacturing.visual import cpk_plot
+from manufacturing.analysis import calc_pp, calc_ppk
+from manufacturing.visual import ppk_plot
 
 logging.basicConfig(level=logging.INFO)
 
@@ -18,8 +18,8 @@ spec_limits = {
     'lower_spec_limit': -2.5
 }
 
-cp = calc_cp(data_set, **spec_limits)
-cpk = calc_cpk(data_set, **spec_limits)
+pp = calc_pp(data_set, **spec_limits)
+ppk = calc_ppk(data_set, **spec_limits)
 
-print(f'cp = {cp:.3g}')
-print(f'cpk = {cpk:.3g}')
+print(f'Pp = {pp:.3g}')
+print(f'Ppk = {ppk:.3g}')

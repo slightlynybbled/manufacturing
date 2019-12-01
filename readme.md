@@ -38,19 +38,19 @@ Of course, the `X.X.X` will be replaced with the version that you are looking at
 Visualizations work approximately as expected within a jupyter notebook.
 
     data = np.random.normal(0, 1, size=30)  # generate some data
-    manufacturing.cpk_plot(data, lower_spec_limit=-2, upper_spec_limit=2)
+    manufacturing.ppk_plot(data, lower_spec_limit=-2, upper_spec_limit=2)
     
 There is a sample jupyter notebook in the examples directory.
 
 ## Cpk Visualization
 
 The most useful feature of the `manufacturing` package is the visualization of Cpk.
-As hinted previously, the `cpk_plot()` function is the primary method for display of
+As hinted previously, the `ppk_plot()` function is the primary method for display of
 Cpk visual information.  First, get your data into a `list`, `numpy.array`, or 
 `pandas.Series`; then supply that data, along with the `lower_spec_limit` and 
-`upper_spec_limit` into the `cpk_plot()` function.
+`upper_spec_limit` into the `ppk_plot()` function.
 
-    manufacturing.cpk_plot(data, lower_spec_limit=-2, upper_spec_limit=2)
+    manufacturing.ppk_plot(data, lower_spec_limit=-2, upper_spec_limit=2)
     
 ![Screenshot](images/example3.png)
 
@@ -67,9 +67,9 @@ Another useful feature is the zone control visualization.
 
 ## Analysis
 
- * ~~Cpk analysis~~
- * ~~Cpk plots/histograms~~
- * Ppk analysis/plot/histogram
+ * ~~Ppk analysis~~
+ * ~~Ppk plots/histograms~~
+ * Cpk analysis/plot/histogram by subgroup
  * In-control/out-of-control analysis (do Ppk and Cpk converge to approximately the same value)
  * ~~Control chart plot~~ (see [Control Chart Rules](https://www.spcforexcel.com/knowledge/control-chart-basics/control-chart-rules-interpretation))
    * ~~Beyond limits violations highlighted~~ (one or more points beyond the control limits)

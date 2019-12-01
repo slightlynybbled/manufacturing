@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stats
 
-from manufacturing.analysis import calc_cpk, control_beyond_limits, \
+from manufacturing.analysis import calc_ppk, control_beyond_limits, \
     control_zone_a, control_zone_b, control_zone_c, control_zone_trend, \
     control_zone_mixture, control_zone_stratification, control_zone_overcontrol
 from manufacturing.util import coerce
@@ -15,7 +15,7 @@ from manufacturing.util import coerce
 _logger = logging.getLogger(__name__)
 
 
-def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
+def ppk_plot(data: (List[int], List[float], pd.Series, np.array),
              upper_control_limit: (int, float), lower_control_limit: (int, float),
              threshold_percent: float = 0.001,
              ax: Axis = None):
@@ -76,7 +76,7 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
 
     left, right = ax.get_xlim()
     bottom, top = ax.get_ylim()
-    cpk = calc_cpk(data, upper_spec_limit=upper_control_limit, lower_spec_limit=lower_control_limit)
+    cpk = calc_ppk(data, upper_spec_limit=upper_control_limit, lower_spec_limit=lower_control_limit)
 
     lower_sigma_level = (mean - lower_control_limit) / std
     if lower_sigma_level < 6.0:

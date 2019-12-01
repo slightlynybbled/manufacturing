@@ -42,7 +42,7 @@ def normality_test(data: (List[int], List[float], pd.Series, np.array),
     return is_normal
 
 
-def calc_cp(data: (List[int], List[float], pd.Series, np.array),
+def calc_pp(data: (List[int], List[float], pd.Series, np.array),
             upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
     _logger.debug('calculating cp...')
     data = coerce(data)
@@ -98,7 +98,7 @@ def calc_cpl(data: (List[int], List[float], pd.Series, np.array),
     return cpl
 
 
-def calc_cpk(data: (List[int], List[float], pd.Series, np.array),
+def calc_ppk(data: (List[int], List[float], pd.Series, np.array),
              upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
     _logger.debug('calculating cpk...')
     data = coerce(data)
