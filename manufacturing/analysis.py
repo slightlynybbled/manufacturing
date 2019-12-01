@@ -178,7 +178,8 @@ def control_zone_a(data: (List[int], List[float], pd.Series, np.array),
     if len(violations) == 0:
         return pd.Series()
 
-    s = pd.concat(violations).drop_duplicates()
+    s = pd.concat(violations)
+    s = s.loc[~s.index.duplicated()]
     return s
 
 
@@ -218,7 +219,8 @@ def control_zone_b(data: (List[int], List[float], pd.Series, np.array),
     if len(violations) == 0:
         return pd.Series()
 
-    s = pd.concat(violations).drop_duplicates()
+    s = pd.concat(violations)
+    s = s.loc[~s.index.duplicated()]
     return s
 
 
@@ -265,7 +267,8 @@ def control_zone_c(data: (List[int], List[float], pd.Series, np.array),
     if len(violations) == 0:
         return pd.Series()
 
-    s = pd.concat(violations).drop_duplicates()
+    s = pd.concat(violations)
+    s = s.loc[~s.index.duplicated()]
     return s
 
 
@@ -300,7 +303,8 @@ def control_zone_trend(data: (List[int], List[float], pd.Series, np.array)):
     if len(violations) == 0:
         return pd.Series()
 
-    s = pd.concat(violations).drop_duplicates()
+    s = pd.concat(violations)
+    s = s.loc[~s.index.duplicated()]
     return s
 
 
@@ -342,7 +346,8 @@ def control_zone_mixture(data: (List[int], List[float], pd.Series, np.array),
     if len(violations) == 0:
         return pd.Series()
 
-    s = pd.concat(violations).drop_duplicates()
+    s = pd.concat(violations)
+    s = s.loc[~s.index.duplicated()]
     return s
 
 
@@ -379,5 +384,51 @@ def control_zone_stratification(data: (List[int], List[float], pd.Series, np.arr
     if len(violations) == 0:
         return pd.Series()
 
-    s = pd.concat(violations).drop_duplicates()
+    s = pd.concat(violations)
+    s = s.loc[~s.index.duplicated()]
+    return s
+
+
+def control_zone_overcontrol(data: (List[int], List[float], pd.Series, np.array),
+                             upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+    """
+    Returns a pandas.Series containing the data in which 14 consecutive points are alternating above/below the center.
+
+    :param data: The data to be analyzed
+    :param upper_spec_limit: the upper control limit
+    :param lower_spec_limit: the lower control limit
+    :return: a pandas.Series object with all out-of-control points
+    """
+    _logger.debug('identifying control over-control violations...')
+    data = coerce(data)
+
+    spec_range = (upper_spec_limit - lower_spec_limit) / 2
+    spec_center = lower_spec_limit + spec_range
+
+    # looking for violations in which 2 out of 3 are in zone A or beyond
+    violations = []
+    for i in range(len(data) - 14):
+        points = data[i:i+14].to_numpy()
+        odds = points[::2]
+        evens = points[1::2]
+
+        if odds[0] > 0.0:
+            odds = odds[odds > spec_center]
+            evens = evens[evens < spec_center]
+        else:
+            odds = odds[odds < spec_center]
+            evens = evens[evens > spec_center]
+
+        if len(odds) == len(evens) == 7:
+            index = i + np.arange(14)
+            print(points)
+            print(index)
+            violations.append(pd.Series(data=points, index=index))
+            _logger.info(f'over-control violation found at index {i}')
+
+    if len(violations) == 0:
+        return pd.Series()
+
+    s = pd.concat(violations)
+    s = s.loc[~s.index.duplicated()]
     return s
