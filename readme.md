@@ -44,6 +44,8 @@ the function call in order to not have a double-image.
     
 Note the trailing semicolon on the second statement!
 
+There is a sample jupyter notebook in the examples directory.
+
 ## Cpk Visualization
 
 The most useful feature of the `manufacturing` package is the visualization of Cpk.
