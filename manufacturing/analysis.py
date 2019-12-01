@@ -127,8 +127,94 @@ def calc_cpk(data: (List[int], List[float], pd.Series, np.array),
 
 
 def control_beyond_limits(data: (List[int], List[float], pd.Series, np.array),
-             upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
-    _logger.debug('identifying beyond limit data points...')
+                          upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+    """
+    Returns a pandas.Series with all points which are beyond the limits.
+
+    :param data: The data to be analyzed
+    :param upper_spec_limit: the upper control limit
+    :param lower_spec_limit: the lower control limit
+    :return: a pandas.Series object with all out-of-control points
+    """
+    _logger.debug('identifying beyond limit violations...')
     data = coerce(data)
 
     return data.where((data > upper_spec_limit) | (data < lower_spec_limit)).dropna()
+
+
+def control_zone_a(data: (List[int], List[float], pd.Series, np.array),
+                   upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+    """
+    Returns a pandas.Series containing the data in which 2 out of 3 are in zone A or beyond.
+
+    :param data: The data to be analyzed
+    :param upper_spec_limit: the upper control limit
+    :param lower_spec_limit: the lower control limit
+    :return: a pandas.Series object with all out-of-control points
+    """
+    _logger.debug('identifying control zone a violations...')
+    data = coerce(data)
+
+    spec_range = (upper_spec_limit - lower_spec_limit) / 2
+    spec_center = lower_spec_limit + spec_range
+    zone_b_upper_limit = spec_center + 2 * spec_range / 3
+    zone_b_lower_limit = spec_center - 2 * spec_range / 3
+
+    # looking for violations in which 2 out of 3 are in zone A or beyond
+    violations = []
+    for i in range(len(data) - 2):
+        points = [data[i], data[i+1], data[i+2]]
+
+        count = 0
+        for point in points:
+            if point < zone_b_lower_limit or point > zone_b_upper_limit:
+                count += 1
+
+        if count >= 2:
+            violations.append(pd.Series(data=points, index=[i, i+1, i+2]))
+            _logger.info(f'zone a violation found at index {i}')
+
+    if len(violations) == 0:
+        return pd.Series()
+
+    s = pd.concat(violations).drop_duplicates()
+    return s
+
+
+def control_zone_b(data: (List[int], List[float], pd.Series, np.array),
+                   upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+    """
+    Returns a pandas.Series containing the data in which 4 out of 5 are in zone B or beyond.
+
+    :param data: The data to be analyzed
+    :param upper_spec_limit: the upper control limit
+    :param lower_spec_limit: the lower control limit
+    :return: a pandas.Series object with all out-of-control points
+    """
+    _logger.debug('identifying control zone a violations...')
+    data = coerce(data)
+
+    spec_range = (upper_spec_limit - lower_spec_limit) / 2
+    spec_center = lower_spec_limit + spec_range
+    zone_c_upper_limit = spec_center + spec_range / 3
+    zone_c_lower_limit = spec_center - spec_range / 3
+
+    # looking for violations in which 2 out of 3 are in zone A or beyond
+    violations = []
+    for i in range(len(data) - 4):
+        points = [data[i], data[i+1], data[i+2], data[i+3], data[i+4]]
+
+        count = 0
+        for point in points:
+            if point < zone_c_lower_limit or point > zone_c_upper_limit:
+                count += 1
+
+        if count >= 4:
+            violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4]))
+            _logger.info(f'zone a violation found at index {i}')
+
+    if len(violations) == 0:
+        return pd.Series()
+
+    s = pd.concat(violations).drop_duplicates()
+    return s
