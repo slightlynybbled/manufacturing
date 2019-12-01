@@ -191,7 +191,7 @@ def control_zone_b(data: (List[int], List[float], pd.Series, np.array),
     :param lower_spec_limit: the lower control limit
     :return: a pandas.Series object with all out-of-control points
     """
-    _logger.debug('identifying control zone a violations...')
+    _logger.debug('identifying control zone b violations...')
     data = coerce(data)
 
     spec_range = (upper_spec_limit - lower_spec_limit) / 2
@@ -211,7 +211,53 @@ def control_zone_b(data: (List[int], List[float], pd.Series, np.array),
 
         if count >= 4:
             violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4]))
-            _logger.info(f'zone a violation found at index {i}')
+            _logger.info(f'zone b violation found at index {i}')
+
+    if len(violations) == 0:
+        return pd.Series()
+
+    s = pd.concat(violations).drop_duplicates()
+    return s
+
+
+def control_zone_c(data: (List[int], List[float], pd.Series, np.array),
+                   upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+    """
+    Returns a pandas.Series containing the data in which 7 consecutive points are on the same side.
+
+    :param data: The data to be analyzed
+    :param upper_spec_limit: the upper control limit
+    :param lower_spec_limit: the lower control limit
+    :return: a pandas.Series object with all out-of-control points
+    """
+    _logger.debug('identifying control zone c violations...')
+    data = coerce(data)
+
+    spec_range = (upper_spec_limit - lower_spec_limit) / 2
+    spec_center = lower_spec_limit + spec_range
+
+    # looking for violations in which 2 out of 3 are in zone A or beyond
+    violations = []
+    for i in range(len(data) - 6):
+        points = [data[i], data[i+1], data[i+2], data[i+3], data[i+4], data[i+5], data[i+6]]
+
+        count = 1
+        above = data[i] > spec_center
+        for point in points[1:]:
+            if above:
+                if point > spec_center:
+                    count += 1
+                else:
+                    break
+            else:
+                if point < spec_center:
+                    count += 1
+                else:
+                    break
+
+        if count >= 7:
+            violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4, i+5, i+6]))
+            _logger.info(f'zone c violation found at index {i}')
 
     if len(violations) == 0:
         return pd.Series()

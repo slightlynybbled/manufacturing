@@ -7,7 +7,7 @@ import pandas as pd
 import scipy.stats as stats
 
 
-from manufacturing.analysis import calc_cpk, control_beyond_limits, control_zone_a, control_zone_b
+from manufacturing.analysis import calc_cpk, control_beyond_limits, control_zone_a, control_zone_b, control_zone_c
 from manufacturing.util import coerce
 
 
@@ -151,16 +151,24 @@ def show_control_chart(data: (List[int], List[float], pd.Series, np.array),
     ax.text(right_plus, (zone_a_lower_limit + zone_b_lower_limit) / 2, s='Zone A', va='center')
 
     beyond_limits_violations = control_beyond_limits(data=data,
-                                                     upper_spec_limit=upper_spec_limit, lower_spec_limit=lower_spec_limit)
-    ax.plot(beyond_limits_violations, 'o', color='red', label='beyond limits', zorder=-1)
+                                                     upper_spec_limit=upper_spec_limit,
+                                                     lower_spec_limit=lower_spec_limit)
+    ax.plot(beyond_limits_violations, 'o', color='red', label='beyond limits', zorder=-4, markersize=10)
 
     zone_a_violations = control_zone_a(data=data,
-                                       upper_spec_limit=upper_spec_limit, lower_spec_limit=lower_spec_limit)
-    ax.plot(zone_a_violations, 'o', color='orange', label='zone a violations', zorder=-2)
+                                       upper_spec_limit=upper_spec_limit,
+                                       lower_spec_limit=lower_spec_limit)
+    ax.plot(zone_a_violations, 'o', color='orange', label='zone a violations', zorder=-3, markersize=8)
 
     zone_b_violations = control_zone_b(data=data,
-                                       upper_spec_limit=upper_spec_limit, lower_spec_limit=lower_spec_limit)
-    ax.plot(zone_b_violations, 'o', color='blue', label='zone b violations', zorder=-3, markersize=3)
+                                       upper_spec_limit=upper_spec_limit,
+                                       lower_spec_limit=lower_spec_limit)
+    ax.plot(zone_b_violations, 'o', color='blue', label='zone b violations', zorder=-2, markersize=6)
+
+    zone_c_violations = control_zone_c(data=data,
+                                       upper_spec_limit=upper_spec_limit,
+                                       lower_spec_limit=lower_spec_limit)
+    ax.plot(zone_c_violations, 'o', color='green', label='zone c violations', zorder=-1, markersize=4)
 
     ax.legend()
 
