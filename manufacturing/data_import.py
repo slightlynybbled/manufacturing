@@ -11,23 +11,23 @@ def _parse_col_for_limits(columnname: str):
         strings = columnname.split('(')[1].replace(')', '')
         str1, str2 = strings.split(' ')
 
-        if 'lsl' in str1:
-            lsl = float(str1.split('=')[1])
-        elif 'lsl' in str2:
-            lsl = float(str2.split('=')[1])
+        if 'lcl' in str1.lower():
+            lcl = float(str1.split('=')[1])
+        elif 'lcl' in str2.lower():
+            lcl = float(str2.split('=')[1])
         else:
-            lsl = None
+            lcl = None
 
-        if 'usl' in str1:
-            usl = float(str1.split('=')[1])
-        elif 'usl' in str2:
-            usl = float(str2.split('=')[1])
+        if 'ucl' in str1.lower():
+            ucl = float(str1.split('=')[1])
+        elif 'ucl' in str2.lower():
+            ucl = float(str2.split('=')[1])
         else:
-            usl = None
+            ucl = None
     else:
-        lsl, usl = None, None
+        lcl, ucl = None, None
 
-    return lsl, usl
+    return lcl, ucl
 
 
 def import_csv(file_path: (str, Path), columnname: str, **kwargs):
@@ -41,12 +41,12 @@ def import_csv(file_path: (str, Path), columnname: str, **kwargs):
     """
     df = pd.read_csv(file_path, **kwargs)
 
-    lsl, usl = _parse_col_for_limits(columnname)
+    lcl, ucl = _parse_col_for_limits(columnname)
 
     return {
         'data': df[columnname],
-        'lower_spec_limit': lsl,
-        'upper_spec_limit': usl
+        'lower_control_limit': lcl,
+        'upper_control_limit': ucl
     }
 
 
@@ -61,10 +61,10 @@ def import_excel(file_path: (str, Path), columnname, **kwargs):
     """
     df = pd.read_excel(file_path, **kwargs)
 
-    lsl, usl = _parse_col_for_limits(columnname)
+    lcl, ucl = _parse_col_for_limits(columnname)
 
     return {
         'data': df[columnname],
-        'lower_spec_limit': lsl,
-        'upper_spec_limit': usl
+        'lower_control_limit': lcl,
+        'upper_control_limit': ucl
     }

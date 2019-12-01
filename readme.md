@@ -35,26 +35,22 @@ Of course, the `X.X.X` will be replaced with the version that you are looking at
 
 ## Visualizations with Jupyter Notebooks
 
-Visualizations will return a `matplotlib.Figure`; therefore, if you want to embed 
-an image into a jupyter notebook, you will need to use a semicolon at the end of
-the function call in order to not have a double-image.
+Visualizations work approximately as expected within a jupyter notebook.
 
     data = np.random.normal(0, 1, size=30)  # generate some data
-    manufacturing.show_cpk(data, lower_spec_limit=-2, upper_spec_limit=2);  # show the plot
+    manufacturing.cpk_plot(data, lower_spec_limit=-2, upper_spec_limit=2)
     
-Note the trailing semicolon on the second statement!
-
 There is a sample jupyter notebook in the examples directory.
 
 ## Cpk Visualization
 
 The most useful feature of the `manufacturing` package is the visualization of Cpk.
-As hinted previously, the `show_cpk()` function is the primary method for display of
+As hinted previously, the `cpk_plot()` function is the primary method for display of
 Cpk visual information.  First, get your data into a `list`, `numpy.array`, or 
 `pandas.Series`; then supply that data, along with the `lower_spec_limit` and 
-`upper_spec_limit` into the `show_cpk()` function.
+`upper_spec_limit` into the `cpk_plot()` function.
 
-    manufacturing.show_cpk(data, lower_spec_limit=-2, upper_spec_limit=2)
+    manufacturing.cpk_plot(data, lower_spec_limit=-2, upper_spec_limit=2)
     
 ![Screenshot](images/example3.png)
 
@@ -65,7 +61,7 @@ making consistent product within the specified limits.
 
 Another useful feature is the zone control visualization.
 
-    manufacturing.show_control_chart(data, lower_spec_limit=-7.0, upper_spec_limit=7.0)
+    manufacturing.control_plot(data, lower_spec_limit=-7.0, upper_spec_limit=7.0)
 
 # Features Map
 

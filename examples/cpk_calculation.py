@@ -1,6 +1,6 @@
 import logging
 from manufacturing.analysis import calc_cp, calc_cpk
-from manufacturing.visual import show_cpk
+from manufacturing.visual import cpk_plot
 
 logging.basicConfig(level=logging.INFO)
 
