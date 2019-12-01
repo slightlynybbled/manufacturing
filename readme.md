@@ -65,7 +65,8 @@ making consistent product within the specified limits.
 
  * ~~Cpk analysis~~
  * ~~Cpk plots/histograms~~
- * In-control/out-of-control analysis
+ * Ppk analysis/plot/histogram
+ * In-control/out-of-control analysis (do Ppk and Cpk converge to approximately the same value)
  * Control chart plot (see [Control Chart Rules](https://www.spcforexcel.com/knowledge/control-chart-basics/control-chart-rules-interpretation))
    * ~~Beyond limits violations highlighted~~ (one or more points beyond the control limits)
    * ~~Zone A violations highlighted~~ (2 out of 3 consecutive points in zone A or beyond)
@@ -86,6 +87,12 @@ making consistent product within the specified limits.
 
 # Gallery
 
-# ![Cpk example](images/example1.png)
+Currently, no distinction is made between Ppk and Cpk, so the entire chart shows the Cpk.
+
+# ![Cpk example](images/cpk-chart-example.png)
+
+Some of the data for the zone control chard was manipulated in order to display the results.
+Note that, if a phenomenon is not present within the data, then it will not be plotted at
+all.
 
 # ![Cpk example](images/control-chart-example.png)
