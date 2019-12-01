@@ -7,11 +7,10 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stats
 
-
 from manufacturing.analysis import calc_cpk, control_beyond_limits, \
-    control_zone_a, control_zone_b, control_zone_c, control_zone_trend, control_zone_mixture
+    control_zone_a, control_zone_b, control_zone_c, control_zone_trend, \
+    control_zone_mixture, control_zone_stratification
 from manufacturing.util import coerce
-
 
 _logger = logging.getLogger(__name__)
 
@@ -114,6 +113,7 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
                  highlight_beyond_limits: bool = True, highlight_zone_a: bool = True,
                  highlight_zone_b: bool = True, highlight_zone_c: bool = True,
                  highlight_trend: bool = True, highlight_mixture: bool = True,
+                 highlight_stratification: bool = True,
                  ax: Axis = None):
     data = coerce(data)
 
@@ -206,5 +206,16 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
             plot_params['zorder'] -= 1
             plot_params['markersize'] -= 1
             ax.plot(zone_mixture_violations, 'o', color='brown', label='mixture violations', **plot_params)
+
+    if highlight_stratification:
+        zone_stratification_violations = control_zone_stratification(data=data,
+                                                                     upper_spec_limit=upper_control_limit,
+                                                                     lower_spec_limit=lower_control_limit)
+        print(zone_stratification_violations)
+        if len(zone_stratification_violations):
+            plot_params['zorder'] -= 1
+            plot_params['markersize'] -= 1
+            ax.plot(zone_stratification_violations, 'o', color='orange', label='stratification violations',
+                    **plot_params)
 
     ax.legend()

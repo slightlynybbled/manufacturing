@@ -369,16 +369,12 @@ def control_zone_stratification(data: (List[int], List[float], pd.Series, np.arr
     for i in range(len(data) - 14):
         points = data[i:i+15].to_numpy()
 
-        count = 0
-        for point in points:
-            if not zone_c_lower_limit < point < zone_c_upper_limit:
-                count += 1
-            else:
-                break
+        points = points[np.logical_and(points < zone_c_upper_limit, points > zone_c_lower_limit)]
 
-        if count >= 8:
-            violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4, i+5, i+6, i+7]))
-            _logger.info(f'mixture violation found at index {i}')
+        if len(points) >= 15:
+            index = i + np.arange(15)
+            violations.append(pd.Series(data=points, index=index))
+            _logger.info(f'stratification violation found at index {i}')
 
     if len(violations) == 0:
         return pd.Series()
