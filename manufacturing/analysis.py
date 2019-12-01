@@ -171,7 +171,8 @@ def control_zone_a(data: (List[int], List[float], pd.Series, np.array),
                 count += 1
 
         if count >= 2:
-            violations.append(pd.Series(data=points, index=[i, i+1, i+2]))
+            index = i + np.arange(3)
+            violations.append(pd.Series(data=points, index=index))
             _logger.info(f'zone a violation found at index {i}')
 
     if len(violations) == 0:
@@ -210,7 +211,8 @@ def control_zone_b(data: (List[int], List[float], pd.Series, np.array),
                 count += 1
 
         if count >= 4:
-            violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4]))
+            index = i + np.arange(5)
+            violations.append(pd.Series(data=points, index=index))
             _logger.info(f'zone b violation found at index {i}')
 
     if len(violations) == 0:
@@ -256,7 +258,8 @@ def control_zone_c(data: (List[int], List[float], pd.Series, np.array),
                     break
 
         if count >= 7:
-            violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4, i+5, i+6]))
+            index = i + np.arange(7)
+            violations.append(pd.Series(data=points, index=index))
             _logger.info(f'zone c violation found at index {i}')
 
     if len(violations) == 0:
@@ -290,7 +293,8 @@ def control_zone_trend(data: (List[int], List[float], pd.Series, np.array)):
                 down += 1
 
         if up >= 6 or down >= 6:
-            violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4, i+5, i+6]))
+            index = i + np.arange(7)
+            violations.append(pd.Series(data=points, index=index))
             _logger.info(f'trend violation found at index {i}')
 
     if len(violations) == 0:
@@ -331,7 +335,8 @@ def control_zone_mixture(data: (List[int], List[float], pd.Series, np.array),
                 break
 
         if count >= 8:
-            violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4, i+5, i+6, i+7]))
+            index = i + np.arange(8)
+            violations.append(pd.Series(data=points, index=index))
             _logger.info(f'mixture violation found at index {i}')
 
     if len(violations) == 0:
