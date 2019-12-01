@@ -59,7 +59,13 @@ Cpk visual information.  First, get your data into a `list`, `numpy.array`, or
 In this example, it appears that the manufacturing processes are not up to the task of 
 making consistent product within the specified limits.
 
-# Features
+## Zone Control Visualization
+
+Another useful feature is the zone control visualization.
+
+    manufacturing.show_control_chart(data, lower_spec_limit=-7.0, upper_spec_limit=7.0)
+
+# Features Map
 
 ## Analysis
 
