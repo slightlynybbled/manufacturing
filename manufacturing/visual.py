@@ -7,7 +7,8 @@ import pandas as pd
 import scipy.stats as stats
 
 
-from manufacturing.analysis import calc_cpk, control_beyond_limits, control_zone_a, control_zone_b, control_zone_c
+from manufacturing.analysis import calc_cpk, control_beyond_limits, \
+    control_zone_a, control_zone_b, control_zone_c, control_zone_trend
 from manufacturing.util import coerce
 
 
@@ -153,22 +154,25 @@ def show_control_chart(data: (List[int], List[float], pd.Series, np.array),
     beyond_limits_violations = control_beyond_limits(data=data,
                                                      upper_spec_limit=upper_spec_limit,
                                                      lower_spec_limit=lower_spec_limit)
-    ax.plot(beyond_limits_violations, 'o', color='red', label='beyond limits', zorder=-4, markersize=10)
+    ax.plot(beyond_limits_violations, 'o', color='red', label='beyond limits', zorder=-4, markersize=14, alpha=0.3)
 
     zone_a_violations = control_zone_a(data=data,
                                        upper_spec_limit=upper_spec_limit,
                                        lower_spec_limit=lower_spec_limit)
-    ax.plot(zone_a_violations, 'o', color='orange', label='zone a violations', zorder=-3, markersize=8)
+    ax.plot(zone_a_violations, 'o', color='orange', label='zone a violations', zorder=-3, markersize=12, alpha=0.3)
 
     zone_b_violations = control_zone_b(data=data,
                                        upper_spec_limit=upper_spec_limit,
                                        lower_spec_limit=lower_spec_limit)
-    ax.plot(zone_b_violations, 'o', color='blue', label='zone b violations', zorder=-2, markersize=6)
+    ax.plot(zone_b_violations, 'o', color='blue', label='zone b violations', zorder=-2, markersize=10, alpha=0.3)
 
     zone_c_violations = control_zone_c(data=data,
                                        upper_spec_limit=upper_spec_limit,
                                        lower_spec_limit=lower_spec_limit)
-    ax.plot(zone_c_violations, 'o', color='green', label='zone c violations', zorder=-1, markersize=4)
+    ax.plot(zone_c_violations, 'o', color='green', label='zone c violations', zorder=-1, markersize=8, alpha=0.3)
+
+    zone_trend_violations = control_zone_trend(data=data)
+    ax.plot(zone_trend_violations, 'o', color='purple', label='trend violations', zorder=-1, markersize=6, alpha=0.3)
 
     ax.legend()
 

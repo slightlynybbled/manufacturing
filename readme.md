@@ -66,7 +66,7 @@ making consistent product within the specified limits.
  * ~~Cpk analysis~~
  * ~~Cpk plots/histograms~~
  * In-control/out-of-control analysis
- * Control chart plot
+ * Control chart plot (see [Control Chart Rules](https://www.spcforexcel.com/knowledge/control-chart-basics/control-chart-rules-interpretation))
    * ~~Beyond limits violations highlighted~~ (one or more points beyond the control limits)
    * ~~Zone A violations highlighted~~ (2 out of 3 consecutive points in zone A or beyond)
    * ~~Zone B violations highlighted~~ (4 out of 5 consecutive points in zone B or beyond)

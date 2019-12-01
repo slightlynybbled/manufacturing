@@ -264,3 +264,37 @@ def control_zone_c(data: (List[int], List[float], pd.Series, np.array),
 
     s = pd.concat(violations).drop_duplicates()
     return s
+
+
+def control_zone_trend(data: (List[int], List[float], pd.Series, np.array)):
+    """
+    Returns a pandas.Series containing the data in which 7 consecutive points trending up or down.
+
+    :param data: The data to be analyzed
+    :return: a pandas.Series object with all out-of-control points
+    """
+    _logger.debug('identifying control zone c violations...')
+    data = coerce(data)
+
+    # looking for violations in which 2 out of 3 are in zone A or beyond
+    violations = []
+    for i in range(len(data) - 6):
+        points = [data[i], data[i+1], data[i+2], data[i+3], data[i+4], data[i+5], data[i+6]]
+
+        up = 0
+        down = 0
+        for j in range(1, 7):
+            if points[j] > points[j-1]:
+                up += 1
+            elif points[j] < points[j-1]:
+                down += 1
+
+        if up >= 6 or down >= 6:
+            violations.append(pd.Series(data=points, index=[i, i+1, i+2, i+3, i+4, i+5, i+6]))
+            _logger.info(f'trend violation found at index {i}')
+
+    if len(violations) == 0:
+        return pd.Series()
+
+    s = pd.concat(violations).drop_duplicates()
+    return s
