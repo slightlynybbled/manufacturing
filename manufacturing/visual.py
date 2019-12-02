@@ -108,6 +108,53 @@ def ppk_plot(data: (List[int], List[float], pd.Series, np.array),
     ax.legend(loc='lower right')
 
 
+def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
+             upper_control_limit: (int, float), lower_control_limit: (int, float),
+             subgroup_size: int = 30, max_subgroups: int = 10,
+             axs: List[Axis] = None):
+
+    def chunk(seq, size):
+        return (seq[pos:pos + size] for pos in range(0, len(seq), size))
+
+    data = coerce(data)
+    data_subgroups = []
+    for i, c in enumerate(chunk(data[::-1], subgroup_size)):
+        if i >= max_subgroups:
+            break
+        data_subgroups.append(c)
+
+    data_subgroups = data_subgroups[::-1]
+
+    if axs is None:
+        fig, axs = plt.subplots(1, 2, sharey=True, gridspec_kw={'width_ratios': [3, 1]})
+
+    ax0, ax1, *leftover = axs
+
+    ax1.boxplot(data)
+    ax1.set_title('Ppk')
+    ax1.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
+    ax1.axhline(lower_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
+
+    labels = [f'{i}' for i, _ in enumerate(data_subgroups)]
+
+    ax0.boxplot(data_subgroups)
+    ax0.set_title(f'Cpk by Subgroups, Size={subgroup_size}')
+    ax0.set_xticklabels(labels)
+    ax0.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
+    ax0.axhline(lower_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
+
+    left, right = ax0.get_xlim()
+    bottom, top = ax0.get_ylim()
+
+    right_plus = (right - left) * 0.01 + right
+    bottom_plus = (top - bottom) * 0.01 + bottom
+
+    ax0.text(right_plus, upper_control_limit, s='UCL', color='red', va='center')
+    ax0.text(right_plus, lower_control_limit, s='LCL', color='red', va='center')
+
+    ax0.text(left, bottom_plus, s='test')
+
+
 def control_plot(data: (List[int], List[float], pd.Series, np.array),
                  upper_control_limit: (int, float), lower_control_limit: (int, float),
                  highlight_beyond_limits: bool = True, highlight_zone_a: bool = True,
