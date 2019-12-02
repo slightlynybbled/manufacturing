@@ -76,7 +76,7 @@ def ppk_plot(data: (List[int], List[float], pd.Series, np.array),
 
     left, right = ax.get_xlim()
     bottom, top = ax.get_ylim()
-    cpk = calc_ppk(data, upper_spec_limit=upper_control_limit, lower_spec_limit=lower_control_limit)
+    cpk = calc_ppk(data, upper_control_limit=upper_control_limit, lower_control_limit=lower_control_limit)
 
     lower_sigma_level = (mean - lower_control_limit) / std
     if lower_sigma_level < 6.0:
@@ -143,7 +143,7 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
     x0, _ = p0
     x1, _ = p1
     x = (x0 + x1) / 2
-    ppk = calc_ppk(data, upper_spec_limit=upper_control_limit, lower_spec_limit=lower_control_limit)
+    ppk = calc_ppk(data, upper_control_limit=upper_control_limit, lower_control_limit=lower_control_limit)
     ax1.text(x, bottom_plus, s=f'{ppk:.02g}', va='bottom', ha='center', color='green')
     ax1.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
     ax1.axhline(lower_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
@@ -170,7 +170,7 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
         x0, _ = p0
         x1, _ = p1
         x = (x0 + x1) / 2
-        cpk = calc_ppk(data_subgroups[i], upper_spec_limit=upper_control_limit, lower_spec_limit=lower_control_limit)
+        cpk = calc_ppk(data_subgroups[i], upper_control_limit=upper_control_limit, lower_control_limit=lower_control_limit)
         ax0.text(x, bottom_plus, s=f'{cpk:.02g}', va='bottom', ha='center', color='green')
 
 
@@ -225,8 +225,8 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
 
     if highlight_beyond_limits:
         beyond_limits_violations = control_beyond_limits(data=data,
-                                                         upper_spec_limit=upper_control_limit,
-                                                         lower_spec_limit=lower_control_limit)
+                                                         upper_control_limit=upper_control_limit,
+                                                         lower_control_limit=lower_control_limit)
         if len(beyond_limits_violations):
             plot_params['zorder'] -= 1
             plot_params['markersize'] -= 1
@@ -234,8 +234,8 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
 
     if highlight_zone_a:
         zone_a_violations = control_zone_a(data=data,
-                                           upper_spec_limit=upper_control_limit,
-                                           lower_spec_limit=lower_control_limit)
+                                           upper_control_limit=upper_control_limit,
+                                           lower_control_limit=lower_control_limit)
         if len(zone_a_violations):
             plot_params['zorder'] -= 1
             plot_params['markersize'] -= 1
@@ -243,8 +243,8 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
 
     if highlight_zone_b:
         zone_b_violations = control_zone_b(data=data,
-                                           upper_spec_limit=upper_control_limit,
-                                           lower_spec_limit=lower_control_limit)
+                                           upper_control_limit=upper_control_limit,
+                                           lower_control_limit=lower_control_limit)
         if len(zone_b_violations):
             plot_params['zorder'] -= 1
             plot_params['markersize'] -= 1
@@ -252,8 +252,8 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
 
     if highlight_zone_c:
         zone_c_violations = control_zone_c(data=data,
-                                           upper_spec_limit=upper_control_limit,
-                                           lower_spec_limit=lower_control_limit)
+                                           upper_control_limit=upper_control_limit,
+                                           lower_control_limit=lower_control_limit)
         if len(zone_c_violations):
             plot_params['zorder'] -= 1
             plot_params['markersize'] -= 1
@@ -268,8 +268,8 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
 
     if highlight_mixture:
         zone_mixture_violations = control_zone_mixture(data=data,
-                                                       upper_spec_limit=upper_control_limit,
-                                                       lower_spec_limit=lower_control_limit)
+                                                       upper_control_limit=upper_control_limit,
+                                                       lower_control_limit=lower_control_limit)
         if len(zone_mixture_violations):
             plot_params['zorder'] -= 1
             plot_params['markersize'] -= 1
@@ -277,8 +277,8 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
 
     if highlight_stratification:
         zone_stratification_violations = control_zone_stratification(data=data,
-                                                                     upper_spec_limit=upper_control_limit,
-                                                                     lower_spec_limit=lower_control_limit)
+                                                                     upper_control_limit=upper_control_limit,
+                                                                     lower_control_limit=lower_control_limit)
         if len(zone_stratification_violations):
             plot_params['zorder'] -= 1
             plot_params['markersize'] -= 1
@@ -287,8 +287,8 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
 
     if highlight_overcontrol:
         zone_overcontrol_violations = control_zone_overcontrol(data=data,
-                                                               upper_spec_limit=upper_control_limit,
-                                                               lower_spec_limit=lower_control_limit)
+                                                               upper_control_limit=upper_control_limit,
+                                                               lower_control_limit=lower_control_limit)
         if len(zone_overcontrol_violations):
             plot_params['zorder'] -= 1
             plot_params['markersize'] -= 1

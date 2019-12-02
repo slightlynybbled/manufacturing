@@ -57,7 +57,7 @@ def calc_pp(data: (List[int], List[float], pd.Series, np.array),
 
 
 def calc_cpu(data: (List[int], List[float], pd.Series, np.array),
-             upper_spec_limit: (int, float), skip_normality_test: bool = True):
+             upper_control_limit: (int, float), skip_normality_test: bool = True):
     _logger.debug('calculating cpu...')
     data = coerce(data)
 
@@ -67,7 +67,7 @@ def calc_cpu(data: (List[int], List[float], pd.Series, np.array),
     mean = data.mean()
     std_dev = data.std()
 
-    cpu = (upper_spec_limit - mean) / (3 * std_dev)
+    cpu = (upper_control_limit - mean) / (3 * std_dev)
 
     _logger.debug(f'dataset of length {len(data)}, '
                   f'mean={mean}, '
@@ -78,7 +78,7 @@ def calc_cpu(data: (List[int], List[float], pd.Series, np.array),
 
 
 def calc_cpl(data: (List[int], List[float], pd.Series, np.array),
-             lower_spec_limit: (int, float), skip_normality_test = True):
+             lower_control_limit: (int, float), skip_normality_test = True):
     _logger.debug('calculating cpl...')
     data = coerce(data)
 
@@ -88,7 +88,7 @@ def calc_cpl(data: (List[int], List[float], pd.Series, np.array),
     mean = data.mean()
     std_dev = data.std()
 
-    cpl = (mean - lower_spec_limit) / (3 * std_dev)
+    cpl = (mean - lower_control_limit) / (3 * std_dev)
 
     _logger.debug(f'dataset of length {len(data)}, '
                   f'mean={mean}, '
@@ -99,14 +99,14 @@ def calc_cpl(data: (List[int], List[float], pd.Series, np.array),
 
 
 def calc_ppk(data: (List[int], List[float], pd.Series, np.array),
-             upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+             upper_control_limit: (int, float), lower_control_limit: (int, float)):
     _logger.debug('calculating cpk...')
     data = coerce(data)
 
     normality_test(data)
 
-    zupper = abs(calc_cpu(data=data, upper_spec_limit=upper_spec_limit, skip_normality_test=True))
-    zlower = abs(calc_cpl(data=data, lower_spec_limit=lower_spec_limit, skip_normality_test=True))
+    zupper = abs(calc_cpu(data=data, upper_control_limit=upper_control_limit, skip_normality_test=True))
+    zlower = abs(calc_cpl(data=data, lower_control_limit=lower_control_limit, skip_normality_test=True))
 
     cpk = min(zupper, zlower)
 
@@ -127,36 +127,36 @@ def calc_ppk(data: (List[int], List[float], pd.Series, np.array),
 
 
 def control_beyond_limits(data: (List[int], List[float], pd.Series, np.array),
-                          upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+                          upper_control_limit: (int, float), lower_control_limit: (int, float)):
     """
     Returns a pandas.Series with all points which are beyond the limits.
 
     :param data: The data to be analyzed
-    :param upper_spec_limit: the upper control limit
-    :param lower_spec_limit: the lower control limit
+    :param upper_control_limit: the upper control limit
+    :param lower_control_limit: the lower control limit
     :return: a pandas.Series object with all out-of-control points
     """
     _logger.debug('identifying beyond limit violations...')
     data = coerce(data)
 
-    return data.where((data > upper_spec_limit) | (data < lower_spec_limit)).dropna()
+    return data.where((data > upper_control_limit) | (data < lower_control_limit)).dropna()
 
 
 def control_zone_a(data: (List[int], List[float], pd.Series, np.array),
-                   upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+                   upper_control_limit: (int, float), lower_control_limit: (int, float)):
     """
     Returns a pandas.Series containing the data in which 2 out of 3 are in zone A or beyond.
 
     :param data: The data to be analyzed
-    :param upper_spec_limit: the upper control limit
-    :param lower_spec_limit: the lower control limit
+    :param upper_control_limit: the upper control limit
+    :param lower_control_limit: the lower control limit
     :return: a pandas.Series object with all out-of-control points
     """
     _logger.debug('identifying control zone a violations...')
     data = coerce(data)
 
-    spec_range = (upper_spec_limit - lower_spec_limit) / 2
-    spec_center = lower_spec_limit + spec_range
+    spec_range = (upper_control_limit - lower_control_limit) / 2
+    spec_center = lower_control_limit + spec_range
     zone_b_upper_limit = spec_center + 2 * spec_range / 3
     zone_b_lower_limit = spec_center - 2 * spec_range / 3
 
@@ -184,20 +184,20 @@ def control_zone_a(data: (List[int], List[float], pd.Series, np.array),
 
 
 def control_zone_b(data: (List[int], List[float], pd.Series, np.array),
-                   upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+                   upper_control_limit: (int, float), lower_control_limit: (int, float)):
     """
     Returns a pandas.Series containing the data in which 4 out of 5 are in zone B or beyond.
 
     :param data: The data to be analyzed
-    :param upper_spec_limit: the upper control limit
-    :param lower_spec_limit: the lower control limit
+    :param upper_control_limit: the upper control limit
+    :param lower_control_limit: the lower control limit
     :return: a pandas.Series object with all out-of-control points
     """
     _logger.debug('identifying control zone b violations...')
     data = coerce(data)
 
-    spec_range = (upper_spec_limit - lower_spec_limit) / 2
-    spec_center = lower_spec_limit + spec_range
+    spec_range = (upper_control_limit - lower_control_limit) / 2
+    spec_center = lower_control_limit + spec_range
     zone_c_upper_limit = spec_center + spec_range / 3
     zone_c_lower_limit = spec_center - spec_range / 3
 
@@ -225,20 +225,20 @@ def control_zone_b(data: (List[int], List[float], pd.Series, np.array),
 
 
 def control_zone_c(data: (List[int], List[float], pd.Series, np.array),
-                   upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+                   upper_control_limit: (int, float), lower_control_limit: (int, float)):
     """
     Returns a pandas.Series containing the data in which 7 consecutive points are on the same side.
 
     :param data: The data to be analyzed
-    :param upper_spec_limit: the upper control limit
-    :param lower_spec_limit: the lower control limit
+    :param upper_control_limit: the upper control limit
+    :param lower_control_limit: the lower control limit
     :return: a pandas.Series object with all out-of-control points
     """
     _logger.debug('identifying control zone c violations...')
     data = coerce(data)
 
-    spec_range = (upper_spec_limit - lower_spec_limit) / 2
-    spec_center = lower_spec_limit + spec_range
+    spec_range = (upper_control_limit - lower_control_limit) / 2
+    spec_center = lower_control_limit + spec_range
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
@@ -309,20 +309,20 @@ def control_zone_trend(data: (List[int], List[float], pd.Series, np.array)):
 
 
 def control_zone_mixture(data: (List[int], List[float], pd.Series, np.array),
-                         upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+                         upper_control_limit: (int, float), lower_control_limit: (int, float)):
     """
     Returns a pandas.Series containing the data in which 8 consecutive points occur with none in zone C
 
     :param data: The data to be analyzed
-    :param upper_spec_limit: the upper control limit
-    :param lower_spec_limit: the lower control limit
+    :param upper_control_limit: the upper control limit
+    :param lower_control_limit: the lower control limit
     :return: a pandas.Series object with all out-of-control points
     """
     _logger.debug('identifying control mixture violations...')
     data = coerce(data)
 
-    spec_range = (upper_spec_limit - lower_spec_limit) / 2
-    spec_center = lower_spec_limit + spec_range
+    spec_range = (upper_control_limit - lower_control_limit) / 2
+    spec_center = lower_control_limit + spec_range
     zone_c_upper_limit = spec_center + spec_range / 3
     zone_c_lower_limit = spec_center - spec_range / 3
 
@@ -352,20 +352,20 @@ def control_zone_mixture(data: (List[int], List[float], pd.Series, np.array),
 
 
 def control_zone_stratification(data: (List[int], List[float], pd.Series, np.array),
-                                upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+                                upper_control_limit: (int, float), lower_control_limit: (int, float)):
     """
     Returns a pandas.Series containing the data in which 15 consecutive points occur within zone C
 
     :param data: The data to be analyzed
-    :param upper_spec_limit: the upper control limit
-    :param lower_spec_limit: the lower control limit
+    :param upper_control_limit: the upper control limit
+    :param lower_control_limit: the lower control limit
     :return: a pandas.Series object with all out-of-control points
     """
     _logger.debug('identifying control stratification violations...')
     data = coerce(data)
 
-    spec_range = (upper_spec_limit - lower_spec_limit) / 2
-    spec_center = lower_spec_limit + spec_range
+    spec_range = (upper_control_limit - lower_control_limit) / 2
+    spec_center = lower_control_limit + spec_range
     zone_c_upper_limit = spec_center + spec_range / 3
     zone_c_lower_limit = spec_center - spec_range / 3
 
@@ -390,20 +390,20 @@ def control_zone_stratification(data: (List[int], List[float], pd.Series, np.arr
 
 
 def control_zone_overcontrol(data: (List[int], List[float], pd.Series, np.array),
-                             upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+                             upper_control_limit: (int, float), lower_control_limit: (int, float)):
     """
     Returns a pandas.Series containing the data in which 14 consecutive points are alternating above/below the center.
 
     :param data: The data to be analyzed
-    :param upper_spec_limit: the upper control limit
-    :param lower_spec_limit: the lower control limit
+    :param upper_control_limit: the upper control limit
+    :param lower_control_limit: the lower control limit
     :return: a pandas.Series object with all out-of-control points
     """
     _logger.debug('identifying control over-control violations...')
     data = coerce(data)
 
-    spec_range = (upper_spec_limit - lower_spec_limit) / 2
-    spec_center = lower_spec_limit + spec_range
+    spec_range = (upper_control_limit - lower_control_limit) / 2
+    spec_center = lower_control_limit + spec_range
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []

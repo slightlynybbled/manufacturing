@@ -14,8 +14,8 @@ data_set = [
 ]
 
 spec_limits = {
-    'upper_spec_limit': 2.5,
-    'lower_spec_limit': -2.5
+    'upper_control_limit': 2.5,
+    'lower_control_limit': -2.5
 }
 
 pp = calc_pp(data_set, **spec_limits)
