@@ -421,8 +421,6 @@ def control_zone_overcontrol(data: (List[int], List[float], pd.Series, np.array)
 
         if len(odds) == len(evens) == 7:
             index = i + np.arange(14)
-            print(points)
-            print(index)
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f'over-control violation found at index {i}')
 
