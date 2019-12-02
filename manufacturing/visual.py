@@ -92,7 +92,7 @@ def ppk_plot(data: (List[int], List[float], pd.Series, np.array),
     else:
         ax.text(right, top * 0.95, s=f'limit > $6\sigma$', ha='right')
 
-    strings = [f'Cpk = {cpk:.02f}']
+    strings = [f'Ppk = {cpk:.02f}']
 
     strings.append(f'$\mu = {mean:.3g}$')
     strings.append(f'$\sigma = {std:.3g}$')
@@ -117,6 +117,9 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
         return (seq[pos:pos + size] for pos in range(0, len(seq), size))
 
     data = coerce(data)
+
+    # todo: offer options of historical subgrouping, such as subgroup history = 'all' or 'recent', something that
+    # allows a better historical subgrouping
     data_subgroups = []
     for i, c in enumerate(chunk(data[::-1], subgroup_size)):
         if i >= max_subgroups:
@@ -126,18 +129,28 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
     data_subgroups = data_subgroups[::-1]
 
     if axs is None:
-        fig, axs = plt.subplots(1, 2, sharey=True, gridspec_kw={'width_ratios': [3, 1]})
+        fig, axs = plt.subplots(1, 2, sharey=True, gridspec_kw={'width_ratios': [4, 1]})
 
     ax0, ax1, *leftover = axs
 
-    ax1.boxplot(data)
+    bps = ax1.boxplot(data)
+
+    bottom, top = ax0.get_ylim()
+    bottom_plus = (top - bottom) * 0.01 + bottom
+
     ax1.set_title('Ppk')
+    p0, p1 = bps['medians'][0].get_xydata()
+    x0, _ = p0
+    x1, _ = p1
+    x = (x0 + x1) / 2
+    ppk = calc_ppk(data, upper_spec_limit=upper_control_limit, lower_spec_limit=lower_control_limit)
+    ax1.text(x, bottom_plus, s=f'{ppk:.02g}', va='bottom', ha='center', color='green')
     ax1.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
     ax1.axhline(lower_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
 
     labels = [f'{i}' for i, _ in enumerate(data_subgroups)]
 
-    ax0.boxplot(data_subgroups)
+    bps = ax0.boxplot(data_subgroups)
     ax0.set_title(f'Cpk by Subgroups, Size={subgroup_size}')
     ax0.set_xticklabels(labels)
     ax0.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
@@ -152,7 +165,15 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
     ax0.text(right_plus, upper_control_limit, s='UCL', color='red', va='center')
     ax0.text(right_plus, lower_control_limit, s='LCL', color='red', va='center')
 
-    ax0.text(left, bottom_plus, s='test')
+    for i, bp_median in enumerate(bps['medians']):
+        p0, p1 = bp_median.get_xydata()
+        x0, _ = p0
+        x1, _ = p1
+        x = (x0 + x1) / 2
+        cpk = calc_ppk(data_subgroups[i], upper_spec_limit=upper_control_limit, lower_spec_limit=lower_control_limit)
+        ax0.text(x, bottom_plus, s=f'{cpk:.02g}', va='bottom', ha='center', color='green')
+
+
 
 
 def control_plot(data: (List[int], List[float], pd.Series, np.array),
