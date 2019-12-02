@@ -131,7 +131,7 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
     if axs is None:
         fig, axs = plt.subplots(1, 2, sharey=True, gridspec_kw={'width_ratios': [4, 1]})
 
-    ax0, ax1, *leftover = axs
+    ax0, ax1, *_ = axs
 
     bps = ax1.boxplot(data)
 
@@ -144,14 +144,16 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
     x1, _ = p1
     x = (x0 + x1) / 2
     ppk = calc_ppk(data, upper_control_limit=upper_control_limit, lower_control_limit=lower_control_limit)
-    ax1.text(x, bottom_plus, s=f'{ppk:.02g}', va='bottom', ha='center', color='green')
     ax1.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
     ax1.axhline(lower_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
+    ax1.table([['$Ppk$', f'${ppk:.02g}$']])
+    ax1.set_xticks([])
 
     labels = [f'{i}' for i, _ in enumerate(data_subgroups)]
 
     bps = ax0.boxplot(data_subgroups)
     ax0.set_title(f'Cpk by Subgroups, Size={subgroup_size}')
+    ax0.set_xticks([])
     ax0.set_xticklabels(labels)
     ax0.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
     ax0.axhline(lower_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
@@ -165,16 +167,14 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
     ax0.text(right_plus, upper_control_limit, s='UCL', color='red', va='center')
     ax0.text(right_plus, lower_control_limit, s='LCL', color='red', va='center')
 
+    cpks = []
     for i, bp_median in enumerate(bps['medians']):
-        p0, p1 = bp_median.get_xydata()
-        x0, _ = p0
-        x1, _ = p1
-        x = (x0 + x1) / 2
         cpk = calc_ppk(data_subgroups[i], upper_control_limit=upper_control_limit, lower_control_limit=lower_control_limit)
-        ax0.text(x, bottom_plus, s=f'{cpk:.02g}', va='bottom', ha='center', color='green')
-
-
-
+        cpks.append(cpk)
+    cpks = pd.Series(cpks)
+    table = [f'$Cpk:{cpk:.02g}$' for cpk in cpks]
+    print(table)
+    ax0.table([table])
 
 def control_plot(data: (List[int], List[float], pd.Series, np.array),
                  upper_control_limit: (int, float), lower_control_limit: (int, float),
