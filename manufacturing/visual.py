@@ -22,12 +22,12 @@ def ppk_plot(data: (List[int], List[float], pd.Series, np.array),
     """
     Shows the statistical distribution of the data along with CPK and limits.
 
-    :param data: A list, pandas.Series, or numpy.array representing the data set
-    :param upper_control_limit: An integer or float which represents the upper control limit, commonly called the UCL
-    :param lower_control_limit: An integer or float which represents the upper control limit, commonly called the UCL
-    :param threshold_percent: The threshold at which % of units above/below the number will display on the plot
-    :param show: True if the plot is to be shown, False if the user wishes to collect the figure
-    :return: an instance of matplotlib.pyplot.Figure
+    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param upper_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param lower_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param threshold_percent: the threshold at which % of units above/below the number will display on the plot
+    :param ax: an instance of matplotlig.axis.Axis
+    :return: None
     """
 
     data = coerce(data)
@@ -112,6 +112,17 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
              upper_control_limit: (int, float), lower_control_limit: (int, float),
              subgroup_size: int = 30, max_subgroups: int = 10,
              axs: List[Axis] = None):
+    """
+    Boxplot the Cpk in subgroups os size `subgroup_size`.
+
+    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param upper_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param lower_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param subgroup_size: the number of samples to include in each subgroup
+    :param max_subgroups: the maximum number of subgroups to display
+    :param axs: two instances of matplotlib.axis.Axis
+    :return: None
+    """
 
     def chunk(seq, size):
         return (seq[pos:pos + size] for pos in range(0, len(seq), size))
@@ -181,6 +192,24 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
                  highlight_trend: bool = True, highlight_mixture: bool = True,
                  highlight_stratification: bool = True, highlight_overcontrol: bool = True,
                  ax: Axis = None):
+    """
+    Create a control plot based on the input data.
+
+    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param upper_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param lower_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param highlight_beyond_limits: True if points beyond limits are to be highlighted
+    :param highlight_zone_a: True if points that are zone A violations are to be highlighted
+    :param highlight_zone_b: True if points that are zone B violations are to be highlighted
+    :param highlight_zone_c: True if points that are zone C violations are to be highlighted
+    :param highlight_trend: True if points that are trend violations are to be highlighted
+    :param highlight_mixture: True if points that are mixture violations are to be highlighted
+    :param highlight_stratification: True if points that are stratification violations are to be highlighted
+    :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :param ax: an instance of matplotlib.axis.Axis
+    :return: None
+    """
+
     data = coerce(data)
 
     if ax is None:
