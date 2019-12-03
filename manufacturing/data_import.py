@@ -43,11 +43,19 @@ def import_csv(file_path: (str, Path), columnname: str, **kwargs):
 
     lcl, ucl = _parse_col_for_limits(columnname)
 
-    return {
-        'data': df[columnname],
-        'lower_control_limit': lcl,
-        'upper_control_limit': ucl
-    }
+    if lcl is None and ucl is None:
+        return df[columnname]
+    else:
+        data = {
+            'data': df[columnname]
+        }
+
+    if lcl is not None:
+        data['lower_control_limit'] = lcl
+    if ucl is not None:
+        data['upper_control_limit'] = ucl
+
+    return data
 
 
 def import_excel(file_path: (str, Path), columnname, **kwargs):
@@ -63,8 +71,16 @@ def import_excel(file_path: (str, Path), columnname, **kwargs):
 
     lcl, ucl = _parse_col_for_limits(columnname)
 
-    return {
-        'data': df[columnname],
-        'lower_control_limit': lcl,
-        'upper_control_limit': ucl
-    }
+    if lcl is None and ucl is None:
+        return df[columnname]
+    else:
+        data = {
+            'data': df[columnname]
+        }
+
+    if lcl is not None:
+        data['lower_control_limit'] = lcl
+    if ucl is not None:
+        data['upper_control_limit'] = ucl
+
+    return data
