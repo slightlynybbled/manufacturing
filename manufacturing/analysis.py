@@ -51,6 +51,22 @@ def normality_test(data: (List[int], List[float], pd.Series, np.array),
     return is_normal
 
 
+def define_control_limits(data: (List[int], List[float], pd.Series, np.array), sigma_level: float = 3.0):
+    _logger.debug('defining control limits...')
+    data = coerce(data)
+    normality_test(data)
+
+    mean = data.mean()
+    sigma = data.std()
+
+    limits = {
+        'upper_control_limit': mean + sigma_level * sigma,
+        'lower_control_limit': mean - sigma_level - sigma
+    }
+
+    return limits
+
+
 def calc_pp(data: (List[int], List[float], pd.Series, np.array),
             upper_control_limit: (int, float), lower_control_limit: (int, float)):
     _logger.debug('calculating cp...')
