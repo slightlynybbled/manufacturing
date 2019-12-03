@@ -69,7 +69,7 @@ Another useful feature is the zone control visualization.
 
  * ~~Ppk analysis~~
  * ~~Ppk plots/histograms~~
- * Cpk analysis/plot/histogram by subgroup
+ * ~~Cpk analysis/plot/histogram by subgroup~~
  * In-control/out-of-control analysis (do Ppk and Cpk converge to approximately the same value)
  * ~~Control chart plot~~ (see [Control Chart Rules](https://www.spcforexcel.com/knowledge/control-chart-basics/control-chart-rules-interpretation))
    * ~~Beyond limits violations highlighted~~ (one or more points beyond the control limits)
@@ -93,10 +93,12 @@ Another useful feature is the zone control visualization.
 
 Currently, no distinction is made between Ppk and Cpk, so the entire chart shows the Cpk.
 
-# ![Cpk example](images/cpk-chart-example.png)
+![Ppk example](images/ppk-chart-example.png)
 
 Some of the data for the zone control chard was manipulated in order to display the results.
 Note that, if a phenomenon is not present within the data, then it will not be plotted at
 all.
 
-# ![Cpk example](images/control-chart-example.png)
+![Zone Control example](images/control-chart-example.png)
+
+![Cpk example](images/cpk-by-subgroups-1.png)
