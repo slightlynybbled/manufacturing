@@ -135,26 +135,17 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
 
     bps = ax1.boxplot(data)
 
-    bottom, top = ax0.get_ylim()
-    bottom_plus = (top - bottom) * 0.01 + bottom
-
     ax1.set_title('Ppk')
     p0, p1 = bps['medians'][0].get_xydata()
     x0, _ = p0
     x1, _ = p1
-    x = (x0 + x1) / 2
-    ppk = calc_ppk(data, upper_control_limit=upper_control_limit, lower_control_limit=lower_control_limit)
     ax1.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
     ax1.axhline(lower_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
-    ax1.table([['$Ppk$', f'${ppk:.02g}$']])
     ax1.set_xticks([])
-
-    labels = [f'{i}' for i, _ in enumerate(data_subgroups)]
 
     bps = ax0.boxplot(data_subgroups)
     ax0.set_title(f'Cpk by Subgroups, Size={subgroup_size}')
     ax0.set_xticks([])
-    ax0.set_xticklabels(labels)
     ax0.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
     ax0.axhline(lower_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
 
@@ -172,9 +163,13 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
         cpk = calc_ppk(data_subgroups[i], upper_control_limit=upper_control_limit, lower_control_limit=lower_control_limit)
         cpks.append(cpk)
     cpks = pd.Series(cpks)
-    table = [f'$Cpk:{cpk:.02g}$' for cpk in cpks]
-    print(table)
-    ax0.table([table])
+
+    table = [f'${cpk:.02g}$' for cpk in cpks]
+    ax0.table([table], rowLabels=['$Cpk$'])
+
+    ppk = calc_ppk(data, upper_control_limit=upper_control_limit, lower_control_limit=lower_control_limit)
+    ax1.table([[f'$Ppk: {ppk:.02g}$'], [f'$Cpk_{{av}}:{cpks.mean():.02g}$']])
+
 
 def control_plot(data: (List[int], List[float], pd.Series, np.array),
                  upper_control_limit: (int, float), lower_control_limit: (int, float),

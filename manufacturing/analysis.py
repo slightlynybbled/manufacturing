@@ -23,14 +23,23 @@ def normality_test(data: (List[int], List[float], pd.Series, np.array),
         is_normal_shapiro_test = False
         _logger.warning('shapiro test indicates that the distribution is NOT normal')
 
-    stat, p = normaltest(data)
-    _logger.debug(f'k^2 statistics={stat:.03f}, p={p:.03f}')
-    if p > alpha:
-        is_normal_k2 = True
-        _logger.debug('k^2 test indicates that the distribution is normal')
+    try:
+        stat, p = normaltest(data)
+        success = True
+    except ValueError as e:
+        _logger.warning(e)
+        success = False
+
+    if success:
+        _logger.debug(f'k^2 statistics={stat:.03f}, p={p:.03f}')
+        if p > alpha:
+            is_normal_k2 = True
+            _logger.debug('k^2 test indicates that the distribution is normal')
+        else:
+            is_normal_k2 = False
+            _logger.warning('k^2 test indicates that the distribution is NOT normal')
     else:
-        is_normal_k2 = False
-        _logger.warning('k^2 test indicates that the distribution is NOT normal')
+        is_normal_k2 = True
 
     is_normal = is_normal_shapiro_test and is_normal_k2
 
