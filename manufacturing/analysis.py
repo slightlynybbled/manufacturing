@@ -52,13 +52,13 @@ def normality_test(data: (List[int], List[float], pd.Series, np.array),
 
 
 def calc_pp(data: (List[int], List[float], pd.Series, np.array),
-            upper_spec_limit: (int, float), lower_spec_limit: (int, float)):
+            upper_control_limit: (int, float), lower_control_limit: (int, float)):
     _logger.debug('calculating cp...')
     data = coerce(data)
 
     normality_test(data)
 
-    cp = (upper_spec_limit - lower_spec_limit) / 6 * data.std()
+    cp = (upper_control_limit - lower_control_limit) / 6 * data.std()
 
     _logger.debug(f'cp = {cp:.03f} on the supplied dataset of length {len(data)}')
 
