@@ -133,27 +133,30 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
 
     ax0, ax1, *_ = axs
 
-    bps = ax1.boxplot(data)
+    bp = ax1.boxplot(data, patch_artist=True)
 
     ax1.set_title('Ppk')
-    p0, p1 = bps['medians'][0].get_xydata()
+    p0, p1 = bp['medians'][0].get_xydata()
     x0, _ = p0
     x1, _ = p1
     ax1.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
     ax1.axhline(lower_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
     ax1.set_xticks([])
+    ax1.grid(color='grey', alpha=0.3)
+    bp['boxes'][0].set_facecolor('lightblue')
 
-    bps = ax0.boxplot(data_subgroups)
+    bps = ax0.boxplot(data_subgroups, patch_artist=True)
     ax0.set_title(f'Cpk by Subgroups, Size={subgroup_size}')
     ax0.set_xticks([])
     ax0.axhline(upper_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
     ax0.axhline(lower_control_limit, color='red', linestyle='--', zorder=-1, alpha=0.5)
+    ax0.grid(color='grey', alpha=0.3)
+
+    for box in bps['boxes']:
+        box.set_facecolor('lightblue')
 
     left, right = ax0.get_xlim()
-    bottom, top = ax0.get_ylim()
-
     right_plus = (right - left) * 0.01 + right
-    bottom_plus = (top - bottom) * 0.01 + bottom
 
     ax0.text(right_plus, upper_control_limit, s='UCL', color='red', va='center')
     ax0.text(right_plus, lower_control_limit, s='LCL', color='red', va='center')
