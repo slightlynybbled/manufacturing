@@ -8,6 +8,12 @@ _logger = logging.getLogger(__name__)
 
 
 def coerce(data: (List[int], List[float], pd.Series, np.array)):
+    """
+    Ensures that the data is of a type that can be easily manipulated.
+
+    :param data:
+    :return:
+    """
     if not isinstance(data, pd.Series):
         _logger.debug(f'attempting to convert data into pandas.Series...')
         data = pd.Series(data)

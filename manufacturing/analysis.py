@@ -12,6 +12,13 @@ _logger = logging.getLogger(__name__)
 
 def normality_test(data: (List[int], List[float], pd.Series, np.array),
                    alpha: float = 0.05):
+    """
+    Checks the data for normality and returns True if normality can't be demonstrated False.
+
+    :param data: the data to be analyzed
+    :param alpha: the P-value for the threshold; the standard is 0.05, but this can be manipulated
+    :return: True if the data cannot be demonstrated to be non-normal; else False
+    """
     _logger.debug('checking data for normality')
 
     stat, p = shapiro(data)
@@ -51,7 +58,16 @@ def normality_test(data: (List[int], List[float], pd.Series, np.array),
     return is_normal
 
 
-def define_control_limits(data: (List[int], List[float], pd.Series, np.array), sigma_level: float = 3.0):
+def suggest_control_limits(data: (List[int], List[float], pd.Series, np.array), sigma_level: float = 3.0):
+    """
+    Given a data set and a sigma level, will return a dict containing the `upper_control_limit` and \
+    `lower_control_limit`. values
+
+    :param data: the data to be analyzed
+    :param sigma_level: the sigma level; the default value is 3.0, but some users \
+    may prefer a higher sigma level for their process
+    :return: a `dict` containing the `upper_control_limit` and `lower_control_limit` keys
+    """
     _logger.debug('defining control limits...')
     data = coerce(data)
     normality_test(data)
@@ -69,21 +85,37 @@ def define_control_limits(data: (List[int], List[float], pd.Series, np.array), s
 
 def calc_pp(data: (List[int], List[float], pd.Series, np.array),
             upper_control_limit: (int, float), lower_control_limit: (int, float)):
-    _logger.debug('calculating cp...')
+    """
+    Calculate and return the Pp of the provided dataset given the control limits.
+
+    :param data: the data to be analyzed
+    :param upper_control_limit: the upper control limit
+    :param lower_control_limit: the lower control limit
+    :return: the pp level
+    """
+    _logger.debug('calculating pp...')
     data = coerce(data)
 
     normality_test(data)
 
-    cp = (upper_control_limit - lower_control_limit) / 6 * data.std()
+    pp = (upper_control_limit - lower_control_limit) / 6 * data.std()
 
-    _logger.debug(f'cp = {cp:.03f} on the supplied dataset of length {len(data)}')
+    _logger.debug(f'cp = {pp:.03f} on the supplied dataset of length {len(data)}')
 
-    return cp
+    return pp
 
 
-def calc_cpu(data: (List[int], List[float], pd.Series, np.array),
+def calc_ppu(data: (List[int], List[float], pd.Series, np.array),
              upper_control_limit: (int, float), skip_normality_test: bool = True):
-    _logger.debug('calculating cpu...')
+    """
+    Calculate and return the Pp (upper) of the provided dataset given the upper control limit.
+
+    :param data: the data to be analyzed
+    :param upper_control_limit: the upper control limit
+    :param skip_normality_test: used when the normality test is not necessary
+    :return: the pp level
+    """
+    _logger.debug('calculating ppu...')
     data = coerce(data)
 
     if not skip_normality_test:
@@ -92,19 +124,27 @@ def calc_cpu(data: (List[int], List[float], pd.Series, np.array),
     mean = data.mean()
     std_dev = data.std()
 
-    cpu = (upper_control_limit - mean) / (3 * std_dev)
+    ppu = (upper_control_limit - mean) / (3 * std_dev)
 
     _logger.debug(f'dataset of length {len(data)}, '
                   f'mean={mean}, '
                   f'std_dev={std_dev}')
-    _logger.debug(f'cpu = {cpu}')
+    _logger.debug(f'ppu = {ppu}')
 
-    return cpu
+    return ppu
 
 
-def calc_cpl(data: (List[int], List[float], pd.Series, np.array),
+def calc_ppl(data: (List[int], List[float], pd.Series, np.array),
              lower_control_limit: (int, float), skip_normality_test = True):
-    _logger.debug('calculating cpl...')
+    """
+    Calculate and return the Pp (lower) of the provided dataset given the lower control limit.
+
+    :param data: the data to be analyzed
+    :param lower_control_limit: the lower control limit
+    :param skip_normality_test: used when the normality test is not necessary
+    :return: the pp level
+    """
+    _logger.debug('calculating ppl...')
     data = coerce(data)
 
     if not skip_normality_test:
@@ -113,25 +153,33 @@ def calc_cpl(data: (List[int], List[float], pd.Series, np.array),
     mean = data.mean()
     std_dev = data.std()
 
-    cpl = (mean - lower_control_limit) / (3 * std_dev)
+    ppl = (mean - lower_control_limit) / (3 * std_dev)
 
     _logger.debug(f'dataset of length {len(data)}, '
                   f'mean={mean}, '
                   f'std_dev={std_dev}')
-    _logger.debug(f'cpl = {cpl}')
+    _logger.debug(f'ppl = {ppl}')
 
-    return cpl
+    return ppl
 
 
 def calc_ppk(data: (List[int], List[float], pd.Series, np.array),
              upper_control_limit: (int, float), lower_control_limit: (int, float)):
-    _logger.debug('calculating cpk...')
+    """
+    Calculate and return the Pp (upper) of the provided dataset given the upper control limit.
+
+    :param data: the data to be analyzed
+    :param upper_control_limit: the upper control limit
+    :param lower_control_limit: the lower control limit
+    :return: the ppk level
+    """
+    _logger.debug('calculating ppk...')
     data = coerce(data)
 
     normality_test(data)
 
-    zupper = abs(calc_cpu(data=data, upper_control_limit=upper_control_limit, skip_normality_test=True))
-    zlower = abs(calc_cpl(data=data, lower_control_limit=lower_control_limit, skip_normality_test=True))
+    zupper = abs(calc_ppu(data=data, upper_control_limit=upper_control_limit, skip_normality_test=True))
+    zlower = abs(calc_ppl(data=data, lower_control_limit=lower_control_limit, skip_normality_test=True))
 
     cpk = min(zupper, zlower)
 
