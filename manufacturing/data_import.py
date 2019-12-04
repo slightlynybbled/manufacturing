@@ -5,7 +5,13 @@ import pandas as pd
 _logger = logging.getLogger(__name__)
 
 
-def _parse_col_for_limits(columnname: str):
+def parse_col_for_limits(columnname: str):
+    """
+    Return the upper and lower control limits embedded into the column header.
+
+    :param columnname: the column name to parse
+    :return: 2-value tuple of the form `(lcl, ucl)`; returns `(None, None)` if values not found
+    """
     if '(' in columnname and ')' in columnname:
         _logger.info(f'parentheses detected, loading thresholds')
         strings = columnname.split('(')[1].replace(')', '')
@@ -41,7 +47,7 @@ def import_csv(file_path: (str, Path), columnname: str, **kwargs):
     """
     df = pd.read_csv(file_path, **kwargs)
 
-    lcl, ucl = _parse_col_for_limits(columnname)
+    lcl, ucl = parse_col_for_limits(columnname)
 
     if lcl is None and ucl is None:
         return df[columnname]
@@ -69,7 +75,7 @@ def import_excel(file_path: (str, Path), columnname, **kwargs):
     """
     df = pd.read_excel(file_path, **kwargs)
 
-    lcl, ucl = _parse_col_for_limits(columnname)
+    lcl, ucl = parse_col_for_limits(columnname)
 
     if lcl is None and ucl is None:
         return df[columnname]
