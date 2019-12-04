@@ -75,12 +75,7 @@ def suggest_control_limits(data: (List[int], List[float], pd.Series, np.array), 
     mean = data.mean()
     sigma = data.std()
 
-    limits = {
-        'upper_control_limit': mean + sigma_level * sigma,
-        'lower_control_limit': mean - sigma_level - sigma
-    }
-
-    return limits
+    return mean - sigma_level * sigma, mean + sigma_level * sigma
 
 
 def calc_pp(data: (List[int], List[float], pd.Series, np.array),
