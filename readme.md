@@ -38,7 +38,7 @@ Of course, the `X.X.X` will be replaced with the version that you are looking at
 Visualizations work approximately as expected within a jupyter notebook.
 
     data = np.random.normal(0, 1, size=30)  # generate some data
-    manufacturing.ppk_plot(data, lower_spec_limit=-2, upper_spec_limit=2)
+    manufacturing.ppk_plot(data, lower_control_limit=-2, upper_control_limit=2)
     
 There is a sample jupyter notebook in the examples directory.
 
@@ -47,10 +47,10 @@ There is a sample jupyter notebook in the examples directory.
 The most useful feature of the `manufacturing` package is the visualization of Cpk.
 As hinted previously, the `ppk_plot()` function is the primary method for display of
 Cpk visual information.  First, get your data into a `list`, `numpy.array`, or 
-`pandas.Series`; then supply that data, along with the `lower_spec_limit` and 
-`upper_spec_limit` into the `ppk_plot()` function.
+`pandas.Series`; then supply that data, along with the `lower_control_limit` and 
+`upper_control_limit` into the `ppk_plot()` function.
 
-    manufacturing.ppk_plot(data, lower_spec_limit=-2, upper_spec_limit=2)
+    manufacturing.ppk_plot(data, lower_control_limit=-2, upper_control_limit=2)
     
 ![Screenshot](images/example3.png)
 
@@ -61,7 +61,7 @@ making consistent product within the specified limits.
 
 Another useful feature is the zone control visualization.
 
-    manufacturing.control_plot(data, lower_spec_limit=-7.0, upper_spec_limit=7.0)
+    manufacturing.control_plot(data, lower_control_limit=-7.0, upper_control_limit=7.0)
 
 # Features Map
 
