@@ -241,12 +241,17 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
     ax.text(right_plus, upper_control_limit, s='UCL', va='center')
     ax.text(right_plus, lower_control_limit, s='LCL', va='center')
 
-    ax.text(right_plus, zone_c_upper_limit / 2, s='Zone C', va='center')
-    ax.text(right_plus, zone_c_lower_limit / 2, s='Zone C', va='center')
+    ax.text(right_plus, (spec_center + zone_c_upper_limit) / 2, s='Zone C', va='center')
+    ax.text(right_plus, (spec_center + zone_c_lower_limit) / 2, s='Zone C', va='center')
     ax.text(right_plus, (zone_b_upper_limit + zone_c_upper_limit) / 2, s='Zone B', va='center')
     ax.text(right_plus, (zone_b_lower_limit + zone_c_lower_limit) / 2, s='Zone B', va='center')
     ax.text(right_plus, (zone_a_upper_limit + zone_b_upper_limit) / 2, s='Zone A', va='center')
     ax.text(right_plus, (zone_a_lower_limit + zone_b_lower_limit) / 2, s='Zone A', va='center')
+
+    print(spec_center)
+    print(zone_c_upper_limit)
+    print((zone_c_upper_limit + spec_center) / 2)
+
 
     plot_params = {'alpha': 0.3, 'zorder': -10, 'markersize': 14}
 
