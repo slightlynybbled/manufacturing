@@ -316,7 +316,7 @@ def control_zone_c(data: (List[int], List[float], pd.Series, np.array),
         count = 1
         above = data[i] > spec_center
         for point in points[1:]:
-            if above:
+            if above is True:
                 if point > spec_center:
                     count += 1
                 else:
