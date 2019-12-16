@@ -38,7 +38,7 @@ def ppk_plot(data: (List[int], List[float], pd.Series, np.array),
         fig, ax = plt.subplots()
 
     ax.hist(data, density=True, label='data', alpha=0.3)
-    x = np.linspace(mean - 4 * std, mean + 6 * std, 100)
+    x = np.linspace(mean - 4 * std, mean + 4 * std, 100)
     pdf = stats.norm.pdf(x, mean, std)
     ax.plot(x, pdf, label='normal fit', alpha=0.7)
 
