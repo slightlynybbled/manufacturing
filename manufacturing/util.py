@@ -23,4 +23,4 @@ def coerce(data: (List[int], List[float], pd.Series, np.array)):
         raise ValueError('data is not of the correct type; expecting a list of integers, '
                          'floats, a pandas.Series, or numpy.array')
 
-    return data
+    return data.reset_index(drop=True)
