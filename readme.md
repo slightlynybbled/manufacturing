@@ -10,6 +10,10 @@ responsible for any resulting analysis.
 The API should not be considered stable until v1.0 or greater.  Until then, breaking changes may
 be released as different API options are explored.
 
+During the `v0.X.X` versioning, I am using the package in my own analyses in order to find any bugs.  Once
+I am reasonably satisfied that the package is feature complete, usable, and bug-free, I will break out
+the `v1.X.X` releases.
+
 # Installation
 
 ## From `setup.py`
@@ -70,7 +74,7 @@ Another useful feature is the zone control visualization.
  * ~~Ppk analysis~~
  * ~~Ppk plots/histograms~~
  * ~~Cpk analysis/plot/histogram by subgroup~~
- * In-control/out-of-control analysis (do Ppk and Cpk converge to approximately the same value)
+ * ~~In-control/out-of-control analysis (do Ppk and Cpk converge to approximately the same value)~~
  * ~~Control chart plot~~ (see [Control Chart Rules](https://www.spcforexcel.com/knowledge/control-chart-basics/control-chart-rules-interpretation))
    * ~~Beyond limits violations highlighted~~ (one or more points beyond the control limits)
    * ~~Zone A violations highlighted~~ (2 out of 3 consecutive points in zone A or beyond)
@@ -87,7 +91,7 @@ Another useful feature is the zone control visualization.
  * ~~Import from CSV~~
  * ~~Import from MS Excel~~
  * Create documentation using [sphinx](http://www.sphinx-doc.org/en/master/)
- * Generate reports
+ * ~~Generate reports~~
 
 # Gallery
 
