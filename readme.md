@@ -2,6 +2,10 @@
 
 To provide analysis tools and metrics useful in manufacturing environments.
 
+I am slowly generating the documentation and, as that is maturing, I will begin to move information
+from this `readme.md` into that location.  If you don't find something here, head over to the
+[documentation](https://manufacturing.readthedocs.io/en/latest/).
+
 # Project Maturity
 
 Every effort is being made to ensure that the results are accurate, but the user is ultimately
@@ -13,27 +17,6 @@ be released as different API options are explored.
 During the `v0.X.X` versioning, I am using the package in my own analyses in order to find any bugs.  Once
 I am reasonably satisfied that the package is feature complete, usable, and bug-free, I will break out
 the `v1.X.X` releases.
-
-# Installation
-
-## From `setup.py`
-
-Use this method to get the latest features.  Note that this may result in an installation that
-is not stable!
-
-Clone this repository and install into your python environment using `setuptools`.
-
-    $ git clone https://github.com/slightlynybbled/manufacturing
-    $ cd manufacturing
-    $ python setup.py install
-    
-## From Wheel File
-
-[Download the wheel file](https://github.com/slightlynybbled/manufacturing/releases) and install from pip:
-
-    ~/downloads $ python -m pip install manufacturing-X.X.X-py3-none-any.whl
-    
-Of course, the `X.X.X` will be replaced with the version that you are looking at.
 
 # Usage
 
