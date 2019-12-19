@@ -15,6 +15,7 @@ proprietary tools.
    :caption: Contents:
 
    installation
+   importing_and_exporting
 
 Indices and tables
 ==================
