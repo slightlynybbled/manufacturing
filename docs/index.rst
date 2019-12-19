@@ -6,13 +6,15 @@
 Documentation
 =============
 
+The `manufacturing` package is intended to provide some easy-to-use analysis tools which provide
+world-class visual methods of evaluating common manufacturing metrics without the price tag of more
+proprietary tools.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-The `manufacturing` package is intended to provide some easy-to-use analysis tools which provide
-world-class visual methods of evaluating common manufacturing metrics without the price tag of more
-proprietary tools.
+   installation
 
 Indices and tables
 ==================
