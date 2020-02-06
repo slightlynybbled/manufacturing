@@ -36,7 +36,10 @@ instance in order to take better advantage of matplotlib features.
     import matplotlib.pyplot as plt
 
     fig, ax = plt.subplots()
-    mn.ppk_plot(data, upper_control_limit=3.3, lower_control_limit=3.1, ax=ax)
+    mn.ppk_plot(data,
+                upper_control_limit=3.3,
+                lower_control_limit=3.1,
+                ax=ax)
 
     ax.set_xlim(3.0, 3.5)  # manipulate the axis as desired
 
