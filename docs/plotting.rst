@@ -82,7 +82,7 @@ not be placed on the chart.
 .. image:: _static/images/control_plot.png
 
 .. list-table:: Control Chart Rules by Severity
-    :header-rows: 1
+   :header-rows: 1
 
   * - Violation
     - Pattern
