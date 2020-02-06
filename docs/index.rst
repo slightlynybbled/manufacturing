@@ -16,6 +16,8 @@ proprietary tools.
 
    installation
    importing_and_exporting
+   plotting
+   api
 
 Indices and tables
 ==================
