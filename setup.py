@@ -5,11 +5,12 @@ with open("readme.md", "r") as f:
     long_description = f.read()
 
 setuptools.setup(
-    name="manufacturing", # Replace with your own username
+    name="manufacturing",
     version=manufacturing.__version__,
     author="Jason R. Jones",
     author_email="slightlynybbled@gmail.com",
-    description="Six-sigma-based analysis of manufacturing data for trends, Cpk/Ppk.",
+    description="Six-sigma-based analysis of manufacturing "
+                "data for trends, Cpk/Ppk.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/slightlynybbled/manufacturing",

@@ -22,10 +22,13 @@ Download the wheel file and install from pip.:
 
 .. code-block:: bash
 
-    ~/downloads $ python -m pip install manufacturing-X.X.X-py3-none-any.whl
-    Of course, the X.X.X will be replaced with the version that you are looking at.
+    ~/ $ python -m pip install manufacturing-X.X.X-py3-none-any.whl
+
+Of course, the X.X.X will be replaced with the version that you are looking at.
 
 Pip
 ---
 
-Coming soon...
+.. code-block:: bash
+
+    ~/ $ python -m pip install manufacturing
