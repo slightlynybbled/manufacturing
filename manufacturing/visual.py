@@ -189,8 +189,8 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
                  upper_control_limit: (int, float), lower_control_limit: (int, float),
                  highlight_beyond_limits: bool = True, highlight_zone_a: bool = True,
                  highlight_zone_b: bool = True, highlight_zone_c: bool = True,
-                 highlight_trend: bool = True, highlight_mixture: bool = True,
-                 highlight_stratification: bool = True, highlight_overcontrol: bool = True,
+                 highlight_trend: bool = False, highlight_mixture: bool = False,
+                 highlight_stratification: bool = False, highlight_overcontrol: bool = False,
                  ax: Axis = None):
     """
     Create a control plot based on the input data.
