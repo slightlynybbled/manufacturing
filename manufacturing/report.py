@@ -42,7 +42,7 @@ def generate_production_report(input_file: (str, Path), output_file: Path = None
         raise ValueError('the input file extension is not currently supported')
 
     build_path = Path('./build')
-    build_path.parent.mkdir(exist_ok=True)
+    build_path.mkdir(parents=True, exist_ok=True)
 
     text = f'# {title}\n\n'
     text += f'Report generated: {datetime.now().strftime("%Y-%m-%d %H:%M")}\n\n'
