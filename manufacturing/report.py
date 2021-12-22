@@ -55,7 +55,10 @@ def generate_production_report(input_file: (str, Path), output_file: Path = None
 
         normal = normality_test(data=df[c])
         if not normal:
-            text += 'Normality test indicates that the data is likely not normally distributed.\n\n'
+            text += 'Normality test indicates that the data is likely ' \
+                    'not normally distributed, meaning that the suggested ' \
+                    'limits are not based on a normally ' \
+                    'distributed parameter.\n\n'
 
         if lcl is not None and ucl is not None:
             text += f'Established limits:\n\n * LCL = {lcl:.02g}\n * UCL = {ucl:.02g}\n\n'
@@ -99,13 +102,13 @@ def generate_production_report(input_file: (str, Path), output_file: Path = None
 
     extension = splitext(str(output_file))[1].replace('.', '')
     if extension == 'pdf':
-        args = ['pandoc', 'report.md', '-o', f'{title}.pdf']
+        args = ['pandoc', f'report.md', '-o', f'{title}.pdf']
     elif extension == 'html':
         args = ['pandoc', '-s', 'report.md', '-o', f'{title}.html']
     else:
         raise ValueError(f'extension "{extension}" not supported')
-
+    _logger.info(f'executing {args}')
     check_call(args)
     chdir(cwd)
 
-    _logger.info('report generation complete!')
+    _logger.info(f'report generation complete; artifact may be found at {build_path.absolute()}')
