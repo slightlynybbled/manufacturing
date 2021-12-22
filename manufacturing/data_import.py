@@ -78,7 +78,7 @@ def import_excel(file_path: (str, Path), columnname, **kwargs):
     lcl, ucl = parse_col_for_limits(columnname)
 
     if lcl is None and ucl is None:
-        return df[columnname]
+        return {'data': df[columnname]}
     else:
         data = {
             'data': df[columnname]
