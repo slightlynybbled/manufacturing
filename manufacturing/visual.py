@@ -191,6 +191,7 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
                  highlight_zone_b: bool = True, highlight_zone_c: bool = True,
                  highlight_trend: bool = False, highlight_mixture: bool = False,
                  highlight_stratification: bool = False, highlight_overcontrol: bool = False,
+                 max_points: (int, None) = 60,
                  ax: Axis = None):
     """
     Create a control plot based on the input data.
@@ -206,16 +207,18 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
     :param highlight_mixture: True if points that are mixture violations are to be highlighted
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :param max_points: the maximum number of points to display ('None' to display all)
     :param ax: an instance of matplotlib.axis.Axis
     :return: None
     """
-
+    if max_points is not None:
+        data = data[-max_points:]
     data = coerce(data)
 
     if ax is None:
         fig, ax = plt.subplots()
 
-    ax.plot(data)
+    ax.plot(data, marker='.')
     ax.set_title('Zone Control Chart')
 
     spec_range = (upper_control_limit - lower_control_limit) / 2
