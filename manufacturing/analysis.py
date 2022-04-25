@@ -244,7 +244,7 @@ def control_zone_a(data: (List[int], List[float], pd.Series, np.array),
             _logger.info(f'zone a violation found at index {i}')
 
     if len(violations) == 0:
-        return pd.Series()
+        return pd.Series(dtype='float64')
 
     s = pd.concat(violations)
     s = s.loc[~s.index.duplicated()]
@@ -285,7 +285,7 @@ def control_zone_b(data: (List[int], List[float], pd.Series, np.array),
             _logger.info(f'zone b violation found at index {i}')
 
     if len(violations) == 0:
-        return pd.Series()
+        return pd.Series(dtype='float64')
 
     s = pd.concat(violations)
     s = s.loc[~s.index.duplicated()]
@@ -333,46 +333,46 @@ def control_zone_c(data: (List[int], List[float], pd.Series, np.array),
             _logger.info(f'zone c violation found at index {i}')
 
     if len(violations) == 0:
-        return pd.Series()
+        return pd.Series(dtype='float64')
 
     s = pd.concat(violations)
     s = s.loc[~s.index.duplicated()]
     return s
 
 
-def control_zone_trend(data: (List[int], List[float], pd.Series, np.array)):
-    """
-    Returns a pandas.Series containing the data in which 7 consecutive points trending up or down.
-
-    :param data: The data to be analyzed
-    :return: a pandas.Series object with all out-of-control points
-    """
+def control_zone_trend(data: (List[int], List[float], pd.Series, np.array)) -> pd.Series:
     _logger.debug('identifying control trend violations...')
     data = coerce(data)
 
-    # looking for violations in which 2 out of 3 are in zone A or beyond
+    diff_data = data.diff()
+    diff_data.reset_index(inplace=True, drop=True)
+    diff_data.dropna(inplace=True)
+    diff_data = [0 if d == 0 or d == 0.0 else d for d in diff_data ]
+    diff_data = [1 if d > 0 else d for d in diff_data]
+    diff_data = [-1 if d < 0 else d for d in diff_data]
+
+    # look for trend violations, which are violations
+    #  in which 7 consecutive points are trending up or down
     violations = []
-    for i in range(len(data) - 6):
-        points = data[i:i+7].to_numpy()
+    cum_sum = 0
+    last_sign = 0
+    for i, d in enumerate(diff_data):
+        if d == last_sign or d == 0:
+            cum_sum += d
+            if abs(cum_sum) >= 6:
+                violations.append(pd.Series(data=data[i], index=[i]))
+                _logger.info(f'zone c violation found at index {i}')
+        else:
+            cum_sum = 0
 
-        up = 0
-        down = 0
-        for j in range(1, 7):
-            if points[j] > points[j-1]:
-                up += 1
-            elif points[j] < points[j-1]:
-                down += 1
-
-        if up >= 6 or down >= 6:
-            index = i + np.arange(7)
-            violations.append(pd.Series(data=points, index=index))
-            _logger.info(f'trend violation found at index {i}')
+        if d != 0:
+            last_sign = d
 
     if len(violations) == 0:
-        return pd.Series()
+        return pd.Series(dtype='float64')
 
     s = pd.concat(violations)
-    s = s.loc[~s.index.duplicated()]
+
     return s
 
 
@@ -412,7 +412,7 @@ def control_zone_mixture(data: (List[int], List[float], pd.Series, np.array),
             _logger.info(f'mixture violation found at index {i}')
 
     if len(violations) == 0:
-        return pd.Series()
+        return pd.Series(dtype='float64')
 
     s = pd.concat(violations)
     s = s.loc[~s.index.duplicated()]
@@ -450,7 +450,7 @@ def control_zone_stratification(data: (List[int], List[float], pd.Series, np.arr
             _logger.info(f'stratification violation found at index {i}')
 
     if len(violations) == 0:
-        return pd.Series()
+        return pd.Series(dtype='float64')
 
     s = pd.concat(violations)
     s = s.loc[~s.index.duplicated()]
@@ -493,7 +493,7 @@ def control_zone_overcontrol(data: (List[int], List[float], pd.Series, np.array)
             _logger.info(f'over-control violation found at index {i}')
 
     if len(violations) == 0:
-        return pd.Series()
+        return pd.Series(dtype='float64')
 
     s = pd.concat(violations)
     s = s.loc[~s.index.duplicated()]
