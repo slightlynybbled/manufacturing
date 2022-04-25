@@ -80,7 +80,9 @@ def generate_production_report(
 
         # generate visual Ppk plot
         fig, ax = plt.subplots(1, 1)
-        ppk_plot(df[c], upper_specification_limit=ucl, lower_specification_limit=lcl, ax=ax)
+        ppk_plot(
+            df[c], upper_specification_limit=ucl, lower_specification_limit=lcl, ax=ax
+        )
         plot_name = build_path / f"ppk_plot_{fig_name}.png"
         fig.savefig(plot_name)
         text += f"![Ppk Plot: {fig_name}]({plot_name.name})\n\n"

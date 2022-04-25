@@ -243,7 +243,7 @@ def control_beyond_limits(
     ).dropna()
 
     if len(data) == 0:
-        return pd.Series(dtype='float64')
+        return pd.Series(dtype="float64")
 
     return data
 

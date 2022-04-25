@@ -76,15 +76,21 @@ def ppk_plot(
     ax.axvline(mean - 3 * std, alpha=0.2, linestyle="--")
     ax.text(mean - 3 * std, top * 1.01, s="-$3\sigma$", ha="center")
 
-    ax.fill_between(x, pdf, where=x < lower_specification_limit, facecolor="red", alpha=0.5)
-    ax.fill_between(x, pdf, where=x > upper_specification_limit, facecolor="red", alpha=0.5)
+    ax.fill_between(
+        x, pdf, where=x < lower_specification_limit, facecolor="red", alpha=0.5
+    )
+    ax.fill_between(
+        x, pdf, where=x > upper_specification_limit, facecolor="red", alpha=0.5
+    )
 
     lower_percent = 100.0 * stats.norm.cdf(lower_specification_limit, mean, std)
     lower_percent_text = (
         f"{lower_percent:.02f}% < LSL" if lower_percent > threshold_percent else None
     )
 
-    higher_percent = 100.0 - 100.0 * stats.norm.cdf(upper_specification_limit, mean, std)
+    higher_percent = 100.0 - 100.0 * stats.norm.cdf(
+        upper_specification_limit, mean, std
+    )
     higher_percent_text = (
         f"{higher_percent:.02f}% > USL" if higher_percent > threshold_percent else None
     )
@@ -375,8 +381,14 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(beyond_limits_violations):
-            ax.scatter(beyond_limits_violations.index, beyond_limits_violations.values,
-                       marker=5, label='beyond limits', color='red', zorder=100)
+            ax.scatter(
+                beyond_limits_violations.index,
+                beyond_limits_violations.values,
+                marker=5,
+                label="beyond limits",
+                color="red",
+                zorder=100,
+            )
 
     if highlight_zone_a:
         zone_a_violations = control_zone_a(
@@ -385,8 +397,14 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_a_violations):
-            ax.scatter(zone_a_violations.index, zone_a_violations.values,
-                       marker=4, label='zone a', color='orange', zorder=100)
+            ax.scatter(
+                zone_a_violations.index,
+                zone_a_violations.values,
+                marker=4,
+                label="zone a",
+                color="orange",
+                zorder=100,
+            )
 
     if highlight_zone_b:
         zone_b_violations = control_zone_b(
@@ -395,8 +413,14 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_b_violations):
-            ax.scatter(zone_b_violations.index, zone_b_violations.values,
-                       marker=6, label='zone b', color='blue', zorder=100)
+            ax.scatter(
+                zone_b_violations.index,
+                zone_b_violations.values,
+                marker=6,
+                label="zone b",
+                color="blue",
+                zorder=100,
+            )
 
     if highlight_zone_c:
         zone_c_violations = control_zone_c(
@@ -405,14 +429,26 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_c_violations):
-            ax.scatter(zone_c_violations.index, zone_c_violations.values,
-                       marker=7, label='zone b', color='green', zorder=100)
+            ax.scatter(
+                zone_c_violations.index,
+                zone_c_violations.values,
+                marker=7,
+                label="zone b",
+                color="green",
+                zorder=100,
+            )
 
     if highlight_trend:
         zone_trend_violations = control_zone_trend(data=data)
         if len(zone_trend_violations):
-            ax.scatter(zone_trend_violations.index, zone_trend_violations.values,
-                       marker=3, label='trend', color='purple', zorder=100)
+            ax.scatter(
+                zone_trend_violations.index,
+                zone_trend_violations.values,
+                marker=3,
+                label="trend",
+                color="purple",
+                zorder=100,
+            )
 
     if highlight_mixture:
         zone_mixture_violations = control_zone_mixture(
@@ -421,8 +457,14 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_mixture_violations):
-            ax.scatter(zone_mixture_violations.index, zone_mixture_violations.values,
-                       marker=0, label='mixture', color='brown', zorder=100)
+            ax.scatter(
+                zone_mixture_violations.index,
+                zone_mixture_violations.values,
+                marker=0,
+                label="mixture",
+                color="brown",
+                zorder=100,
+            )
 
     if highlight_stratification:
         zone_stratification_violations = control_zone_stratification(
@@ -431,8 +473,14 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_stratification_violations):
-            ax.scatter(zone_stratification_violations.index, zone_stratification_violations.values,
-                       marker=1, label='mixture', color='orange', zorder=100)
+            ax.scatter(
+                zone_stratification_violations.index,
+                zone_stratification_violations.values,
+                marker=1,
+                label="mixture",
+                color="orange",
+                zorder=100,
+            )
 
     if highlight_overcontrol:
         zone_overcontrol_violations = control_zone_overcontrol(
@@ -441,10 +489,19 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_overcontrol_violations):
-            ax.scatter(zone_overcontrol_violations.index, zone_overcontrol_violations.values,
-                       marker='x', label='mixture', color='blue', zorder=100)
+            ax.scatter(
+                zone_overcontrol_violations.index,
+                zone_overcontrol_violations.values,
+                marker="x",
+                label="mixture",
+                color="blue",
+                zorder=100,
+            )
 
-    min_y, max_y = (None, None, )
+    min_y, max_y = (
+        None,
+        None,
+    )
     if any(data < min_data):
         min_y = min_data
     if any(data > max_data):
