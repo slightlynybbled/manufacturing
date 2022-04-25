@@ -274,15 +274,27 @@ def control_chart(
         data = data[-max_points:]
     data = coerce(data)
 
+    # when data is considered an extreme outlier,
+    # then we will re-scale the y limits
+    q25 = data.quantile(0.25)
+    q75 = data.quantile(0.75)
+    iqr = (q75 - q25) * 2
+    median = (q75 + q25) / 2
+    min_data = median - (iqr * 3)
+    max_data = median + (iqr * 3)
+
     if ax is None:
         fig, ax = plt.subplots()
 
     ax.plot(data, marker=".")
     ax.set_title("Zone Control Chart")
 
-    mean = data.mean()
-    upper_control_limit = mean + 3 * data.std()
-    lower_control_limit = mean - 3 * data.std()
+    # for purposes of gathering statistics, only use
+    # data that is not considered outliers
+    stat_data = data.where((data > min_data) & (data < max_data))
+    mean = stat_data.mean()
+    upper_control_limit = mean + 3 * stat_data.std()
+    lower_control_limit = mean - 3 * stat_data.std()
 
     spec_range = (upper_control_limit - lower_control_limit) / 2
     spec_center = data.mean()
@@ -356,8 +368,6 @@ def control_chart(
         va="center",
     )
 
-    plot_params = {"alpha": 0.3, "zorder": -10, "markersize": 14}
-
     if highlight_beyond_limits:
         beyond_limits_violations = control_beyond_limits(
             data=data,
@@ -365,15 +375,8 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(beyond_limits_violations):
-            plot_params["zorder"] -= 1
-            plot_params["markersize"] -= 1
-            ax.plot(
-                beyond_limits_violations,
-                "o",
-                color="red",
-                label="beyond limits",
-                **plot_params,
-            )
+            ax.scatter(beyond_limits_violations.index, beyond_limits_violations.values,
+                       marker=5, label='beyond limits', color='red', zorder=100)
 
     if highlight_zone_a:
         zone_a_violations = control_zone_a(
@@ -382,15 +385,8 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_a_violations):
-            plot_params["zorder"] -= 1
-            plot_params["markersize"] -= 1
-            ax.plot(
-                zone_a_violations,
-                "o",
-                color="orange",
-                label="zone a violations",
-                **plot_params,
-            )
+            ax.scatter(zone_a_violations.index, zone_a_violations.values,
+                       marker=4, label='zone a', color='orange', zorder=100)
 
     if highlight_zone_b:
         zone_b_violations = control_zone_b(
@@ -399,15 +395,8 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_b_violations):
-            plot_params["zorder"] -= 1
-            plot_params["markersize"] -= 1
-            ax.plot(
-                zone_b_violations,
-                "o",
-                color="blue",
-                label="zone b violations",
-                **plot_params,
-            )
+            ax.scatter(zone_b_violations.index, zone_b_violations.values,
+                       marker=6, label='zone b', color='blue', zorder=100)
 
     if highlight_zone_c:
         zone_c_violations = control_zone_c(
@@ -416,28 +405,14 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_c_violations):
-            plot_params["zorder"] -= 1
-            plot_params["markersize"] -= 1
-            ax.plot(
-                zone_c_violations,
-                "o",
-                color="green",
-                label="zone c violations",
-                **plot_params,
-            )
+            ax.scatter(zone_c_violations.index, zone_c_violations.values,
+                       marker=7, label='zone b', color='green', zorder=100)
 
     if highlight_trend:
         zone_trend_violations = control_zone_trend(data=data)
         if len(zone_trend_violations):
-            plot_params["zorder"] -= 1
-            plot_params["markersize"] -= 1
-            ax.plot(
-                zone_trend_violations,
-                "o",
-                color="purple",
-                label="trend violations",
-                **plot_params,
-            )
+            ax.scatter(zone_trend_violations.index, zone_trend_violations.values,
+                       marker=3, label='trend', color='purple', zorder=100)
 
     if highlight_mixture:
         zone_mixture_violations = control_zone_mixture(
@@ -446,15 +421,8 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_mixture_violations):
-            plot_params["zorder"] -= 1
-            plot_params["markersize"] -= 1
-            ax.plot(
-                zone_mixture_violations,
-                "o",
-                color="brown",
-                label="mixture violations",
-                **plot_params,
-            )
+            ax.scatter(zone_mixture_violations.index, zone_mixture_violations.values,
+                       marker=0, label='mixture', color='brown', zorder=100)
 
     if highlight_stratification:
         zone_stratification_violations = control_zone_stratification(
@@ -463,15 +431,8 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_stratification_violations):
-            plot_params["zorder"] -= 1
-            plot_params["markersize"] -= 1
-            ax.plot(
-                zone_stratification_violations,
-                "o",
-                color="orange",
-                label="stratification violations",
-                **plot_params,
-            )
+            ax.scatter(zone_stratification_violations.index, zone_stratification_violations.values,
+                       marker=1, label='mixture', color='orange', zorder=100)
 
     if highlight_overcontrol:
         zone_overcontrol_violations = control_zone_overcontrol(
@@ -480,15 +441,16 @@ def control_chart(
             lower_control_limit=lower_control_limit,
         )
         if len(zone_overcontrol_violations):
-            plot_params["zorder"] -= 1
-            plot_params["markersize"] -= 1
-            ax.plot(
-                zone_overcontrol_violations,
-                "o",
-                color="blue",
-                label="overcontrol violations",
-                **plot_params,
-            )
+            ax.scatter(zone_overcontrol_violations.index, zone_overcontrol_violations.values,
+                       marker='x', label='mixture', color='blue', zorder=100)
+
+    min_y, max_y = (None, None, )
+    if any(data < min_data):
+        min_y = min_data
+    if any(data > max_data):
+        max_y = max_data
+    if min_y or max_y:
+        ax.set_ylim(bottom=min_y, top=max_y)
 
     ax.legend()
 
@@ -496,6 +458,7 @@ def control_chart(
     fig.tight_layout()
 
     return ax
+
 
 def moving_range(
     data: (List[int], List[float], pd.Series, np.array),

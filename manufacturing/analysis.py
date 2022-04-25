@@ -227,7 +227,7 @@ def control_beyond_limits(
     data: (List[int], List[float], pd.Series, np.array),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
-):
+) -> pd.Series:
     """
     Returns a pandas.Series with all points which are beyond the limits.
 
@@ -238,17 +238,21 @@ def control_beyond_limits(
     """
     _logger.debug("identifying beyond limit violations...")
     data = coerce(data)
-
-    return data.where(
+    data = data.where(
         (data > upper_control_limit) | (data < lower_control_limit)
     ).dropna()
+
+    if len(data) == 0:
+        return pd.Series(dtype='float64')
+
+    return data
 
 
 def control_zone_a(
     data: (List[int], List[float], pd.Series, np.array),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
-):
+) -> pd.Series:
     """
     Returns a pandas.Series containing the data in which 2 out of 3 are in zone A or beyond.
 
@@ -292,7 +296,7 @@ def control_zone_b(
     data: (List[int], List[float], pd.Series, np.array),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
-):
+) -> pd.Series:
     """
     Returns a pandas.Series containing the data in which 4 out of 5 are in zone B or beyond.
 
@@ -425,7 +429,7 @@ def control_zone_mixture(
     data: (List[int], List[float], pd.Series, np.array),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
-):
+) -> pd.Series:
     """
     Returns a pandas.Series containing the data in which 8 consecutive points occur with none in zone C
 
@@ -471,7 +475,7 @@ def control_zone_stratification(
     data: (List[int], List[float], pd.Series, np.array),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
-):
+) -> pd.Series:
     """
     Returns a pandas.Series containing the data in which 15 consecutive points occur within zone C
 
