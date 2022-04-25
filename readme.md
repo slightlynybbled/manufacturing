@@ -58,14 +58,14 @@ making consistent product within the specified limits.
 
 Another useful feature is the zone control visualization.
 
-    manufacturing.control_plot(data, lower_control_limit=-7.0, upper_control_limit=7.0)
+    manufacturing.control_chart(data)
 
 # RoadMap
 
 ## Continuous Integration
 
  - ~~Add use github actions for deployment~~
- - Transition to `poetry`
+ - ~~Transition to `poetry`~~
  - Add `I-MR Chart` (see `examples/control_chart.py`)
  - Add `Xbar-R Chart` (subgroups between 2 and 10)
  - Add `Xbar-S Chart` (subgroups of 11 or more)
