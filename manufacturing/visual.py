@@ -289,6 +289,13 @@ def control_chart(
     min_data = median - (iqr * 3)
     max_data = median + (iqr * 3)
 
+    bad_data = data[~((data-data.mean()).abs() < 3*data.std())]
+    for i, v in bad_data.iteritems():
+        if v > max_data:
+            data.iloc[i] = max_data
+        elif v < min_data:
+            data.iloc[i] = min_data
+
     if ax is None:
         fig, ax = plt.subplots()
 
@@ -297,10 +304,12 @@ def control_chart(
 
     # for purposes of gathering statistics, only use
     # data that is not considered outliers
-    stat_data = data.where((data > min_data) & (data < max_data))
+    stat_data = data.where(data > min_data, min_data)
+    stat_data = stat_data.where(data < max_data, max_data)
     mean = stat_data.mean()
-    upper_control_limit = mean + 3 * stat_data.std()
-    lower_control_limit = mean - 3 * stat_data.std()
+
+    upper_control_limit = median + 3 * stat_data.std()
+    lower_control_limit = median - 3 * stat_data.std()
 
     spec_range = (upper_control_limit - lower_control_limit) / 2
     spec_center = data.mean()
@@ -374,6 +383,9 @@ def control_chart(
         va="center",
     )
 
+    diameter = 50
+    diameter_inc = 16
+    zorder = 100
     if highlight_beyond_limits:
         beyond_limits_violations = control_beyond_limits(
             data=data,
@@ -384,11 +396,16 @@ def control_chart(
             ax.scatter(
                 beyond_limits_violations.index,
                 beyond_limits_violations.values,
-                marker=5,
+                s=diameter,
+                linewidth=1,
+                color='none',
+                marker='o',
                 label="beyond limits",
-                color="red",
-                zorder=100,
+                edgecolor='red',
+                zorder=zorder,
             )
+        diameter += diameter_inc
+        zorder -= 1
 
     if highlight_zone_a:
         zone_a_violations = control_zone_a(
@@ -400,11 +417,16 @@ def control_chart(
             ax.scatter(
                 zone_a_violations.index,
                 zone_a_violations.values,
-                marker=4,
+                s=diameter,
+                linewidth=1,
+                color='none',
+                marker='o',
                 label="zone a",
-                color="orange",
-                zorder=100,
+                edgecolor="orange",
+                zorder=zorder,
             )
+        diameter += diameter_inc
+        zorder -= 1
 
     if highlight_zone_b:
         zone_b_violations = control_zone_b(
@@ -416,11 +438,15 @@ def control_chart(
             ax.scatter(
                 zone_b_violations.index,
                 zone_b_violations.values,
-                marker=6,
+                s=diameter,
+                linewidth=1,
+                color='none',
                 label="zone b",
-                color="blue",
-                zorder=100,
+                edgecolor="blue",
+                zorder=zorder,
             )
+        diameter += diameter_inc
+        zorder -= 1
 
     if highlight_zone_c:
         zone_c_violations = control_zone_c(
@@ -432,11 +458,16 @@ def control_chart(
             ax.scatter(
                 zone_c_violations.index,
                 zone_c_violations.values,
-                marker=7,
+                s=diameter,
+                linewidth=1,
+                color='none',
+                marker='o',
                 label="zone b",
-                color="green",
-                zorder=100,
+                edgecolor="green",
+                zorder=zorder,
             )
+        diameter += diameter_inc
+        zorder -= 1
 
     if highlight_trend:
         zone_trend_violations = control_zone_trend(data=data)
@@ -444,11 +475,16 @@ def control_chart(
             ax.scatter(
                 zone_trend_violations.index,
                 zone_trend_violations.values,
-                marker=3,
+                s=diameter,
+                linewidth=1,
+                color='none',
+                marker='o',
                 label="trend",
-                color="purple",
-                zorder=100,
+                edgecolor="purple",
+                zorder=zorder,
             )
+        diameter += diameter_inc
+        zorder -= 1
 
     if highlight_mixture:
         zone_mixture_violations = control_zone_mixture(
@@ -460,11 +496,16 @@ def control_chart(
             ax.scatter(
                 zone_mixture_violations.index,
                 zone_mixture_violations.values,
-                marker=0,
+                s=diameter,
+                linewidth=1,
+                color='none',
+                marker='o',
                 label="mixture",
-                color="brown",
-                zorder=100,
+                edgecolor="brown",
+                zorder=zorder,
             )
+        diameter += diameter_inc
+        zorder -= 1
 
     if highlight_stratification:
         zone_stratification_violations = control_zone_stratification(
@@ -476,11 +517,16 @@ def control_chart(
             ax.scatter(
                 zone_stratification_violations.index,
                 zone_stratification_violations.values,
-                marker=1,
+                s=diameter,
+                linewidth=1,
+                color='none',
+                marker='o',
                 label="mixture",
-                color="orange",
-                zorder=100,
+                edgecolor="orange",
+                zorder=zorder,
             )
+        diameter += diameter_inc
+        zorder -= 1
 
     if highlight_overcontrol:
         zone_overcontrol_violations = control_zone_overcontrol(
@@ -492,11 +538,16 @@ def control_chart(
             ax.scatter(
                 zone_overcontrol_violations.index,
                 zone_overcontrol_violations.values,
-                marker="x",
+                s=diameter,
+                linewidth=1,
+                color='none',
+                marker='o',
                 label="mixture",
-                color="blue",
-                zorder=100,
+                edgecolor="blue",
+                zorder=zorder,
             )
+        diameter += diameter_inc
+        zorder -= 1
 
     min_y, max_y = (
         None,
