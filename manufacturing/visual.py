@@ -25,8 +25,8 @@ _logger = logging.getLogger(__name__)
 
 def ppk_plot(
     data: (List[int], List[float], pd.Series, np.array),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    upper_specification_limit: (int, float),
+    lower_specification_limit: (int, float),
     threshold_percent: float = 0.001,
     ax: Optional[Axis] = None,
 ):
@@ -34,8 +34,8 @@ def ppk_plot(
     Shows the statistical distribution of the data along with CPK and limits.
 
     :param data: a list, pandas.Series, or numpy.array representing the data set
-    :param upper_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
-    :param lower_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param upper_specification_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param lower_specification_limit: an integer or float which represents the upper control limit, commonly called the UCL
     :param threshold_percent: the threshold at which % of units above/below the number will display on the plot
     :param ax: an instance of matplotlig.axis.Axis
     :return: None
@@ -76,44 +76,44 @@ def ppk_plot(
     ax.axvline(mean - 3 * std, alpha=0.2, linestyle="--")
     ax.text(mean - 3 * std, top * 1.01, s="-$3\sigma$", ha="center")
 
-    ax.fill_between(x, pdf, where=x < lower_control_limit, facecolor="red", alpha=0.5)
-    ax.fill_between(x, pdf, where=x > upper_control_limit, facecolor="red", alpha=0.5)
+    ax.fill_between(x, pdf, where=x < lower_specification_limit, facecolor="red", alpha=0.5)
+    ax.fill_between(x, pdf, where=x > upper_specification_limit, facecolor="red", alpha=0.5)
 
-    lower_percent = 100.0 * stats.norm.cdf(lower_control_limit, mean, std)
+    lower_percent = 100.0 * stats.norm.cdf(lower_specification_limit, mean, std)
     lower_percent_text = (
-        f"{lower_percent:.02f}% < LCL" if lower_percent > threshold_percent else None
+        f"{lower_percent:.02f}% < LSL" if lower_percent > threshold_percent else None
     )
 
-    higher_percent = 100.0 - 100.0 * stats.norm.cdf(upper_control_limit, mean, std)
+    higher_percent = 100.0 - 100.0 * stats.norm.cdf(upper_specification_limit, mean, std)
     higher_percent_text = (
-        f"{higher_percent:.02f}% > UCL" if higher_percent > threshold_percent else None
+        f"{higher_percent:.02f}% > USL" if higher_percent > threshold_percent else None
     )
 
     left, right = ax.get_xlim()
     bottom, top = ax.get_ylim()
     cpk = calc_ppk(
         data,
-        upper_control_limit=upper_control_limit,
-        lower_control_limit=lower_control_limit,
+        upper_control_limit=upper_specification_limit,
+        lower_control_limit=lower_specification_limit,
     )
 
-    lower_sigma_level = (mean - lower_control_limit) / std
+    lower_sigma_level = (mean - lower_specification_limit) / std
     if lower_sigma_level < 6.0:
-        ax.axvline(lower_control_limit, color="red", alpha=0.25, label="limits")
+        ax.axvline(lower_specification_limit, color="red", alpha=0.25, label="limits")
         ax.text(
-            lower_control_limit,
+            lower_specification_limit,
             top * 0.95,
             s=f"$-{lower_sigma_level:.01f}\sigma$",
             ha="center",
         )
     else:
-        ax.text(left, top * 0.95, s=f"limit > $-6\sigma$", ha="left")
+        ax.text(left, top * 0.95, s=f"limit < $-6\sigma$", ha="left")
 
-    upper_sigma_level = (upper_control_limit - mean) / std
+    upper_sigma_level = (upper_specification_limit - mean) / std
     if upper_sigma_level < 6.0:
-        ax.axvline(upper_control_limit, color="red", alpha=0.25)
+        ax.axvline(upper_specification_limit, color="red", alpha=0.25)
         ax.text(
-            upper_control_limit,
+            upper_specification_limit,
             top * 0.95,
             s=f"${upper_sigma_level:.01f}\sigma$",
             ha="center",
@@ -235,7 +235,13 @@ def cpk_plot(
     return [ax0, ax1]
 
 
-def control_plot(
+def control_plot(*args, **kwargs) -> Axis:
+    _logger.warning('control_plot function is depreciated; use "control_chart" isntead')
+
+    return control_chart(*args, **kwargs)
+
+
+def control_chart(
     data: (List[int], List[float], pd.Series, np.array),
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
@@ -489,6 +495,7 @@ def control_plot(
     fig = plt.gcf()
     fig.tight_layout()
 
+    return ax
 
 def moving_range(
     data: (List[int], List[float], pd.Series, np.array),

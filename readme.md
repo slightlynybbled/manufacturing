@@ -18,6 +18,16 @@ During the `v0.X.X` versioning, I am using the package in my own analyses in ord
 I am reasonably satisfied that the package is feature complete, usable, and bug-free, I will break out
 the `v1.X.X` releases.
 
+# Installation
+
+To install from `pypi`:
+
+    pip install manufacturing
+
+To install from source download and install using poetry:
+
+    poetry install
+
 # Usage
 
 ## Visualizations with Jupyter Notebooks
@@ -25,7 +35,7 @@ the `v1.X.X` releases.
 Visualizations work approximately as expected within a jupyter notebook.
 
     data = np.random.normal(0, 1, size=30)  # generate some data
-    manufacturing.ppk_plot(data, lower_control_limit=-2, upper_control_limit=2)
+    manufacturing.ppk_plot(data, lower_specification_limit=-2, upper_specification_limit=2)
     
 There is a sample jupyter notebook in the examples directory.
 
@@ -56,6 +66,9 @@ Another useful feature is the zone control visualization.
 
  - ~~Add use github actions for deployment~~
  - Transition to `poetry`
+ - Add `I-MR Chart` (see `examples/control_chart.py`)
+ - Add `Xbar-R Chart` (subgroups between 2 and 10)
+ - Add `Xbar-S Chart` (subgroups of 11 or more)
 
 # Gallery
 
