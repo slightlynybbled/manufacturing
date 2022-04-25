@@ -328,6 +328,13 @@ def control_chart(
     ax.axhline(zone_a_upper_limit, linestyle="--", color="red", alpha=0.2)
     ax.axhline(zone_a_lower_limit, linestyle="--", color="red", alpha=0.2)
 
+    y_lower, y_upper = ax.get_ylim()
+    alpha = 0.2
+    ax.axhspan(y_upper, zone_a_upper_limit, color='red', alpha=alpha, zorder=-20)
+    ax.axhspan(zone_c_upper_limit, zone_b_upper_limit, color='gray', alpha=alpha, zorder=-20)
+    ax.axhspan(zone_c_lower_limit, zone_b_lower_limit, color='gray', alpha=alpha, zorder=-20)
+    ax.axhspan(y_lower, zone_a_lower_limit, color='red', alpha=alpha, zorder=-20)
+
     left, right = ax.get_xlim()
     right_plus = (right - left) * 0.01 + right
 
@@ -384,7 +391,7 @@ def control_chart(
     )
 
     diameter = 30
-    diameter_scaler = 1.8
+    diameter_inc = 35
     zorder = 100
     if highlight_beyond_limits:
         beyond_limits_violations = control_beyond_limits(
@@ -404,7 +411,7 @@ def control_chart(
                 edgecolor='red',
                 zorder=zorder,
             )
-            diameter *= diameter_scaler
+            diameter += diameter_inc
             zorder -= 1
 
     if highlight_zone_a:
@@ -425,7 +432,7 @@ def control_chart(
                 edgecolor="orange",
                 zorder=zorder,
             )
-            diameter *= diameter_scaler
+            diameter += diameter_inc
             zorder -= 1
 
     if highlight_zone_b:
@@ -445,7 +452,7 @@ def control_chart(
                 edgecolor="blue",
                 zorder=zorder,
             )
-            diameter *= diameter_scaler
+            diameter += diameter_inc
             zorder -= 1
 
     if highlight_zone_c:
@@ -466,7 +473,7 @@ def control_chart(
                 edgecolor="green",
                 zorder=zorder,
             )
-            diameter *= diameter_scaler
+            diameter += diameter_inc
             zorder -= 1
 
     if highlight_trend:
@@ -483,7 +490,7 @@ def control_chart(
                 edgecolor="purple",
                 zorder=zorder,
             )
-            diameter *= diameter_scaler
+            diameter += diameter_inc
             zorder -= 1
 
     if highlight_mixture:
@@ -504,7 +511,7 @@ def control_chart(
                 edgecolor="brown",
                 zorder=zorder,
             )
-            diameter *= diameter_scaler
+            diameter += diameter_inc
             zorder -= 1
 
     if highlight_stratification:
@@ -525,7 +532,7 @@ def control_chart(
                 edgecolor="orange",
                 zorder=zorder,
             )
-            diameter *= diameter_scaler
+            diameter += diameter_inc
             zorder -= 1
 
     if highlight_overcontrol:
@@ -546,7 +553,7 @@ def control_chart(
                 edgecolor="blue",
                 zorder=zorder,
             )
-            diameter *= diameter_scaler
+            diameter += diameter_inc
             zorder -= 1
 
     min_y, max_y = (
@@ -561,6 +568,7 @@ def control_chart(
         ax.set_ylim(bottom=min_y, top=max_y)
 
     ax.legend()
+    ax.autoscale(enable=True, axis='y', tight=True)
 
     fig = plt.gcf()
     fig.tight_layout()
