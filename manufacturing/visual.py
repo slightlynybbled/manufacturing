@@ -320,13 +320,7 @@ def control_chart(
     zone_a_upper_limit = spec_center + spec_range
     zone_a_lower_limit = spec_center - spec_range
 
-    ax.axhline(spec_center, linestyle="--", color="red", alpha=0.6)
-    ax.axhline(zone_c_upper_limit, linestyle="--", color="red", alpha=0.5)
-    ax.axhline(zone_c_lower_limit, linestyle="--", color="red", alpha=0.5)
-    ax.axhline(zone_b_upper_limit, linestyle="--", color="red", alpha=0.3)
-    ax.axhline(zone_b_lower_limit, linestyle="--", color="red", alpha=0.3)
-    ax.axhline(zone_a_upper_limit, linestyle="--", color="red", alpha=0.2)
-    ax.axhline(zone_a_lower_limit, linestyle="--", color="red", alpha=0.2)
+    ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
 
     y_lower, y_upper = ax.get_ylim()
     alpha = 0.2
