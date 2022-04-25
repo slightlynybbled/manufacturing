@@ -383,8 +383,8 @@ def control_chart(
         va="center",
     )
 
-    diameter = 50
-    diameter_inc = 16
+    diameter = 30
+    diameter_scaler = 1.8
     zorder = 100
     if highlight_beyond_limits:
         beyond_limits_violations = control_beyond_limits(
@@ -404,8 +404,8 @@ def control_chart(
                 edgecolor='red',
                 zorder=zorder,
             )
-        diameter += diameter_inc
-        zorder -= 1
+            diameter *= diameter_scaler
+            zorder -= 1
 
     if highlight_zone_a:
         zone_a_violations = control_zone_a(
@@ -425,8 +425,8 @@ def control_chart(
                 edgecolor="orange",
                 zorder=zorder,
             )
-        diameter += diameter_inc
-        zorder -= 1
+            diameter *= diameter_scaler
+            zorder -= 1
 
     if highlight_zone_b:
         zone_b_violations = control_zone_b(
@@ -445,8 +445,8 @@ def control_chart(
                 edgecolor="blue",
                 zorder=zorder,
             )
-        diameter += diameter_inc
-        zorder -= 1
+            diameter *= diameter_scaler
+            zorder -= 1
 
     if highlight_zone_c:
         zone_c_violations = control_zone_c(
@@ -466,8 +466,8 @@ def control_chart(
                 edgecolor="green",
                 zorder=zorder,
             )
-        diameter += diameter_inc
-        zorder -= 1
+            diameter *= diameter_scaler
+            zorder -= 1
 
     if highlight_trend:
         zone_trend_violations = control_zone_trend(data=data)
@@ -483,8 +483,8 @@ def control_chart(
                 edgecolor="purple",
                 zorder=zorder,
             )
-        diameter += diameter_inc
-        zorder -= 1
+            diameter *= diameter_scaler
+            zorder -= 1
 
     if highlight_mixture:
         zone_mixture_violations = control_zone_mixture(
@@ -504,8 +504,8 @@ def control_chart(
                 edgecolor="brown",
                 zorder=zorder,
             )
-        diameter += diameter_inc
-        zorder -= 1
+            diameter *= diameter_scaler
+            zorder -= 1
 
     if highlight_stratification:
         zone_stratification_violations = control_zone_stratification(
@@ -525,8 +525,8 @@ def control_chart(
                 edgecolor="orange",
                 zorder=zorder,
             )
-        diameter += diameter_inc
-        zorder -= 1
+            diameter *= diameter_scaler
+            zorder -= 1
 
     if highlight_overcontrol:
         zone_overcontrol_violations = control_zone_overcontrol(
@@ -546,8 +546,8 @@ def control_chart(
                 edgecolor="blue",
                 zorder=zorder,
             )
-        diameter += diameter_inc
-        zorder -= 1
+            diameter *= diameter_scaler
+            zorder -= 1
 
     min_y, max_y = (
         None,
