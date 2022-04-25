@@ -9,4 +9,4 @@ __all__ = ['suggest_control_limits', 'calc_ppk',
            'import_csv', 'import_excel',
            'generate_production_report']
 
-__version__ = '1.0.0'
+__version__ = '1.1.0'

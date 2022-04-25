@@ -186,7 +186,6 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
 
 
 def control_plot(data: (List[int], List[float], pd.Series, np.array),
-                 upper_control_limit: (int, float), lower_control_limit: (int, float),
                  highlight_beyond_limits: bool = True, highlight_zone_a: bool = True,
                  highlight_zone_b: bool = True, highlight_zone_c: bool = True,
                  highlight_trend: bool = False, highlight_mixture: bool = False,
@@ -197,8 +196,6 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
     Create a control plot based on the input data.
 
     :param data: a list, pandas.Series, or numpy.array representing the data set
-    :param upper_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
-    :param lower_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
@@ -221,8 +218,12 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
     ax.plot(data, marker='.')
     ax.set_title('Zone Control Chart')
 
+    mean = data.mean()
+    upper_control_limit = mean + 3 * data.std()
+    lower_control_limit = mean - 3 * data.std()
+
     spec_range = (upper_control_limit - lower_control_limit) / 2
-    spec_center = lower_control_limit + spec_range
+    spec_center = data.mean()
     zone_c_upper_limit = spec_center + spec_range / 3
     zone_c_lower_limit = spec_center - spec_range / 3
     zone_b_upper_limit = spec_center + 2 * spec_range / 3
@@ -241,8 +242,13 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
     left, right = ax.get_xlim()
     right_plus = (right - left) * 0.01 + right
 
-    ax.text(right_plus, upper_control_limit, s='UCL', va='center')
-    ax.text(right_plus, lower_control_limit, s='LCL', va='center')
+    text_color = 'red'
+    ax.text(right_plus, upper_control_limit, s=f'UCL={upper_control_limit:.3g}', va='center', color=text_color)
+    ax.text(right_plus, lower_control_limit, s=f'LCL={lower_control_limit:.3g}', va='center', color=text_color)
+    edges = [zone_c_upper_limit, zone_c_lower_limit, zone_b_upper_limit,
+             zone_b_lower_limit, mean]
+    for edge in edges:
+        ax.text(right_plus, edge, s=f'{edge:.3g}', va='center', color=text_color)
 
     ax.text(right_plus, (spec_center + zone_c_upper_limit) / 2, s='Zone C', va='center')
     ax.text(right_plus, (spec_center + zone_c_lower_limit) / 2, s='Zone C', va='center')
@@ -326,3 +332,11 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
                     **plot_params)
 
     ax.legend()
+
+    fig = plt.gcf()
+    fig.tight_layout()
+
+
+
+def moving_range(data: (List[int], List[float], pd.Series, np.array), ):
+    data = coerce(data)
