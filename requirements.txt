@@ -1,5 +1,5 @@
 matplotlib == 3.5.1
 openpyxl == 3.0.9
-pandas == 1.4.1
+pandas >= 1.4.1
 scipy == 1.8.0
 xlrd == 2.0.1
