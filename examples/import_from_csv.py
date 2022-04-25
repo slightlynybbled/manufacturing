@@ -13,7 +13,7 @@ ppk = calc_ppk(data, lower_control_limit=-2.5, upper_control_limit=2.5)
 print(f'Ppk = {ppk:.3g}')
 
 # and then plot
-ppk_plot(data, lower_control_limit=-2.5, upper_control_limit=2.5)
+ppk_plot(data, lower_specification_limit=-2.5, upper_specification_limit=2.5)
 plt.show()
 
 # -----------------------------------------------------------------------------------
