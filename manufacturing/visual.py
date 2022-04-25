@@ -2,6 +2,7 @@ import logging
 from typing import List, Optional
 
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from matplotlib.axis import Axis
 import numpy as np
 import pandas as pd
@@ -621,3 +622,73 @@ def moving_range(
     )
 
     return ax
+
+
+def i_mr_chart(
+    data: (List[int], List[float], pd.Series, np.array),
+    highlight_beyond_limits: bool = True,
+    highlight_zone_a: bool = True,
+    highlight_zone_b: bool = True,
+    highlight_zone_c: bool = True,
+    highlight_trend: bool = True,
+    highlight_mixture: bool = False,
+    highlight_stratification: bool = False,
+    highlight_overcontrol: bool = False,
+    max_points: Optional[int] = 60,
+    ax: Optional[Axis] = None
+) -> Figure:
+    """
+    Create a moving I-MR control plot based on the input data.
+
+    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param highlight_beyond_limits: True if points beyond limits are to be highlighted
+    :param highlight_zone_a: True if points that are zone A violations are to be highlighted
+    :param highlight_zone_b: True if points that are zone B violations are to be highlighted
+    :param highlight_zone_c: True if points that are zone C violations are to be highlighted
+    :param highlight_trend: True if points that are trend violations are to be highlighted
+    :param highlight_mixture: True if points that are mixture violations are to be highlighted
+    :param highlight_stratification: True if points that are stratification violations are to be highlighted
+    :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :param max_points: the maximum number of points to display ('None' to display all)
+    :param ax: an instance of matplotlib.axis.Axis
+    :return: an instance of matplotlib.axis.Axis
+    """
+    data = coerce(data)
+    data = data[-(max_points + 1) :]
+    diff_data = data.diff()
+    diff_data.reset_index(inplace=True, drop=True)
+
+    # create an I-MR chart using a combination of control_plot and moving_range
+    fig, axs = plt.subplots(2, 1, figsize=(8, 6), sharex='all')
+
+    control_chart(
+        data,
+        highlight_beyond_limits=highlight_beyond_limits,
+        highlight_zone_a=highlight_zone_a,
+        highlight_zone_b=highlight_zone_b,
+        highlight_zone_c=highlight_zone_c,
+        highlight_trend=highlight_trend,
+        highlight_mixture=highlight_mixture,
+        highlight_stratification=highlight_stratification,
+        highlight_overcontrol=highlight_overcontrol,
+        ax=axs[0])
+
+    moving_range(
+        data,
+        highlight_beyond_limits=highlight_beyond_limits,
+        highlight_zone_a=highlight_zone_a,
+        highlight_zone_b=highlight_zone_b,
+        highlight_zone_c=highlight_zone_c,
+        highlight_trend=highlight_trend,
+        highlight_mixture=highlight_mixture,
+        highlight_stratification=highlight_stratification,
+        highlight_overcontrol=highlight_overcontrol,
+        ax=axs[1])
+
+    axs[0].set_title('Individual')
+    axs[1].set_title('Moving Range')
+    fig.suptitle('I-MR Chart')
+
+    fig.tight_layout()
+
+    return fig
