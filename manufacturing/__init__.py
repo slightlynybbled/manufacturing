@@ -1,3 +1,5 @@
+import importlib.metadata
+
 from manufacturing.analysis import calc_ppk, suggest_control_limits
 from manufacturing.data_import import import_csv, import_excel
 from manufacturing.report import generate_production_report
@@ -17,4 +19,4 @@ __all__ = [
     "generate_production_report",
 ]
 
-__version__ = "1.1.3"
+__version__ = importlib.metadata.version('manufacturing')

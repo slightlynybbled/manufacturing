@@ -23,11 +23,11 @@ jobs:
       - name: Install packages
         run: |
           python -m pip install --upgrade pip
-          pip install -U setuptools wheel twine
-          pip install -Ur requirements.txt
+          pip install -U poetry twine wheel
+          poetry install
 
       - name: Build wheel file in `dist/`
-        run: python setup.py sdist bdist_wheel
+        run: poetry build
 
       - name: Publish distribution 📦 to Test PyPI
         uses: pypa/gh-action-pypi-publish@master
