@@ -50,31 +50,12 @@ Another useful feature is the zone control visualization.
 
     manufacturing.control_plot(data, lower_control_limit=-7.0, upper_control_limit=7.0)
 
-# Features Map
+# RoadMap
 
-## Analysis
+## Continuous Integration
 
- * ~~Ppk analysis~~
- * ~~Ppk plots/histograms~~
- * ~~Cpk analysis/plot/histogram by subgroup~~
- * ~~In-control/out-of-control analysis (do Ppk and Cpk converge to approximately the same value)~~
- * ~~Control chart plot~~ (see [Control Chart Rules](https://www.spcforexcel.com/knowledge/control-chart-basics/control-chart-rules-interpretation))
-   * ~~Beyond limits violations highlighted~~ (one or more points beyond the control limits)
-   * ~~Zone A violations highlighted~~ (2 out of 3 consecutive points in zone A or beyond)
-   * ~~Zone B violations highlighted~~ (4 out of 5 consecutive points in zone B or beyond)
-   * ~~Zone C violations highlighted~~ (7 or more consecutive points on one side of the average - in zone C or beyond)
-   * ~~Trend violations highlighted~~ (7 consecutive points trending up or down)
-   * ~~Mixture violations highlighted~~ (8 consecutive points with none in zone C)
-   * ~~Stratification violations highlighted~~ (15 consecutive points in zone C)
-   * ~~Over-control violations highlighted~~ (14 consecutive points alternating up and down)
- * Gage R&R analysis
- 
-## Usability
-
- * ~~Import from CSV~~
- * ~~Import from MS Excel~~
- * Create documentation using [sphinx](http://www.sphinx-doc.org/en/master/)
- * ~~Generate reports~~
+ - ~~Add use github actions for deployment~~
+ - Transition to `poetry`
 
 # Gallery
 

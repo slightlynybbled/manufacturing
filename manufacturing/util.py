@@ -15,12 +15,14 @@ def coerce(data: (List[int], List[float], pd.Series, np.array)) -> pd.Series:
     :return:
     """
     if not isinstance(data, pd.Series):
-        _logger.debug(f'attempting to convert data into pandas.Series...')
+        _logger.debug(f"attempting to convert data into pandas.Series...")
         data = pd.Series(data)
-        _logger.debug(f'...conversion successful')
+        _logger.debug(f"...conversion successful")
 
     if not isinstance(data, pd.Series):
-        raise ValueError('data is not of the correct type; expecting a list of integers, '
-                         'floats, a pandas.Series, or numpy.array')
+        raise ValueError(
+            "data is not of the correct type; expecting a list of integers, "
+            "floats, a pandas.Series, or numpy.array"
+        )
 
     return data.reset_index(drop=True)
