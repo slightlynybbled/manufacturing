@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 import matplotlib.pyplot as plt
 from matplotlib.axis import Axis
@@ -18,7 +18,7 @@ _logger = logging.getLogger(__name__)
 def ppk_plot(data: (List[int], List[float], pd.Series, np.array),
              upper_control_limit: (int, float), lower_control_limit: (int, float),
              threshold_percent: float = 0.001,
-             ax: Axis = None):
+             ax: Optional[Axis] = None):
     """
     Shows the statistical distribution of the data along with CPK and limits.
 
@@ -111,7 +111,7 @@ def ppk_plot(data: (List[int], List[float], pd.Series, np.array),
 def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
              upper_control_limit: (int, float), lower_control_limit: (int, float),
              subgroup_size: int = 30, max_subgroups: int = 10,
-             axs: List[Axis] = None):
+             axs: Optional[List[Axis]] = None) -> List[Axis]:
     """
     Boxplot the Cpk in subgroups os size `subgroup_size`.
 
@@ -184,14 +184,16 @@ def cpk_plot(data: (List[int], List[float], pd.Series, np.array),
     ppk = calc_ppk(data, upper_control_limit=upper_control_limit, lower_control_limit=lower_control_limit)
     ax1.table([[f'$Ppk: {ppk:.02g}$'], [f'$Cpk_{{av}}:{cpks.mean():.02g}$']])
 
+    return [ax0, ax1]
+
 
 def control_plot(data: (List[int], List[float], pd.Series, np.array),
                  highlight_beyond_limits: bool = True, highlight_zone_a: bool = True,
                  highlight_zone_b: bool = True, highlight_zone_c: bool = True,
-                 highlight_trend: bool = False, highlight_mixture: bool = False,
+                 highlight_trend: bool = True, highlight_mixture: bool = False,
                  highlight_stratification: bool = False, highlight_overcontrol: bool = False,
-                 max_points: (int, None) = 60,
-                 ax: Axis = None):
+                 max_points: Optional[int] = 60,
+                 ax: Optional[Axis] = None) -> Axis:
     """
     Create a control plot based on the input data.
 
@@ -206,7 +208,7 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
     :param max_points: the maximum number of points to display ('None' to display all)
     :param ax: an instance of matplotlib.axis.Axis
-    :return: None
+    :return: an instance of matplotlib.axis.Axis
     """
     if max_points is not None:
         data = data[-max_points:]
@@ -337,6 +339,46 @@ def control_plot(data: (List[int], List[float], pd.Series, np.array),
     fig.tight_layout()
 
 
+def moving_range(data: (List[int], List[float], pd.Series, np.array),
+                 highlight_beyond_limits: bool = True, highlight_zone_a: bool = True,
+                 highlight_zone_b: bool = True, highlight_zone_c: bool = True,
+                 highlight_trend: bool = True, highlight_mixture: bool = False,
+                 highlight_stratification: bool = False, highlight_overcontrol: bool = False,
+                 max_points: Optional[int] = 60,
+                 ax: Optional[Axis] = None) -> Axis:
+    """
+    Create a moving range control plot based on the input data.
 
-def moving_range(data: (List[int], List[float], pd.Series, np.array), ):
+    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param highlight_beyond_limits: True if points beyond limits are to be highlighted
+    :param highlight_zone_a: True if points that are zone A violations are to be highlighted
+    :param highlight_zone_b: True if points that are zone B violations are to be highlighted
+    :param highlight_zone_c: True if points that are zone C violations are to be highlighted
+    :param highlight_trend: True if points that are trend violations are to be highlighted
+    :param highlight_mixture: True if points that are mixture violations are to be highlighted
+    :param highlight_stratification: True if points that are stratification violations are to be highlighted
+    :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :param max_points: the maximum number of points to display ('None' to display all)
+    :param ax: an instance of matplotlib.axis.Axis
+    :return: an instance of matplotlib.axis.Axis
+    """
     data = coerce(data)
+    data = data[-(max_points+1):]
+    diff_data = data.diff()
+    diff_data.reset_index(inplace=True, drop=True)
+
+    if ax is None:
+        fig, ax = plt.subplots()
+
+    control_plot(diff_data,
+                 highlight_beyond_limits=highlight_beyond_limits,
+                 highlight_zone_a=highlight_zone_a,
+                 highlight_zone_b=highlight_zone_b,
+                 highlight_zone_c=highlight_zone_c,
+                 highlight_trend=highlight_trend,
+                 highlight_mixture=highlight_mixture,
+                 highlight_stratification=highlight_stratification,
+                 highlight_overcontrol=highlight_overcontrol,
+                 ax=ax)
+
+    return ax
