@@ -25,7 +25,7 @@ jobs:
           poetry install
 
       - name: Build wheel file in `dist/`
-        run: python setup.py sdist bdist_wheel
+        run: poetry build
 
       - name: Publish distribution 📦 to PyPI
         if: startsWith(github.ref, 'refs/tags')
