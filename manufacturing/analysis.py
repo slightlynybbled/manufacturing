@@ -394,8 +394,6 @@ def control_zone_trend(
     data = coerce(data)
 
     diff_data = data.diff()
-    diff_data.reset_index(inplace=True, drop=True)
-    diff_data.dropna(inplace=True)
     diff_data = [0 if d == 0 or d == 0.0 else d for d in diff_data]
     diff_data = [1 if d > 0 else d for d in diff_data]
     diff_data = [-1 if d < 0 else d for d in diff_data]
@@ -403,19 +401,16 @@ def control_zone_trend(
     # look for trend violations, which are violations
     #  in which 7 consecutive points are trending up or down
     violations = []
-    cum_sum = 0
-    last_sign = 0
     for i, d in enumerate(diff_data):
-        if d == last_sign or d == 0:
-            cum_sum += d
-            if abs(cum_sum) >= 6:
-                violations.append(pd.Series(data=data[i], index=[i]))
-                _logger.info(f"zone c violation found at index {i}")
-        else:
-            cum_sum = 0
+        # first, look for up-trends
+        pos_dataset = [v for v in diff_data[i:i + 7] if v >= 0]
+        neg_dataset = [v for v in diff_data[i:i + 7] if v <= 0]
 
-        if d != 0:
-            last_sign = d
+        if len(pos_dataset) >= 7 or len(neg_dataset) >= 7:
+            try:
+                violations.append(pd.Series(index=[i+6], data=data[i+6]))
+            except KeyError:
+                break
 
     if len(violations) == 0:
         return pd.Series(dtype="float64")
