@@ -409,6 +409,7 @@ def control_zone_trend(
         if len(pos_dataset) >= 7 or len(neg_dataset) >= 7:
             try:
                 violations.append(pd.Series(index=[i+6], data=data[i+6]))
+                _logger.info(f'trend violation found at index {i+6}')
             except KeyError:
                 break
 
