@@ -8,8 +8,9 @@ from manufacturing.visual import (
     cpk_plot,
     control_chart,
     control_plot,
-    i_mr_chart,
+    x_mr_chart,
     moving_range,
+    xbar_r_chart
 )
 
 
@@ -20,8 +21,9 @@ __all__ = [
     "cpk_plot",
     "control_chart",
     "control_plot",
+    "x_mr_chart",
     "moving_range",
-    "i_mr_chart",
+    "xbar_r_chart",
     "import_csv",
     "import_excel",
     "generate_production_report",
