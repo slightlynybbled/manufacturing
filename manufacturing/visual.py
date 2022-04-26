@@ -243,8 +243,7 @@ def cpk_plot(
 
 
 def control_plot(*args, **kwargs) -> Axis:
-    _logger.warning('control_plot function is depreciated; use "control_chart" isntead')
-
+    _logger.warning('control_plot function is depreciated and will be removed in a future version; use "control_chart" instead')
     return control_chart(*args, **kwargs)
 
 
