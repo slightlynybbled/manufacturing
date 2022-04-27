@@ -1,5 +1,5 @@
 """
-Manual recreation of an I-MR control chart.
+Manual recreation of an Xbar-R control chart.
 """
 import logging
 import matplotlib.pyplot as plt
