@@ -67,8 +67,8 @@ Another useful feature is the zone control visualization.
  - ~~Add use github actions for deployment~~
  - ~~Transition to `poetry`~~
  - ~~Add `I-MR Chart` (see `examples/imr_chart.py`)~~
- - Add `Xbar-R Chart` (subgroups between 2 and 10)
- - Add `Xbar-S Chart` (subgroups of 11 or more)
+ - ~~Add `Xbar-R Chart` (subgroups between 2 and 10)~~
+ - ~~Add `Xbar-S Chart` (subgroups of 11 or more)~~
 
 # Gallery
 
