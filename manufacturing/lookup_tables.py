@@ -147,9 +147,9 @@ def calc_A2(n: int) -> float:
     try:
         d2 = d2_table[n]
     except KeyError:
-        raise ValueError(f'the constant `n` must be less than {len(d2_table)}')
+        raise ValueError(f"the constant `n` must be less than {len(d2_table)}")
     if np.isnan(d2):
-        raise ValueError(f'the constant `n` must be 2 or greater')
+        raise ValueError(f"the constant `n` must be 2 or greater")
     return 3 / (d2 * np.sqrt(n))
 
 
@@ -163,9 +163,9 @@ def calc_A3(n: int) -> float:
     try:
         c4 = c4_table[n]
     except KeyError:
-        raise ValueError(f'the constant `n` must be less than {len(c4_table)}')
+        raise ValueError(f"the constant `n` must be less than {len(c4_table)}")
     if np.isnan(c4):
-        raise ValueError(f'the constant `n` must be 2 or greater')
+        raise ValueError(f"the constant `n` must be 2 or greater")
     return 3 / (c4 * np.sqrt(n))
 
 
@@ -179,11 +179,11 @@ def calc_B3(n: int) -> float:
     try:
         c4 = c4_table[n]
     except KeyError:
-        raise ValueError(f'the constant `n` must be less than {len(c4_table)}')
+        raise ValueError(f"the constant `n` must be less than {len(c4_table)}")
     if np.isnan(c4):
-        raise ValueError(f'the constant `n` must be 2 or greater')
+        raise ValueError(f"the constant `n` must be 2 or greater")
 
-    value = 1 - (3 / c4) * np.sqrt(1-c4**2)
+    value = 1 - (3 / c4) * np.sqrt(1 - c4**2)
     value = max(0.0, value)
     return value
 
@@ -198,11 +198,11 @@ def calc_B4(n: int) -> float:
     try:
         c4 = c4_table[n]
     except KeyError:
-        raise ValueError(f'the constant `n` must be less than {len(c4_table)}')
+        raise ValueError(f"the constant `n` must be less than {len(c4_table)}")
     if np.isnan(c4):
-        raise ValueError(f'the constant `n` must be 2 or greater')
+        raise ValueError(f"the constant `n` must be 2 or greater")
 
-    return 1 + (3 / c4) * np.sqrt(1-c4**2)
+    return 1 + (3 / c4) * np.sqrt(1 - c4**2)
 
 
 def calc_D3(n: int) -> float:
@@ -216,9 +216,9 @@ def calc_D3(n: int) -> float:
         d3 = d3_table[n]
         d2 = d2_table[n]
     except KeyError:
-        raise ValueError(f'the constant `n` must be less than {len(c4_table)}')
+        raise ValueError(f"the constant `n` must be less than {len(c4_table)}")
     if np.isnan(d3):
-        raise ValueError(f'the constant `n` must be 2 or greater')
+        raise ValueError(f"the constant `n` must be 2 or greater")
 
     value = 1 - 3 * d3 / d2
     value = max(0.0, value)
@@ -236,8 +236,8 @@ def calc_D4(n: int) -> float:
         d3 = d3_table[n]
         d2 = d2_table[n]
     except KeyError:
-        raise ValueError(f'the constant `n` must be less than {len(c4_table)}')
+        raise ValueError(f"the constant `n` must be less than {len(c4_table)}")
     if np.isnan(d3):
-        raise ValueError(f'the constant `n` must be 2 or greater')
+        raise ValueError(f"the constant `n` must be 2 or greater")
 
     return 1 + 3 * d3 / d2

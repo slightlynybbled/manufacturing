@@ -33,11 +33,11 @@ _logger = logging.getLogger(__name__)
 
 
 def ppk_plot(
-        data: (List[int], List[float], pd.Series, np.array),
-        upper_specification_limit: (int, float),
-        lower_specification_limit: (int, float),
-        threshold_percent: float = 0.001,
-        ax: Optional[Axis] = None,
+    data: (List[int], List[float], pd.Series, np.array),
+    upper_specification_limit: (int, float),
+    lower_specification_limit: (int, float),
+    threshold_percent: float = 0.001,
+    ax: Optional[Axis] = None,
 ):
     """
     Shows the statistical distribution of the data along with CPK and limits.
@@ -160,12 +160,12 @@ def ppk_plot(
 
 
 def cpk_plot(
-        data: (List[int], List[float], pd.Series, np.array),
-        upper_control_limit: (int, float),
-        lower_control_limit: (int, float),
-        subgroup_size: int = 30,
-        max_subgroups: int = 10,
-        axs: Optional[List[Axis]] = None,
+    data: (List[int], List[float], pd.Series, np.array),
+    upper_control_limit: (int, float),
+    lower_control_limit: (int, float),
+    subgroup_size: int = 30,
+    max_subgroups: int = 10,
+    axs: Optional[List[Axis]] = None,
 ) -> List[Axis]:
     """
     Boxplot the Cpk in subgroups os size `subgroup_size`.
@@ -180,7 +180,7 @@ def cpk_plot(
     """
 
     def chunk(seq, size):
-        return (seq[pos: pos + size] for pos in range(0, len(seq), size))
+        return (seq[pos : pos + size] for pos in range(0, len(seq), size))
 
     data = coerce(data)
 
@@ -195,7 +195,9 @@ def cpk_plot(
     data_subgroups = data_subgroups[::-1]
 
     if axs is None:
-        fig, axs = plt.subplots(1, 2, sharey='all', gridspec_kw={"width_ratios": [4, 1]})
+        fig, axs = plt.subplots(
+            1, 2, sharey="all", gridspec_kw={"width_ratios": [4, 1]}
+        )
 
     ax0, ax1, *_ = axs
 
@@ -258,19 +260,19 @@ def control_plot(*args, **kwargs) -> Axis:
 
 
 def control_chart_base(
-        data: (List[int], List[float], pd.Series, np.array),
-        upper_control_limit: Optional[Union[int, float]] = None,
-        lower_control_limit: Optional[Union[int, float]] = None,
-        highlight_beyond_limits: bool = True,
-        highlight_zone_a: bool = True,
-        highlight_zone_b: bool = True,
-        highlight_zone_c: bool = True,
-        highlight_trend: bool = True,
-        highlight_mixture: bool = False,
-        highlight_stratification: bool = False,
-        highlight_overcontrol: bool = False,
-        max_points: Optional[int] = 60,
-        ax: Optional[Axis] = None,
+    data: (List[int], List[float], pd.Series, np.array),
+    upper_control_limit: Optional[Union[int, float]] = None,
+    lower_control_limit: Optional[Union[int, float]] = None,
+    highlight_beyond_limits: bool = True,
+    highlight_zone_a: bool = True,
+    highlight_zone_b: bool = True,
+    highlight_zone_c: bool = True,
+    highlight_trend: bool = True,
+    highlight_mixture: bool = False,
+    highlight_stratification: bool = False,
+    highlight_overcontrol: bool = False,
+    max_points: Optional[int] = 60,
+    ax: Optional[Axis] = None,
 ) -> Axis:
     """
     Create a control plot based on the input data.
@@ -561,16 +563,16 @@ def control_chart_base(
 
 
 def x_mr_chart(
-        data: (List[int], List[float], pd.Series, np.array),
-        highlight_beyond_limits: bool = True,
-        highlight_zone_a: bool = True,
-        highlight_zone_b: bool = True,
-        highlight_zone_c: bool = True,
-        highlight_trend: bool = True,
-        highlight_mixture: bool = False,
-        highlight_stratification: bool = False,
-        highlight_overcontrol: bool = False,
-        max_points: Optional[int] = 60,
+    data: (List[int], List[float], pd.Series, np.array),
+    highlight_beyond_limits: bool = True,
+    highlight_zone_a: bool = True,
+    highlight_zone_b: bool = True,
+    highlight_zone_c: bool = True,
+    highlight_trend: bool = True,
+    highlight_mixture: bool = False,
+    highlight_stratification: bool = False,
+    highlight_overcontrol: bool = False,
+    max_points: Optional[int] = 60,
 ) -> Figure:
     """
     Create a moving I-MR control plot based on the input data.
@@ -588,7 +590,7 @@ def x_mr_chart(
     :return: an instance of matplotlib.axis.Axis
     """
     data = coerce(data)
-    data = data[-(max_points + 1):]
+    data = data[-(max_points + 1) :]
     diff_data = abs(data.diff())
     diff_data.reset_index(inplace=True, drop=True)
 
@@ -639,16 +641,16 @@ def x_mr_chart(
 
 
 def xbar_r_chart(
-        data: (List[int], List[float], pd.Series, np.array),
-        subgroup_size: int = 4,
-        highlight_beyond_limits: bool = True,
-        highlight_zone_a: bool = True,
-        highlight_zone_b: bool = True,
-        highlight_zone_c: bool = True,
-        highlight_trend: bool = True,
-        highlight_mixture: bool = False,
-        highlight_stratification: bool = False,
-        highlight_overcontrol: bool = False,
+    data: (List[int], List[float], pd.Series, np.array),
+    subgroup_size: int = 4,
+    highlight_beyond_limits: bool = True,
+    highlight_zone_a: bool = True,
+    highlight_zone_b: bool = True,
+    highlight_zone_c: bool = True,
+    highlight_trend: bool = True,
+    highlight_mixture: bool = False,
+    highlight_stratification: bool = False,
+    highlight_overcontrol: bool = False,
 ) -> Figure:
     """
     Create a moving Xbar-R control plot based on the input data.
@@ -742,16 +744,16 @@ def xbar_r_chart(
 
 
 def xbar_s_chart(
-        data: (List[int], List[float], pd.Series, np.array),
-        subgroup_size: int = 12,
-        highlight_beyond_limits: bool = True,
-        highlight_zone_a: bool = True,
-        highlight_zone_b: bool = True,
-        highlight_zone_c: bool = True,
-        highlight_trend: bool = True,
-        highlight_mixture: bool = False,
-        highlight_stratification: bool = False,
-        highlight_overcontrol: bool = False,
+    data: (List[int], List[float], pd.Series, np.array),
+    subgroup_size: int = 12,
+    highlight_beyond_limits: bool = True,
+    highlight_zone_a: bool = True,
+    highlight_zone_b: bool = True,
+    highlight_zone_c: bool = True,
+    highlight_trend: bool = True,
+    highlight_mixture: bool = False,
+    highlight_stratification: bool = False,
+    highlight_overcontrol: bool = False,
 ) -> Figure:
     """
     Create a moving Xbar-S control plot based on the input data.  Recommended for datasets \
@@ -840,15 +842,15 @@ def xbar_s_chart(
 
 
 def control_chart(
-        data: (List[int], List[float], pd.Series, np.array),
-        highlight_beyond_limits: bool = True,
-        highlight_zone_a: bool = True,
-        highlight_zone_b: bool = True,
-        highlight_zone_c: bool = True,
-        highlight_trend: bool = True,
-        highlight_mixture: bool = False,
-        highlight_stratification: bool = False,
-        highlight_overcontrol: bool = False,
+    data: (List[int], List[float], pd.Series, np.array),
+    highlight_beyond_limits: bool = True,
+    highlight_zone_a: bool = True,
+    highlight_zone_b: bool = True,
+    highlight_zone_c: bool = True,
+    highlight_trend: bool = True,
+    highlight_mixture: bool = False,
+    highlight_stratification: bool = False,
+    highlight_overcontrol: bool = False,
 ) -> Figure:
     """
     Automatically selects the most appropriate type of control chart, \
@@ -869,14 +871,14 @@ def control_chart(
     data = coerce(data)
 
     highlight_rules = {
-        'highlight_beyond_limits': highlight_beyond_limits,
-        'highlight_zone_a': highlight_zone_a,
-        'highlight_zone_b': highlight_zone_b,
-        'highlight_zone_c': highlight_zone_c,
-        'highlight_trend': highlight_trend,
-        'highlight_mixture': highlight_mixture,
-        'highlight_stratification': highlight_stratification,
-        'highlight_overcontrol': highlight_overcontrol
+        "highlight_beyond_limits": highlight_beyond_limits,
+        "highlight_zone_a": highlight_zone_a,
+        "highlight_zone_b": highlight_zone_b,
+        "highlight_zone_c": highlight_zone_c,
+        "highlight_trend": highlight_trend,
+        "highlight_mixture": highlight_mixture,
+        "highlight_stratification": highlight_stratification,
+        "highlight_overcontrol": highlight_overcontrol,
     }
 
     if len(data) < 60:
@@ -890,7 +892,9 @@ def control_chart(
     max_subgroup_size = len(c4_table)
     max_data_points = max_subgroup_size * 60
     if len(data) > max_data_points:
-        _logger.warning(f'data exceeds the size at which it is easily visualized; truncating to {max_data_points} rows grouped by {max_subgroup_size}')
+        _logger.warning(
+            f"data exceeds the size at which it is easily visualized; truncating to {max_data_points} rows grouped by {max_subgroup_size}"
+        )
         data = data[-max_data_points:]
 
     subgroup_size = len(data) // 60
