@@ -598,7 +598,7 @@ def moving_range(
     if ax is None:
         fig, ax = plt.subplots()
 
-    control_plot(
+    control_chart(
         diff_data,
         highlight_beyond_limits=highlight_beyond_limits,
         highlight_zone_a=highlight_zone_a,
@@ -646,7 +646,7 @@ def x_mr_chart(
     diff_data = data.diff()
     diff_data.reset_index(inplace=True, drop=True)
 
-    # create an I-MR chart using a combination of control_plot and moving_range
+    # create an I-MR chart using a combination of control_chart and moving_range
     fig, axs = plt.subplots(2, 1, figsize=(8, 6), sharex="all")
 
     control_chart(
