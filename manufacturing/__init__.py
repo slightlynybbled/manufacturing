@@ -6,7 +6,7 @@ from manufacturing.report import generate_production_report
 from manufacturing.visual import (
     ppk_plot,
     cpk_plot,
-    control_chart,
+    control_chart_base,
     control_plot,
     x_mr_chart,
     moving_range,
@@ -20,7 +20,7 @@ __all__ = [
     "calc_ppk",
     "ppk_plot",
     "cpk_plot",
-    "control_chart",
+    "control_chart_base",
     "control_plot",
     "x_mr_chart",
     "moving_range",

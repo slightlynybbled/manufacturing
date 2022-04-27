@@ -22,11 +22,10 @@ from manufacturing.analysis import (
 from manufacturing.lookup_tables import (
     c4_table,
     d2_table,
-    A2_table,
-    B3_table,
-    B4_table,
-    D3_table,
-    D4_table,
+    calc_B3,
+    calc_B4,
+    calc_D3,
+    calc_D4,
 )
 from manufacturing.util import coerce
 
@@ -255,10 +254,10 @@ def control_plot(*args, **kwargs) -> Axis:
     _logger.warning(
         'control_plot function is depreciated and will be removed in a future version; use "control_chart" instead'
     )
-    return control_chart(*args, **kwargs)
+    return control_chart_base(*args, **kwargs)
 
 
-def control_chart(
+def control_chart_base(
     data: (List[int], List[float], pd.Series, np.array),
     upper_control_limit: Optional[Union[int, float]] = None,
     lower_control_limit: Optional[Union[int, float]] = None,
@@ -345,7 +344,7 @@ def control_chart(
         zone_c_lower_limit,
         zone_b_upper_limit,
         zone_b_lower_limit,
-        mean,
+        spec_center,
     ]
     for edge in edges:
         ax.text(right_plus, edge, s=f"{edge:.3g}", va="center", color=text_color)
@@ -598,7 +597,7 @@ def moving_range(
     if ax is None:
         fig, ax = plt.subplots()
 
-    control_chart(
+    control_chart_base(
         diff_data,
         highlight_beyond_limits=highlight_beyond_limits,
         highlight_zone_a=highlight_zone_a,
@@ -643,13 +642,13 @@ def x_mr_chart(
     """
     data = coerce(data)
     data = data[-(max_points + 1) :]
-    diff_data = data.diff()
+    diff_data = abs(data.diff())
     diff_data.reset_index(inplace=True, drop=True)
 
     # create an I-MR chart using a combination of control_chart and moving_range
     fig, axs = plt.subplots(2, 1, figsize=(8, 6), sharex="all")
 
-    control_chart(
+    control_chart_base(
         data,
         highlight_beyond_limits=highlight_beyond_limits,
         highlight_zone_a=highlight_zone_a,
@@ -662,8 +661,17 @@ def x_mr_chart(
         ax=axs[0],
     )
 
-    moving_range(
-        data,
+    # UCL = 1 + 3(d3 / d2) * mRbar
+    #     = D4 * mRbar
+    #     = 3.2665
+    mRbar = diff_data.mean()
+    ucl = 1 + 3 * (0.8525 / 1.1284) * mRbar
+    lcl = 0.0
+    print(ucl)
+    control_chart_base(
+        diff_data,
+        upper_control_limit=ucl,
+        lower_control_limit=lcl,
         highlight_beyond_limits=highlight_beyond_limits,
         highlight_zone_a=highlight_zone_a,
         highlight_zone_b=highlight_zone_b,
@@ -743,11 +751,11 @@ def xbar_r_chart(
     # using studentized control limits
     dev = (3 * wd) / np.sqrt(n)
     lcl_x, ucl_x = x_bar_bar - dev, x_bar_bar + dev
-    lcl_r, ucl_r = D3_table[n] * r_bar, D4_table[n] * r_bar
+    lcl_r, ucl_r = calc_D3(n) * r_bar, calc_D4(n) * r_bar
 
     fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
 
-    control_chart(
+    control_chart_base(
         x_bars,
         lower_control_limit=lcl_x,
         upper_control_limit=ucl_x,
@@ -762,7 +770,7 @@ def xbar_r_chart(
         ax=axs[0],
     )
 
-    control_chart(
+    control_chart_base(
         ranges,
         lower_control_limit=lcl_r,
         upper_control_limit=ucl_r,
@@ -839,11 +847,11 @@ def xbar_s_chart(
     wd = s_bar / c4_table[n]
     dev = (3 * wd) / np.sqrt(n)
     lcl_x, ucl_x = x_bar_bar - dev, x_bar_bar + dev
-    lcl_s, ucl_s = s_bar * B3_table[n], s_bar * B4_table[n]
+    lcl_s, ucl_s = s_bar * calc_B3(n), s_bar * calc_B4(n)
 
     fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
 
-    control_chart(
+    control_chart_base(
         x_bars,
         lower_control_limit=lcl_x,
         upper_control_limit=ucl_x,
@@ -858,7 +866,7 @@ def xbar_s_chart(
         ax=axs[0],
     )
 
-    control_chart(
+    control_chart_base(
         std_devs,
         lower_control_limit=lcl_s,
         upper_control_limit=ucl_s,

@@ -49,6 +49,25 @@ d2_table = [
     2.97,
     3.0775,
     3.1729,
+    3.2585,
+    3.336,
+    3.4068,
+    3.4718,
+    3.532,
+    3.5879,
+    3.6401,
+    3.689,
+    3.7349,
+    3.7783,
+    3.8194,
+    3.8583,
+    3.8953,
+    3.9306,
+    3.9643,
+    3.9965,
+    4.0274,
+    4.057,
+    4.0855,
 ]
 d3_table = [
     np.nan,
@@ -63,132 +82,162 @@ d3_table = [
     0.8078,
     0.7971,
     0.7873,
+    0.7785,
+    0.7704,
+    0.763,
+    0.7562,
+    0.7499,
+    0.7441,
+    0.7386,
+    0.7335,
+    0.7287,
+    0.7242,
+    0.7199,
+    0.7159,
+    0.7121,
+    0.7084,
+    0.705,
+    0.7017,
+    0.6986,
+    0.6955,
+    0.6927,
 ]
-A2_table = [
+d4_table = [
     np.nan,
     np.nan,
-    1.88,
-    1.0233,
-    0.7286,
-    0.5768,
-    0.4832,
-    0.4193,
-    0.3725,
-    0.3367,
-    0.3083,
-    0.2851,
+    0.9539,
+    1.5878,
+    1.9783,
+    2.2569,
+    2.4717,
+    2.6455,
+    2.7908,
+    2.9154,
+    3.0242,
+    3.1205,
+    3.2069,
+    3.2849,
+    3.3562,
+    3.4217,
+    3.4821,
+    3.5383,
+    3.5907,
+    3.6398,
+    3.6859,
+    3.7294,
+    3.7706,
+    3.8096,
+    3.8468,
+    3.8822,
+    3.9159,
+    3.9482,
+    3.9791,
+    4.0088,
+    4.0374,
 ]
-A3_table = [
-    np.nan,
-    np.nan,
-    2.6587,
-    1.9544,
-    1.6281,
-    1.4273,
-    1.2871,
-    1.1819,
-    1.0991,
-    1.0317,
-    0.9754,
-    0.9274,
-    0.8859,
-    0.8495,
-    0.8173,
-    0.7885,
-    0.7626,
-    0.7391,
-    0.7176,
-    0.6979,
-    0.6797,
-    0.6629,
-    0.6473,
-    0.6327,
-    0.6191,
-    0.6063,
-    0.5943,
-    0.5829,
-    0.5722,
-    0.5621,
-    0.5525,
-]
-B3_table = [
-    np.nan,
-    np.nan,
-    0,
-    0,
-    0,
-    0,
-    0.0304,
-    0.1177,
-    0.1851,
-    0.2391,
-    0.2837,
-    0.3213,
-    0.3535,
-    0.3816,
-    0.4062,
-    0.4282,
-    0.4479,
-    0.4657,
-    0.4818,
-    0.4966,
-    0.5102,
-    0.5228,
-    0.5344,
-    0.5452,
-    0.5553,
-    0.5648,
-    0.5737,
-    0.582,
-    0.5899,
-    0.5974,
-    0.6044,
-]
-B4_table = [
-    np.nan,
-    np.nan,
-    3.2665,
-    2.5682,
-    2.266,
-    2.089,
-    1.9696,
-    1.8823,
-    1.8149,
-    1.7609,
-    1.7163,
-    1.6787,
-    1.6465,
-    1.6184,
-    1.5938,
-    1.5718,
-    1.5521,
-    1.5343,
-    1.5182,
-    1.5034,
-    1.4898,
-    1.4772,
-    1.4656,
-    1.4548,
-    1.4447,
-    1.4352,
-    1.4263,
-    1.418,
-    1.4101,
-    1.4026,
-    1.3956,
-]
-D3_table = [np.nan, np.nan, 0, 0, 0, 0, 0, 0.0757, 0.1362, 0.184, 0.223, 0.2556]
-D4_table = [
-    np.nan,
-    np.nan,
-    3.2665,
-    2.5746,
-    2.2821,
-    2.1145,
-    2.0038,
-    1.9243,
-    1.8638,
-    1.816,
-    1.777,
-    1.7444,
-]
+
+
+def calc_A2(n: int) -> float:
+    """
+    Calculate the A2 constant for a given value `n`
+
+    :param n: the number of samples in each group
+    :return: a floating point representation of A2
+    """
+    try:
+        d2 = d2_table[n]
+    except KeyError:
+        raise ValueError(f'the constant `n` must be less than {len(d2_table)}')
+    if np.isnan(d2):
+        raise ValueError(f'the constant `n` must be 2 or greater')
+    return 3 / (d2 * np.sqrt(n))
+
+
+def calc_A3(n: int) -> float:
+    """
+    Calculate the A3 constant for a given value `n`
+
+    :param n: the number of samples in each group
+    :return: a floating point representation of A3
+    """
+    try:
+        c4 = c4_table[n]
+    except KeyError:
+        raise ValueError(f'the constant `n` must be less than {len(c4_table)}')
+    if np.isnan(c4):
+        raise ValueError(f'the constant `n` must be 2 or greater')
+    return 3 / (c4 * np.sqrt(n))
+
+
+def calc_B3(n: int) -> float:
+    """
+    Calculate the B3 constant for a given value `n`
+
+    :param n: the number of samples in each group
+    :return: a floating point representation of B3
+    """
+    try:
+        c4 = c4_table[n]
+    except KeyError:
+        raise ValueError(f'the constant `n` must be less than {len(c4_table)}')
+    if np.isnan(c4):
+        raise ValueError(f'the constant `n` must be 2 or greater')
+
+    value = 1 - (3 / c4) * np.sqrt(1-c4**2)
+    value = max(0.0, value)
+    return value
+
+
+def calc_B4(n: int) -> float:
+    """
+    Calculate the B4 constant for a given value `n`
+
+    :param n: the number of samples in each group
+    :return: a floating point representation of B4
+    """
+    try:
+        c4 = c4_table[n]
+    except KeyError:
+        raise ValueError(f'the constant `n` must be less than {len(c4_table)}')
+    if np.isnan(c4):
+        raise ValueError(f'the constant `n` must be 2 or greater')
+
+    return 1 + (3 / c4) * np.sqrt(1-c4**2)
+
+
+def calc_D3(n: int) -> float:
+    """
+    Calculate the D3 constant for a given value `n`
+
+    :param n: the number of samples in each group
+    :return: a floating point representation of D3
+    """
+    try:
+        d3 = d3_table[n]
+        d2 = d2_table[n]
+    except KeyError:
+        raise ValueError(f'the constant `n` must be less than {len(c4_table)}')
+    if np.isnan(d3):
+        raise ValueError(f'the constant `n` must be 2 or greater')
+
+    value = 1 - 3 * d3 / d2
+    value = max(0.0, value)
+    return value
+
+
+def calc_D4(n: int) -> float:
+    """
+    Calculate the D4 constant for a given value `n`
+
+    :param n: the number of samples in each group
+    :return: a floating point representation of D4
+    """
+    try:
+        d3 = d3_table[n]
+        d2 = d2_table[n]
+    except KeyError:
+        raise ValueError(f'the constant `n` must be less than {len(c4_table)}')
+    if np.isnan(d3):
+        raise ValueError(f'the constant `n` must be 2 or greater')
+
+    return 1 + 3 * d3 / d2
