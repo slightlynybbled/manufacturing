@@ -47,7 +47,7 @@ Cpk visual information.  First, get your data into a `list`, `numpy.array`, or
 `pandas.Series`; then supply that data, along with the `lower_control_limit` and 
 `upper_control_limit` into the `ppk_plot()` function.
 
-    manufacturing.ppk_plot(data, lower_control_limit=-2, upper_control_limit=2)
+    manufacturing.ppk_plot(data, lower_specification_limit=-2, upper_specification_limit=2)
     
 ![Screenshot](images/example3.png)
 
@@ -60,26 +60,34 @@ Another useful feature is the zone control visualization.
 
     manufacturing.control_chart(data)
 
+There are X-MR charts, Xbar-R charts, and Xbar-S charts available as well.  If you call the 
+`control_chart()` function, the appropriate sample size will be selected and data grouped as
+the dataset requires.  However, if you wish to call a specific type of control chart, use
+
+ - `x_mr_chart`
+ - `xbar_r_chart`
+ - `xbar_s_chart`
+
 # RoadMap
 
-## Continuous Integration
+Items marked out were added most recently.
 
+ - ...
  - ~~Add use github actions for deployment~~
- - ~~Transition to `poetry`~~
+ - ~~Transition to `poetry` for releases~~
  - ~~Add `I-MR Chart` (see `examples/imr_chart.py`)~~
  - ~~Add `Xbar-R Chart` (subgroups between 2 and 10)~~
  - ~~Add `Xbar-S Chart` (subgroups of 11 or more)~~
+ - Back with testing
 
 # Gallery
 
-Currently, no distinction is made between Ppk and Cpk, so the entire chart shows the Cpk.
-
 ![Ppk example](images/ppk-chart-example.png)
 
-Some of the data for the zone control chard was manipulated in order to display the results.
-Note that, if a phenomenon is not present within the data, then it will not be plotted at
-all.
+![Cpk example](images/cpk-by-subgroups.png)
 
-![Zone Control example](images/control-chart-example.png)
+![X-MR Chart](images/xmr-chart.png)
 
-![Cpk example](images/cpk-by-subgroups-1.png)
+![Xbar-R Chart](images/xbar-r-chart.png)
+
+![Xbar-S Chart](images/xbar-s-chart.png)

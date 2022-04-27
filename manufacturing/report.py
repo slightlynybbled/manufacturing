@@ -10,7 +10,7 @@ import pandas as pd
 
 from manufacturing.analysis import normality_test, suggest_control_limits
 from manufacturing.data_import import parse_col_for_limits
-from manufacturing.visual import ppk_plot, cpk_plot, control_plot
+from manufacturing.visual import ppk_plot, cpk_plot, control_chart
 
 _logger = logging.getLogger(__name__)
 
@@ -95,9 +95,8 @@ def generate_production_report(
         text += f"![Cpk Plot: {fig_name}]({plot_name.name})\n\n"
 
         # generate zone control plot
-        fig, ax = plt.subplots(1, 1)
-        control_plot(df[c], ax=ax)
-        plot_name = build_path / f"zone_control_plot_{fig_name}.png"
+        fig = control_chart(df[c])
+        plot_name = build_path / f"zone_control_chart_{fig_name}.png"
         fig.savefig(plot_name)
         text += f"![Zone Control Plot: {fig_name}]({plot_name.name})\n\n"
 
