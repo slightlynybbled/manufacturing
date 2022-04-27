@@ -277,8 +277,8 @@ def control_chart(
     Create a control plot based on the input data.
 
     :param data: a list, pandas.Series, or numpy.array representing the data set
-    :param upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit
-    :param lower_control_limit: an optional parameter which, when present, will override the internally caluclated lower control limit
+    :param upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit; note that this is NOT the specification limit!
+    :param lower_control_limit: an optional parameter which, when present, will override the internally caluclated lower control limit; note that this is NOT the specification limit!
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
