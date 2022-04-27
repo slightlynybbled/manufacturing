@@ -403,13 +403,13 @@ def control_zone_trend(
     violations = []
     for i, d in enumerate(diff_data):
         # first, look for up-trends
-        pos_dataset = [v for v in diff_data[i:i + 7] if v >= 0]
-        neg_dataset = [v for v in diff_data[i:i + 7] if v <= 0]
+        pos_dataset = [v for v in diff_data[i : i + 7] if v >= 0]
+        neg_dataset = [v for v in diff_data[i : i + 7] if v <= 0]
 
         if len(pos_dataset) >= 7 or len(neg_dataset) >= 7:
             try:
-                violations.append(pd.Series(index=[i+6], data=data[i+6]))
-                _logger.info(f'trend violation found at index {i+6}')
+                violations.append(pd.Series(index=[i + 6], data=data[i + 6]))
+                _logger.info(f"trend violation found at index {i+6}")
             except KeyError:
                 break
 

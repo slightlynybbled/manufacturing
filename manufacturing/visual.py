@@ -19,8 +19,15 @@ from manufacturing.analysis import (
     control_zone_stratification,
     control_zone_overcontrol,
 )
-from manufacturing.lookup_tables import c4_table, d2_table, \
-    A2_table, B3_table, B4_table, D3_table, D4_table
+from manufacturing.lookup_tables import (
+    c4_table,
+    d2_table,
+    A2_table,
+    B3_table,
+    B4_table,
+    D3_table,
+    D4_table,
+)
 from manufacturing.util import coerce
 
 _logger = logging.getLogger(__name__)
@@ -245,7 +252,9 @@ def cpk_plot(
 
 
 def control_plot(*args, **kwargs) -> Axis:
-    _logger.warning('control_plot function is depreciated and will be removed in a future version; use "control_chart" instead')
+    _logger.warning(
+        'control_plot function is depreciated and will be removed in a future version; use "control_chart" instead'
+    )
     return control_chart(*args, **kwargs)
 
 
@@ -296,7 +305,7 @@ def control_chart(
     max_data = median + (iqr * 2.5)
 
     # identify data that is way outside of normal
-    bad_data = data[~((data-data.mean()).abs() < 3*data.std())]
+    bad_data = data[~((data - data.mean()).abs() < 3 * data.std())]
     for i, v in bad_data.iteritems():
         if v > max_data or v < min_data:
             data.iloc[i] = np.nan
@@ -342,17 +351,25 @@ def control_chart(
         ax.text(right_plus, edge, s=f"{edge:.3g}", va="center", color=text_color)
 
     texts = [
-        {'y': upper_control_limit, 's': f"UCL={upper_control_limit:.3g}", 'color': 'red'},
-        {'y': lower_control_limit, 's': f"LCL={lower_control_limit:.3g}", 'color': 'red'},
-        {'y': (spec_center + zone_c_upper_limit) / 2, 's': 'Zone C'},
-        {'y': (spec_center + zone_c_lower_limit) / 2, 's': 'Zone C'},
-        {'y': (zone_b_upper_limit + zone_c_upper_limit) / 2, 's': 'Zone B'},
-        {'y': (zone_b_lower_limit + zone_c_lower_limit) / 2, 's': 'Zone B'},
-        {'y': (zone_a_upper_limit + zone_b_upper_limit) / 2, 's': 'Zone A'},
-        {'y': (zone_a_lower_limit + zone_b_lower_limit) / 2, 's': 'Zone A'},
+        {
+            "y": upper_control_limit,
+            "s": f"UCL={upper_control_limit:.3g}",
+            "color": "red",
+        },
+        {
+            "y": lower_control_limit,
+            "s": f"LCL={lower_control_limit:.3g}",
+            "color": "red",
+        },
+        {"y": (spec_center + zone_c_upper_limit) / 2, "s": "Zone C"},
+        {"y": (spec_center + zone_c_lower_limit) / 2, "s": "Zone C"},
+        {"y": (zone_b_upper_limit + zone_c_upper_limit) / 2, "s": "Zone B"},
+        {"y": (zone_b_lower_limit + zone_c_lower_limit) / 2, "s": "Zone B"},
+        {"y": (zone_a_upper_limit + zone_b_upper_limit) / 2, "s": "Zone A"},
+        {"y": (zone_a_lower_limit + zone_b_lower_limit) / 2, "s": "Zone A"},
     ]
     for t in texts:
-        ax.text(x=right_plus, va='center', **t)
+        ax.text(x=right_plus, va="center", **t)
 
     diameter = 30
     diameter_inc = 35
@@ -369,10 +386,10 @@ def control_chart(
                 beyond_limits_violations.values,
                 s=diameter,
                 linewidth=1,
-                color='none',
-                marker='o',
+                color="none",
+                marker="o",
                 label="beyond limits",
-                edgecolor='red',
+                edgecolor="red",
                 zorder=zorder,
             )
             diameter += diameter_inc
@@ -390,8 +407,8 @@ def control_chart(
                 zone_a_violations.values,
                 s=diameter,
                 linewidth=1,
-                color='none',
-                marker='o',
+                color="none",
+                marker="o",
                 label="zone a",
                 edgecolor="orange",
                 zorder=zorder,
@@ -411,7 +428,7 @@ def control_chart(
                 zone_b_violations.values,
                 s=diameter,
                 linewidth=1,
-                color='none',
+                color="none",
                 label="zone b",
                 edgecolor="blue",
                 zorder=zorder,
@@ -431,8 +448,8 @@ def control_chart(
                 zone_c_violations.values,
                 s=diameter,
                 linewidth=1,
-                color='none',
-                marker='o',
+                color="none",
+                marker="o",
                 label="zone b",
                 edgecolor="green",
                 zorder=zorder,
@@ -448,8 +465,8 @@ def control_chart(
                 zone_trend_violations.values,
                 s=diameter,
                 linewidth=1,
-                color='none',
-                marker='o',
+                color="none",
+                marker="o",
                 label="trend",
                 edgecolor="purple",
                 zorder=zorder,
@@ -469,8 +486,8 @@ def control_chart(
                 zone_mixture_violations.values,
                 s=diameter,
                 linewidth=1,
-                color='none',
-                marker='o',
+                color="none",
+                marker="o",
                 label="mixture",
                 edgecolor="brown",
                 zorder=zorder,
@@ -490,8 +507,8 @@ def control_chart(
                 zone_stratification_violations.values,
                 s=diameter,
                 linewidth=1,
-                color='none',
-                marker='o',
+                color="none",
+                marker="o",
                 label="mixture",
                 edgecolor="orange",
                 zorder=zorder,
@@ -511,8 +528,8 @@ def control_chart(
                 zone_overcontrol_violations.values,
                 s=diameter,
                 linewidth=1,
-                color='none',
-                marker='o',
+                color="none",
+                marker="o",
                 label="mixture",
                 edgecolor="blue",
                 zorder=zorder,
@@ -520,11 +537,11 @@ def control_chart(
             diameter += diameter_inc
             zorder -= 1
 
-    min_y = min(lower_control_limit-iqr*0.25, mean - iqr)
-    max_y = max(upper_control_limit+iqr*0.25, mean + iqr)
+    min_y = min(lower_control_limit - iqr * 0.25, mean - iqr)
+    max_y = max(upper_control_limit + iqr * 0.25, mean + iqr)
     ax.set_ylim(bottom=min_y, top=max_y)
 
-    ax.legend(loc='lower left')
+    ax.legend(loc="lower left")
 
     fig = plt.gcf()
     fig.tight_layout()
@@ -532,10 +549,14 @@ def control_chart(
     # add background bands
     y_lower, y_upper = ax.get_ylim()
     alpha = 0.2
-    ax.axhspan(y_upper, zone_a_upper_limit, color='red', alpha=alpha, zorder=-20)
-    ax.axhspan(zone_c_upper_limit, zone_b_upper_limit, color='gray', alpha=alpha, zorder=-20)
-    ax.axhspan(zone_c_lower_limit, zone_b_lower_limit, color='gray', alpha=alpha, zorder=-20)
-    ax.axhspan(y_lower, zone_a_lower_limit, color='red', alpha=alpha, zorder=-20)
+    ax.axhspan(y_upper, zone_a_upper_limit, color="red", alpha=alpha, zorder=-20)
+    ax.axhspan(
+        zone_c_upper_limit, zone_b_upper_limit, color="gray", alpha=alpha, zorder=-20
+    )
+    ax.axhspan(
+        zone_c_lower_limit, zone_b_lower_limit, color="gray", alpha=alpha, zorder=-20
+    )
+    ax.axhspan(y_lower, zone_a_lower_limit, color="red", alpha=alpha, zorder=-20)
 
     return ax
 
@@ -626,7 +647,7 @@ def x_mr_chart(
     diff_data.reset_index(inplace=True, drop=True)
 
     # create an I-MR chart using a combination of control_plot and moving_range
-    fig, axs = plt.subplots(2, 1, figsize=(8, 6), sharex='all')
+    fig, axs = plt.subplots(2, 1, figsize=(8, 6), sharex="all")
 
     control_chart(
         data,
@@ -638,7 +659,8 @@ def x_mr_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
-        ax=axs[0])
+        ax=axs[0],
+    )
 
     moving_range(
         data,
@@ -650,11 +672,12 @@ def x_mr_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
-        ax=axs[1])
+        ax=axs[1],
+    )
 
-    axs[0].set_title('Individual')
-    axs[1].set_title('Moving Range')
-    fig.suptitle('X-MR Chart')
+    axs[0].set_title("Individual")
+    axs[1].set_title("Moving Range")
+    fig.suptitle("X-MR Chart")
 
     fig.tight_layout()
 
@@ -662,16 +685,17 @@ def x_mr_chart(
 
 
 def xbar_r_chart(
-        data: (List[int], List[float], pd.Series, np.array),
-        subgroup_size: int = 4,
-        highlight_beyond_limits: bool = True,
-        highlight_zone_a: bool = True,
-        highlight_zone_b: bool = True,
-        highlight_zone_c: bool = True,
-        highlight_trend: bool = True,
-        highlight_mixture: bool = False,
-        highlight_stratification: bool = False,
-        highlight_overcontrol: bool = False) -> Figure:
+    data: (List[int], List[float], pd.Series, np.array),
+    subgroup_size: int = 4,
+    highlight_beyond_limits: bool = True,
+    highlight_zone_a: bool = True,
+    highlight_zone_b: bool = True,
+    highlight_zone_c: bool = True,
+    highlight_trend: bool = True,
+    highlight_mixture: bool = False,
+    highlight_stratification: bool = False,
+    highlight_overcontrol: bool = False,
+) -> Figure:
     """
     Create a moving Xbar-R control plot based on the input data.
 
@@ -687,9 +711,13 @@ def xbar_r_chart(
     :return: an instance of matplotlib.figure.Figure
     """
     if subgroup_size < 2:
-        raise ValueError('xbar_r_chart is recommended for subgroup sizes greater than 1')
+        raise ValueError(
+            "xbar_r_chart is recommended for subgroup sizes greater than 1"
+        )
     elif subgroup_size > 11:
-        raise ValueError('xbar_r_chart is recommended for subgroup sizes of less than 11')
+        raise ValueError(
+            "xbar_r_chart is recommended for subgroup sizes of less than 11"
+        )
 
     # determine how many arrays are in the data
     k = len(data) // subgroup_size
@@ -717,7 +745,7 @@ def xbar_r_chart(
     lcl_x, ucl_x = x_bar_bar - dev, x_bar_bar + dev
     lcl_r, ucl_r = D3_table[n] * r_bar, D4_table[n] * r_bar
 
-    fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex='all')
+    fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
 
     control_chart(
         x_bars,
@@ -731,7 +759,8 @@ def xbar_r_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
-        ax=axs[0])
+        ax=axs[0],
+    )
 
     control_chart(
         ranges,
@@ -745,11 +774,12 @@ def xbar_r_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
-        ax=axs[1])
+        ax=axs[1],
+    )
 
-    axs[0].set_title('Group Averages')
-    axs[1].set_title('Group Ranges')
-    fig.suptitle(r'$\bar{X}-R$ Chart, n=' + f'{n}')
+    axs[0].set_title("Group Averages")
+    axs[1].set_title("Group Ranges")
+    fig.suptitle(r"$\bar{X}-R$ Chart, n=" + f"{n}")
 
     fig.tight_layout()
 
@@ -766,7 +796,7 @@ def xbar_s_chart(
     highlight_trend: bool = True,
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
-    highlight_overcontrol: bool = False
+    highlight_overcontrol: bool = False,
 ) -> Figure:
     """
     Create a moving Xbar-S control plot based on the input data.
@@ -783,8 +813,10 @@ def xbar_s_chart(
     :return: an instance of matplotlib.figure.Figure
     """
     if subgroup_size < 11:
-        raise ValueError('xbar_r_chart or x_mr_chart is recommended for '
-                         'subgroup sizes less than 11')
+        raise ValueError(
+            "xbar_r_chart or x_mr_chart is recommended for "
+            "subgroup sizes less than 11"
+        )
 
     # determine how many arrays are in the data
     k = len(data) // subgroup_size
@@ -802,14 +834,14 @@ def xbar_s_chart(
 
     n = subgroup_size
     x_bar_bar = sum(x_bars) / k  # average of averages (centerline of chart)
-    s_bar = sum(std_devs) / k    # average std dev
+    s_bar = sum(std_devs) / k  # average std dev
 
     wd = s_bar / c4_table[n]
     dev = (3 * wd) / np.sqrt(n)
     lcl_x, ucl_x = x_bar_bar - dev, x_bar_bar + dev
     lcl_s, ucl_s = s_bar * B3_table[n], s_bar * B4_table[n]
 
-    fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex='all')
+    fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
 
     control_chart(
         x_bars,
@@ -823,7 +855,8 @@ def xbar_s_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
-        ax=axs[0])
+        ax=axs[0],
+    )
 
     control_chart(
         std_devs,
@@ -837,11 +870,12 @@ def xbar_s_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
-        ax=axs[1])
+        ax=axs[1],
+    )
 
-    axs[0].set_title('Group Averages')
-    axs[1].set_title('Group Standard Deviations')
-    fig.suptitle(r'$\bar{X}-S$ Chart, n=' + f'{n}')
+    axs[0].set_title("Group Averages")
+    axs[1].set_title("Group Standard Deviations")
+    fig.suptitle(r"$\bar{X}-S$ Chart, n=" + f"{n}")
 
     fig.tight_layout()
 
