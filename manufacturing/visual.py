@@ -19,7 +19,8 @@ from manufacturing.analysis import (
     control_zone_stratification,
     control_zone_overcontrol,
 )
-from manufacturing.lookup_tables import d2_table, A2_table, D3_table, D4_table
+from manufacturing.lookup_tables import c4_table, d2_table, \
+    A2_table, B3_table, B4_table, D3_table, D4_table
 from manufacturing.util import coerce
 
 _logger = logging.getLogger(__name__)
@@ -617,7 +618,6 @@ def x_mr_chart(
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
     :param max_points: the maximum number of points to display ('None' to display all)
-    :param ax: an instance of matplotlib.axis.Axis
     :return: an instance of matplotlib.axis.Axis
     """
     data = coerce(data)
@@ -672,6 +672,20 @@ def xbar_r_chart(
         highlight_mixture: bool = False,
         highlight_stratification: bool = False,
         highlight_overcontrol: bool = False) -> Figure:
+    """
+    Create a moving Xbar-R control plot based on the input data.
+
+    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param highlight_beyond_limits: True if points beyond limits are to be highlighted
+    :param highlight_zone_a: True if points that are zone A violations are to be highlighted
+    :param highlight_zone_b: True if points that are zone B violations are to be highlighted
+    :param highlight_zone_c: True if points that are zone C violations are to be highlighted
+    :param highlight_trend: True if points that are trend violations are to be highlighted
+    :param highlight_mixture: True if points that are mixture violations are to be highlighted
+    :param highlight_stratification: True if points that are stratification violations are to be highlighted
+    :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :return: an instance of matplotlib.figure.Figure
+    """
     if subgroup_size < 2:
         raise ValueError('xbar_r_chart is recommended for subgroup sizes greater than 1')
     elif subgroup_size > 11:
@@ -693,22 +707,17 @@ def xbar_r_chart(
 
     n = subgroup_size
 
-    # calculating values for the x chart
+    # calculating values Xbarbar and Rbar
     x_bar_bar = sum(x_bars) / k  # average of averages (centerline of chart)
     r_bar = sum(ranges) / k
     wd = r_bar / d2_table[n]  # calculate within deviation: Wd = R_bar / d2n
 
     # using studentized control limits
-    # lcl_x = x_bar_bar - (3 * wd) / np.sqrt(n)
-    # ucl_x = x_bar_bar + (3 * wd) / np.sqrt(n)
     dev = (3 * wd) / np.sqrt(n)
     lcl_x, ucl_x = x_bar_bar - dev, x_bar_bar + dev
     lcl_r, ucl_r = D3_table[n] * r_bar, D4_table[n] * r_bar
 
     fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex='all')
-
-    axs[0].plot(x_bars)
-    axs[1].plot(ranges)
 
     control_chart(
         x_bars,
@@ -739,8 +748,100 @@ def xbar_r_chart(
         ax=axs[1])
 
     axs[0].set_title('Group Averages')
-    axs[1].set_title('Group Moving Range')
+    axs[1].set_title('Group Ranges')
     fig.suptitle(r'$\bar{X}-R$ Chart, n=' + f'{n}')
+
+    fig.tight_layout()
+
+    return fig
+
+
+def xbar_s_chart(
+    data: (List[int], List[float], pd.Series, np.array),
+    subgroup_size: int = 12,
+    highlight_beyond_limits: bool = True,
+    highlight_zone_a: bool = True,
+    highlight_zone_b: bool = True,
+    highlight_zone_c: bool = True,
+    highlight_trend: bool = True,
+    highlight_mixture: bool = False,
+    highlight_stratification: bool = False,
+    highlight_overcontrol: bool = False
+) -> Figure:
+    """
+    Create a moving Xbar-S control plot based on the input data.
+
+    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param highlight_beyond_limits: True if points beyond limits are to be highlighted
+    :param highlight_zone_a: True if points that are zone A violations are to be highlighted
+    :param highlight_zone_b: True if points that are zone B violations are to be highlighted
+    :param highlight_zone_c: True if points that are zone C violations are to be highlighted
+    :param highlight_trend: True if points that are trend violations are to be highlighted
+    :param highlight_mixture: True if points that are mixture violations are to be highlighted
+    :param highlight_stratification: True if points that are stratification violations are to be highlighted
+    :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :return: an instance of matplotlib.figure.Figure
+    """
+    if subgroup_size < 11:
+        raise ValueError('xbar_r_chart or x_mr_chart is recommended for '
+                         'subgroup sizes less than 11')
+
+    # determine how many arrays are in the data
+    k = len(data) // subgroup_size
+
+    # split into 'n' chunks
+    x_bars = []
+    std_devs = []
+    groups = np.array_split(data.to_numpy(), k, axis=0)
+    for a in groups:
+        # calculate sample average "Xbar"
+        x_bars.append(a.mean())
+
+        # calculate sample range "R"
+        std_devs.append(a.std())
+
+    n = subgroup_size
+    x_bar_bar = sum(x_bars) / k  # average of averages (centerline of chart)
+    s_bar = sum(std_devs) / k    # average std dev
+
+    wd = s_bar / c4_table[n]
+    dev = (3 * wd) / np.sqrt(n)
+    lcl_x, ucl_x = x_bar_bar - dev, x_bar_bar + dev
+    lcl_s, ucl_s = s_bar * B3_table[n], s_bar * B4_table[n]
+
+    fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex='all')
+
+    control_chart(
+        x_bars,
+        lower_control_limit=lcl_x,
+        upper_control_limit=ucl_x,
+        highlight_beyond_limits=highlight_beyond_limits,
+        highlight_zone_a=highlight_zone_a,
+        highlight_zone_b=highlight_zone_b,
+        highlight_zone_c=highlight_zone_c,
+        highlight_trend=highlight_trend,
+        highlight_mixture=highlight_mixture,
+        highlight_stratification=highlight_stratification,
+        highlight_overcontrol=highlight_overcontrol,
+        ax=axs[0])
+
+    control_chart(
+        std_devs,
+        lower_control_limit=lcl_s,
+        upper_control_limit=ucl_s,
+        highlight_beyond_limits=highlight_beyond_limits,
+        highlight_zone_a=highlight_zone_a,
+        highlight_zone_b=highlight_zone_b,
+        highlight_zone_c=highlight_zone_c,
+        highlight_trend=highlight_trend,
+        highlight_mixture=highlight_mixture,
+        highlight_stratification=highlight_stratification,
+        highlight_overcontrol=highlight_overcontrol,
+        ax=axs[1])
+
+    axs[0].set_title('Group Averages')
+    axs[1].set_title('Group Standard Deviations')
+    fig.suptitle(r'$\bar{X}-S$ Chart, n=' + f'{n}')
 
     fig.tight_layout()
 
