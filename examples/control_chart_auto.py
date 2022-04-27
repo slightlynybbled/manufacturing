@@ -8,6 +8,8 @@ from manufacturing import import_csv, control_chart
 logging.basicConfig(level=logging.INFO)
 
 data = import_csv('data/pm-high-speed.csv', columnname='speed', delimiter=',')
-control_chart(data)
+
+fig, _ = plt.subplots(2, 1, figsize=(8, 6))  # we can customize the figure that we pass down!
+control_chart(data, figure=fig)
 
 plt.show()

@@ -573,9 +573,10 @@ def x_mr_chart(
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
     max_points: Optional[int] = 60,
+    figure: Optional[Figure] = None
 ) -> Figure:
     """
-    Create a moving I-MR control plot based on the input data.
+    Create a I-MR control plot based on the input data.
 
     :param data: a list, pandas.Series, or numpy.array representing the data set
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
@@ -587,6 +588,7 @@ def x_mr_chart(
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
     :param max_points: the maximum number of points to display ('None' to display all)
+    :param figure: instance of matplotlib.figure.Figure
     :return: an instance of matplotlib.axis.Axis
     """
     data = coerce(data)
@@ -595,7 +597,11 @@ def x_mr_chart(
     diff_data.reset_index(inplace=True, drop=True)
 
     # create an I-MR chart using a combination of control_chart and moving_range
-    fig, axs = plt.subplots(2, 1, figsize=(8, 6), sharex="all")
+    if figure is None:
+        fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
+    else:
+        fig = figure
+        axs = fig.axes
 
     control_chart_base(
         data,
@@ -651,9 +657,10 @@ def xbar_r_chart(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
+    figure: Optional[Figure] = None
 ) -> Figure:
     """
-    Create a moving Xbar-R control plot based on the input data.
+    Create a Xbar-R control plot based on the input data.
 
     :param data: a list, pandas.Series, or numpy.array representing the data set
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
@@ -664,6 +671,7 @@ def xbar_r_chart(
     :param highlight_mixture: True if points that are mixture violations are to be highlighted
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :param figure: an instance of matplotlib.figure.Figure
     :return: an instance of matplotlib.figure.Figure
     """
     if subgroup_size < 2:
@@ -672,7 +680,7 @@ def xbar_r_chart(
         )
     elif subgroup_size > 11:
         raise ValueError(
-            "xbar_r_chart is recommended for subgroup sizes of less than 11"
+            "xbar_r_chart is recommended for subgroup sizes of more than 11"
         )
     data = coerce(data)
 
@@ -702,7 +710,11 @@ def xbar_r_chart(
     lcl_x, ucl_x = x_bar_bar - dev, x_bar_bar + dev
     lcl_r, ucl_r = calc_D3(n) * r_bar, calc_D4(n) * r_bar
 
-    fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
+    if figure is None:
+        fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
+    else:
+        fig = figure
+        axs = fig.axes
 
     control_chart_base(
         x_bars,
@@ -754,6 +766,7 @@ def xbar_s_chart(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
+    figure: Optional[Figure] = None
 ) -> Figure:
     """
     Create a moving Xbar-S control plot based on the input data.  Recommended for datasets \
@@ -768,6 +781,7 @@ def xbar_s_chart(
     :param highlight_mixture: True if points that are mixture violations are to be highlighted
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :param figure: an instance of matplotlib.figure.Figure
     :return: an instance of matplotlib.figure.Figure
     """
     if subgroup_size < 11:
@@ -800,7 +814,11 @@ def xbar_s_chart(
     lcl_x, ucl_x = x_bar_bar - dev, x_bar_bar + dev
     lcl_s, ucl_s = s_bar * calc_B3(n), s_bar * calc_B4(n)
 
-    fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
+    if figure is None:
+        fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
+    else:
+        fig = figure
+        axs = fig.axes
 
     control_chart_base(
         x_bars,
@@ -851,6 +869,7 @@ def control_chart(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
+    figure: Optional[Figure] = None
 ) -> Figure:
     """
     Automatically selects the most appropriate type of control chart, \
@@ -879,13 +898,14 @@ def control_chart(
         "highlight_mixture": highlight_mixture,
         "highlight_stratification": highlight_stratification,
         "highlight_overcontrol": highlight_overcontrol,
+        "figure": figure
     }
 
     if len(data) < 60:
         return x_mr_chart(data, **highlight_rules)
 
+    subgroup_size = 1 + len(data) // 60
     if len(data) < 600:
-        subgroup_size = len(data) // 60
         return xbar_r_chart(data, subgroup_size=subgroup_size, **highlight_rules)
 
     # if data is too long, then truncate
@@ -897,5 +917,4 @@ def control_chart(
         )
         data = data[-max_data_points:]
 
-    subgroup_size = len(data) // 60
     return xbar_s_chart(data, subgroup_size)
