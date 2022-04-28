@@ -786,8 +786,13 @@ def xbar_s_chart(
     """
     if subgroup_size < 11:
         raise ValueError(
-            "xbar_r_chart or x_mr_chart is recommended for "
+            "xbar_s_chart or x_mr_chart is recommended for "
             "subgroup sizes less than 11"
+        )
+    elif subgroup_size > len(c4_table):
+        raise ValueError(
+            f"invalid subgroup size {subgroup_size}; xbar_s_chart can currently only process subgroups"
+            f"of less than {len(c4_table)}"
         )
     data = coerce(data)
 
@@ -909,12 +914,13 @@ def control_chart(
         return xbar_r_chart(data, subgroup_size=subgroup_size, **highlight_rules)
 
     # if data is too long, then truncate
-    max_subgroup_size = len(c4_table)
+    max_subgroup_size = len(c4_table) - 1
     max_data_points = max_subgroup_size * 60
     if len(data) > max_data_points:
         _logger.warning(
             f"data exceeds the size at which it is easily visualized; truncating to {max_data_points} rows grouped by {max_subgroup_size}"
         )
         data = data[-max_data_points:]
+        subgroup_size = max_subgroup_size
 
     return xbar_s_chart(data, subgroup_size)
