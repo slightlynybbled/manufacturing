@@ -564,6 +564,7 @@ def control_chart_base(
 
 def x_mr_chart(
     data: (List[int], List[float], pd.Series, np.array),
+    parameter_name: Optional[str] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -579,6 +580,7 @@ def x_mr_chart(
     Create a I-MR control plot based on the input data.
 
     :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param parameter_name: a string representing the parameter name
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
@@ -639,7 +641,11 @@ def x_mr_chart(
 
     axs[0].set_title("Individual")
     axs[1].set_title("Moving Range")
-    fig.suptitle("X-MR Chart")
+
+    fig_title = f'X-mR Chart'
+    if parameter_name is not None:
+        fig_title = f'{fig_title}, {parameter_name}'
+    fig.suptitle(fig_title)
 
     fig.tight_layout()
 
@@ -649,6 +655,7 @@ def x_mr_chart(
 def xbar_r_chart(
     data: (List[int], List[float], pd.Series, np.array),
     subgroup_size: int = 4,
+    parameter_name: Optional[str] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -663,6 +670,8 @@ def xbar_r_chart(
     Create a Xbar-R control plot based on the input data.
 
     :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param subgroup_size: an integer that determines the subgroup size
+    :param parameter_name: a string representing the parameter name
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
@@ -748,7 +757,11 @@ def xbar_r_chart(
 
     axs[0].set_title("Group Averages")
     axs[1].set_title("Group Ranges")
-    fig.suptitle(r"$\bar{X}-R$ Chart, n=" + f"{n}")
+
+    fig_title = r"$\bar{X}-R$ Chart, n=" + f"{n}"
+    if parameter_name is not None:
+        fig_title = f'{fig_title}, {parameter_name}'
+    fig.suptitle(fig_title)
 
     fig.tight_layout()
 
@@ -758,6 +771,7 @@ def xbar_r_chart(
 def xbar_s_chart(
     data: (List[int], List[float], pd.Series, np.array),
     subgroup_size: int = 12,
+    parameter_name: Optional[str] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -773,6 +787,8 @@ def xbar_s_chart(
     which are to be grouped in subsets exceeding 11pcs each.
 
     :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param subgroup_size: an integer that determines the subgroup size
+    :param parameter_name: a string representing the parameter name
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
@@ -857,7 +873,11 @@ def xbar_s_chart(
 
     axs[0].set_title("Group Averages")
     axs[1].set_title("Group Standard Deviations")
-    fig.suptitle(r"$\bar{X}-S$ Chart, n=" + f"{n}")
+
+    fig_title = r"$\bar{X}-S$ Chart, n=" + f"{n}"
+    if parameter_name is not None:
+        fig_title = f'{fig_title}, {parameter_name}'
+    fig.suptitle(fig_title)
 
     fig.tight_layout()
 
@@ -866,6 +886,7 @@ def xbar_s_chart(
 
 def control_chart(
     data: (List[int], List[float], pd.Series, np.array),
+    parameter_name: Optional[str] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -881,6 +902,7 @@ def control_chart(
     charts, and returns a Figure.
 
     :param data: (List[int], List[float], pd.Series, np.array),
+    :param parameter_name: a string representing the parameter name
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
@@ -889,12 +911,13 @@ def control_chart(
     :param highlight_mixture: True if points that are mixture violations are to be highlighted
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
-    :return: an instance of matplotlib.figure.Figure
+    :param figure: an instance of matplotlib.figure.Figure
     :return: instance of matplotlib.figure.Figure
     """
     data = coerce(data)
 
-    highlight_rules = {
+    params = {
+        "parameter_name": parameter_name,
         "highlight_beyond_limits": highlight_beyond_limits,
         "highlight_zone_a": highlight_zone_a,
         "highlight_zone_b": highlight_zone_b,
@@ -907,11 +930,11 @@ def control_chart(
     }
 
     if len(data) < 60:
-        return x_mr_chart(data, **highlight_rules)
+        return x_mr_chart(data, **params)
 
     subgroup_size = 1 + len(data) // 60
     if len(data) < 600:
-        return xbar_r_chart(data, subgroup_size=subgroup_size, **highlight_rules)
+        return xbar_r_chart(data, subgroup_size=subgroup_size, **params)
 
     # if data is too long, then truncate
     max_subgroup_size = len(c4_table) - 1
