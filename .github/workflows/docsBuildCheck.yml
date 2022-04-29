@@ -1,9 +1,9 @@
-name: Publish 📦 to PyPI
+name: Documentation Check
 on: push
 
 jobs:
   build-docs:
-    name: Build and publish Python distributions to PyPI
+    name: Build Docs
     runs-on: ubuntu-latest
 
     steps:
