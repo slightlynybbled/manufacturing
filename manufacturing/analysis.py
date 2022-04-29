@@ -273,13 +273,9 @@ def control_zone_a(
     violations = []
     for i in range(len(data) - 2):
         points = data[i : i + 3].to_numpy()
+        values = [1 for p in points if p < zone_b_lower_limit or p > zone_b_upper_limit]
 
-        count = 0
-        for point in points:
-            if point < zone_b_lower_limit or point > zone_b_upper_limit:
-                count += 1
-
-        if count >= 2:
+        if sum(values) > 2:
             index = i + np.arange(3)
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone a violation found at index {i}")
@@ -317,13 +313,9 @@ def control_zone_b(
     violations = []
     for i in range(len(data) - 5):
         points = data[i : i + 5].to_numpy()
+        values = [1 for p in points if p < zone_c_lower_limit or p > zone_c_upper_limit]
 
-        count = 0
-        for point in points:
-            if point < zone_c_lower_limit or point > zone_c_upper_limit:
-                count += 1
-
-        if count >= 4:
+        if sum(values) > 3:
             index = i + np.arange(5)
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone b violation found at index {i}")
@@ -359,22 +351,9 @@ def control_zone_c(
     violations = []
     for i in range(len(data) - 6):
         points = data[i : i + 7].to_numpy()
+        values = [1 if p > spec_center else -1 for p in points]
 
-        count = 1
-        above = data[i] > spec_center
-        for point in points[1:]:
-            if above is True:
-                if point > spec_center:
-                    count += 1
-                else:
-                    break
-            else:
-                if point < spec_center:
-                    count += 1
-                else:
-                    break
-
-        if count >= 7:
+        if abs(sum(values)) > 6:
             index = i + np.arange(7)
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone c violation found at index {i}")
@@ -442,19 +421,13 @@ def control_zone_mixture(
     zone_c_upper_limit = spec_center + spec_range / 3
     zone_c_lower_limit = spec_center - spec_range / 3
 
-    # looking for violations in which 2 out of 3 are in zone A or beyond
+    # looking for violations in which 8 points occur with none in zone C
     violations = []
     for i in range(len(data) - 7):
         points = data[i : i + 8].to_numpy()
+        values = [1 for p in points if p > zone_c_upper_limit and p < zone_c_lower_limit]
 
-        count = 0
-        for point in points:
-            if not zone_c_lower_limit < point < zone_c_upper_limit:
-                count += 1
-            else:
-                break
-
-        if count >= 8:
+        if sum(values) > 7:
             index = i + np.arange(8)
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"mixture violation found at index {i}")
@@ -492,12 +465,9 @@ def control_zone_stratification(
     violations = []
     for i in range(len(data) - 14):
         points = data[i : i + 15].to_numpy()
+        values = [1 for p in points if p < zone_c_upper_limit and p > zone_c_lower_limit]
 
-        points = points[
-            np.logical_and(points < zone_c_upper_limit, points > zone_c_lower_limit)
-        ]
-
-        if len(points) >= 15:
+        if sum(values) > 14:
             index = i + np.arange(15)
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"stratification violation found at index {i}")
