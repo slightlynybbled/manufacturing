@@ -45,8 +45,9 @@ In this case, the ``data`` contains a dictionary with keys ``data``, ``upper_con
 ``lower_control_limit``.  These keys are utilized throughout the library analysis and plotting tools, which is
 why they are imported directly here.
 
-.. automodule:: manufacturing
-   :members: import_csv
+.. currentmodule:: manufacturing
+.. autofunction:: import_csv
+  :noindex:
 
 Importing from MS Excel
 -----------------------
@@ -81,5 +82,6 @@ In this case, the ``data`` contains a dictionary with keys ``data``, ``upper_con
 ``lower_control_limit``.  These keys are utilized throughout the library analysis and plotting tools, which is
 why they are imported directly here.
 
-.. automodule:: manufacturing
-   :members: import_excel
+.. currentmodule:: manufacturing
+.. autofunction:: import_excel
+  :noindex:

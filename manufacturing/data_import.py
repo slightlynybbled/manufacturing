@@ -47,17 +47,17 @@ def import_csv(file_path: (str, Path), columnname: str, **kwargs):
     """
     df = pd.read_csv(file_path, **kwargs)
 
-    lcl, ucl = parse_col_for_limits(columnname)
+    lsl, usl = parse_col_for_limits(columnname)
 
-    if lcl is None and ucl is None:
+    if lsl is None and usl is None:
         return df[columnname]
     else:
         data = {"data": df[columnname]}
 
-    if lcl is not None:
-        data["lower_control_limit"] = lcl
-    if ucl is not None:
-        data["upper_control_limit"] = ucl
+    if lsl is not None:
+        data["lower_specification_limit"] = lsl
+    if usl is not None:
+        data["upper_specification_limit"] = usl
 
     return data
 
@@ -73,16 +73,16 @@ def import_excel(file_path: (str, Path), columnname, **kwargs):
     """
     df = pd.read_excel(file_path, **kwargs)
 
-    lcl, ucl = parse_col_for_limits(columnname)
+    lsl, usl = parse_col_for_limits(columnname)
 
-    if lcl is None and ucl is None:
+    if lsl is None and usl is None:
         return {"data": df[columnname]}
     else:
         data = {"data": df[columnname]}
 
-    if lcl is not None:
-        data["lower_control_limit"] = lcl
-    if ucl is not None:
-        data["upper_control_limit"] = ucl
+    if lsl is not None:
+        data["lower_specification_limit"] = lsl
+    if usl is not None:
+        data["upper_specification_limit"] = usl
 
     return data

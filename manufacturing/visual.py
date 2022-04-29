@@ -161,22 +161,22 @@ def ppk_plot(
 
 def cpk_plot(
     data: (List[int], List[float], pd.Series, np.array),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    upper_specification_limit: (int, float),
+    lower_specification_limit: (int, float),
     subgroup_size: int = 30,
     max_subgroups: int = 10,
-    axs: Optional[List[Axis]] = None,
-) -> List[Axis]:
+    figure: Optional[Figure] = None,
+) -> Figure:
     """
     Boxplot the Cpk in subgroups os size `subgroup_size`.
 
-    :param data: a list, pandas.Series, or numpy.array representing the data set
-    :param upper_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
-    :param lower_control_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param data: a list, pandas.Series, or ``numpy.array`` representing the data set
+    :param upper_specification_limit: an integer or float which represents the upper specification limit, commonly called the USL
+    :param lower_specification_limit: an integer or float which represents the upper specification limit, commonly called the LSL
     :param subgroup_size: the number of samples to include in each subgroup
     :param max_subgroups: the maximum number of subgroups to display
-    :param axs: two instances of matplotlib.axis.Axis
-    :return: None
+    :param figure: two instances of matplotlib.axis.Axis
+    :return: an instance of ``matplotlib.figure.Figure``
     """
 
     def chunk(seq, size):
@@ -194,10 +194,13 @@ def cpk_plot(
 
     data_subgroups = data_subgroups[::-1]
 
-    if axs is None:
+    if figure is None:
         fig, axs = plt.subplots(
             1, 2, sharey="all", gridspec_kw={"width_ratios": [4, 1]}
         )
+    else:
+        axs = figure.axes
+        fig = figure
 
     ax0, ax1, *_ = axs
 
@@ -207,8 +210,8 @@ def cpk_plot(
     p0, p1 = bp["medians"][0].get_xydata()
     x0, _ = p0
     x1, _ = p1
-    ax1.axhline(upper_control_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
-    ax1.axhline(lower_control_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
+    ax1.axhline(upper_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
+    ax1.axhline(lower_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
     ax1.set_xticks([])
     ax1.grid(color="grey", alpha=0.3)
     bp["boxes"][0].set_facecolor("lightblue")
@@ -216,8 +219,8 @@ def cpk_plot(
     bps = ax0.boxplot(data_subgroups, patch_artist=True)
     ax0.set_title(f"Cpk by Subgroups, Size={subgroup_size}")
     ax0.set_xticks([])
-    ax0.axhline(upper_control_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
-    ax0.axhline(lower_control_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
+    ax0.axhline(upper_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
+    ax0.axhline(lower_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
     ax0.grid(color="grey", alpha=0.3)
 
     for box in bps["boxes"]:
@@ -226,15 +229,15 @@ def cpk_plot(
     left, right = ax0.get_xlim()
     right_plus = (right - left) * 0.01 + right
 
-    ax0.text(right_plus, upper_control_limit, s="USL", color="red", va="center")
-    ax0.text(right_plus, lower_control_limit, s="LSL", color="red", va="center")
+    ax0.text(right_plus, upper_specification_limit, s="USL", color="red", va="center")
+    ax0.text(right_plus, lower_specification_limit, s="LSL", color="red", va="center")
 
     cpks = []
     for i, bp_median in enumerate(bps["medians"]):
         cpk = calc_ppk(
             data_subgroups[i],
-            upper_control_limit=upper_control_limit,
-            lower_control_limit=lower_control_limit,
+            upper_control_limit=upper_specification_limit,
+            lower_control_limit=lower_specification_limit,
         )
         cpks.append(cpk)
     cpks = pd.Series(cpks)
@@ -244,12 +247,12 @@ def cpk_plot(
 
     ppk = calc_ppk(
         data,
-        upper_control_limit=upper_control_limit,
-        lower_control_limit=lower_control_limit,
+        upper_control_limit=upper_specification_limit,
+        lower_control_limit=lower_specification_limit,
     )
     ax1.table([[f"$Ppk: {ppk:.02g}$"], [f"$Cpk_{{av}}:{cpks.mean():.02g}$"]])
 
-    return [ax0, ax1]
+    return fig
 
 
 def control_plot(*args, **kwargs) -> Axis:

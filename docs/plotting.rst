@@ -8,8 +8,8 @@ Ppk Plot
 ---------
 
 The PPK plot takes all of the data - not just a sample - and determines the process
-capability.  This is not a snapshot in time but a look at the entire history, which
-can be deceiving.
+capability.  This is not a snapshot in time but a look at the entire history.  Careful,
+which this can be can be deceiving!
 
 The ``manufacturing.ppk_plot`` will estimate the distribution based on the input
 data, calculate the Ppk, mean, standard deviation, and the estimated % out of control
@@ -22,13 +22,13 @@ to be non-normally distributed.
 
     # the 'data' variable contains a list of integers, floats,
     # numpy array, or pandas Series
-    mn.ppk_plot(data, upper_control_limit=3.3, lower_control_limit=3.1)
+    mn.ppk_plot(data, upper_specification_limit=3.3, lower_specification_limit=3.1)
 
 .. image:: _static/images/ppk_plot.png
 
 If ``manufacturing`` is used in a jupyter notebook or similar environment, then
 the plot will display automatically.  Optionally, you can pass a ``matplotlib.axes.Axes``
-instance in order to take better advantage of matplotlib features.
+instance in order to more directly manipulate the underlying ``matplotlib.axes.Axes``.
 
 .. code-block:: python
 
@@ -37,8 +37,8 @@ instance in order to take better advantage of matplotlib features.
 
     fig, ax = plt.subplots()
     mn.ppk_plot(data,
-                upper_control_limit=3.3,
-                lower_control_limit=3.1,
+                upper_specification_limit=3.3,
+                lower_specification_limit=3.1,
                 ax=ax)
 
     ax.set_xlim(3.0, 3.5)  # manipulate the axis as desired
@@ -57,8 +57,8 @@ not be in control.
     # the 'data' variable contains a list of integers, floats,
     # numpy array, or pandas Series
     mn.cpk_plot(data,
-                upper_control_limit=7.4,
-                lower_control_limit=-7.4,
+                upper_specification_limit=7.4,
+                lower_specification_limit=-7.4,
                 subgroup_size=10)
 
 .. image:: _static/images/cpk_plot.png
@@ -68,18 +68,17 @@ Zone Control Chart
 
 Perhaps the most useful chart is the ``manufacturing.control_plot``, also known as a
 Zone Control Plot.  This plot will highlight up to 8 different rules or violations
-based on the input data set.  If a control cart rule is not violated, then it will
+based on the input data set.  If a control chart rule is not violated, then it will
 not be placed on the chart.
 
-.. code-block:: python
+There are three different types of ``control charts`` defined within ``manufacturing``:
 
-    import manufacturing as mn
+ * ``x_mr_chart()`` for small data sets
+ * ``xbar_r_chart()`` for subgroups between 2 and 10, inclusive
+ * ``xbar_s_chart()`` for subgroups larger than 11, inclusive
 
-    # the 'data' variable contains a list of integers, floats,
-    # numpy array, or pandas Series
-    mn.control_plot(data, upper_control_limit=3.3, lower_control_limit=3.1)
-
-.. image:: _static/images/control_plot.png
+Using the ``control_plot`` function will automatically select the appropriate
+control chart type based on the number of data points supplied.
 
 .. list-table:: Control Chart Rules by Severity
    :header-rows: 1
@@ -102,3 +101,23 @@ not be placed on the chart.
     - 15 consecutive points in zone c
   * - over-control
     - 14 consecutive points alternating up and down
+
+.. code-block:: python
+
+    import manufacturing as mn
+
+    # the 'data' variable contains a list of integers, floats,
+    # numpy array, or pandas Series
+    mn.control_plot(data)
+
+Depending on the data set, the above command could result in the creation of an
+:math:`X-mR` chart, :math:`\bar{X}-R` chart, or :math:`\bar{X}-S` chart.
+
+.. image:: _static/images/xmr_chart.png
+
+.. image:: _static/images/xbarr_chart.png
+
+.. image:: _static/images/xbars_chart.png
+
+
+
