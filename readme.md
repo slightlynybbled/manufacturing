@@ -2,21 +2,15 @@
 
 To provide analysis tools and metrics useful in manufacturing environments.
 
-I am slowly generating the documentation and, as that is maturing, I will begin to move information
-from this `readme.md` into that location.  If you don't find something here, head over to the
-[documentation](https://manufacturing.readthedocs.io/en/latest/).
+Go to the [documentation](https://manufacturing.readthedocs.io/en/latest/).
 
 # Project Maturity
 
-Every effort is being made to ensure that the results are accurate, but the user is ultimately
-responsible for any resulting analysis.
-
-The API should not be considered stable until v1.0 or greater.  Until then, breaking changes may
-be released as different API options are explored.
-
-During the `v0.X.X` versioning, I am using the package in my own analyses in order to find any bugs.  Once
-I am reasonably satisfied that the package is feature complete, usable, and bug-free, I will break out
-the `v1.X.X` releases.
+Project is currently undergoing frequent updates for documentation and to add
+functionality and update documentation!!  Screenshots and features that you see
+on here may be out of date, but are in progress.  It is expected that 
+v1.2.X series of releases will have complete documentation and be up to 
+industry standards.
 
 # Installation
 
@@ -29,15 +23,6 @@ To install from source download and install using poetry:
     poetry install
 
 # Usage
-
-## Visualizations with Jupyter Notebooks
-
-Visualizations work approximately as expected within a jupyter notebook.
-
-    data = np.random.normal(0, 1, size=30)  # generate some data
-    manufacturing.ppk_plot(data, lower_specification_limit=-2, upper_specification_limit=2)
-    
-There is a sample jupyter notebook in the examples directory.
 
 ## Cpk Visualization
 
@@ -78,6 +63,7 @@ Items marked out were added most recently.
  - ~~Add `I-MR Chart` (see `examples/imr_chart.py`)~~
  - ~~Add `Xbar-R Chart` (subgroups between 2 and 10)~~
  - ~~Add `Xbar-S Chart` (subgroups of 11 or more)~~
+ - Update documentation to reflect recent API changes
  - Back with testing
 
 # Gallery
