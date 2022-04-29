@@ -679,6 +679,7 @@ def xbar_r_chart(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
+    max_points: Optional[int] = 60,
     figure: Optional[Figure] = None
 ) -> Figure:
     """
@@ -695,6 +696,7 @@ def xbar_r_chart(
     :param highlight_mixture: True if points that are mixture violations are to be highlighted
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :param max_points: the maximum number of points to display ('None' to display all)
     :param figure: an instance of matplotlib.figure.Figure
     :return: an instance of matplotlib.figure.Figure
     """
@@ -797,6 +799,7 @@ def xbar_s_chart(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
+    max_points: Optional[int] = 60,
     figure: Optional[Figure] = None
 ) -> Figure:
     """
@@ -814,6 +817,7 @@ def xbar_s_chart(
     :param highlight_mixture: True if points that are mixture violations are to be highlighted
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :param max_points: the maximum number of points to display ('None' to display all)
     :param figure: an instance of matplotlib.figure.Figure
     :return: an instance of matplotlib.figure.Figure
     """
@@ -860,6 +864,7 @@ def xbar_s_chart(
 
     control_chart_base(
         x_bars,
+        avg_label=r'$\bar{\bar{X}}$',
         lower_control_limit=lcl_x,
         upper_control_limit=ucl_x,
         highlight_beyond_limits=highlight_beyond_limits,
@@ -870,11 +875,13 @@ def xbar_s_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
+        max_points=max_points,
         ax=axs[0],
     )
 
     control_chart_base(
         std_devs,
+        avg_label=r'$\bar{S}$',
         lower_control_limit=lcl_s,
         upper_control_limit=ucl_s,
         highlight_beyond_limits=highlight_beyond_limits,
@@ -885,6 +892,7 @@ def xbar_s_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
+        max_points=max_points,
         ax=axs[1],
     )
 
@@ -912,6 +920,7 @@ def control_chart(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
+    max_points: Optional[int] = 60,
     figure: Optional[Figure] = None
 ) -> Figure:
     """
@@ -928,6 +937,7 @@ def control_chart(
     :param highlight_mixture: True if points that are mixture violations are to be highlighted
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
+    :param max_points: the maximum number of points to display ('None' to display all)
     :param figure: an instance of matplotlib.figure.Figure
     :return: instance of matplotlib.figure.Figure
     """
@@ -943,24 +953,24 @@ def control_chart(
         "highlight_mixture": highlight_mixture,
         "highlight_stratification": highlight_stratification,
         "highlight_overcontrol": highlight_overcontrol,
+        "max_points": max_points,
         "figure": figure
     }
 
-    if len(data) < 60:
+    if len(data) < max_points:
         return x_mr_chart(data, **params)
 
-    subgroup_size = 1 + len(data) // 60
-    if len(data) < 600:
+    subgroup_size = len(data) // max_points
+    if subgroup_size < 12:
         return xbar_r_chart(data, subgroup_size=subgroup_size, **params)
 
     # if data is too long, then truncate
     max_subgroup_size = len(c4_table) - 1
-    max_data_points = max_subgroup_size * 60
+    max_data_points = max_subgroup_size * max_points
     if len(data) > max_data_points:
         _logger.warning(
             f"data exceeds the size at which it is easily visualized; truncating to {max_data_points} rows grouped by {max_subgroup_size}"
         )
         data = data[-(max_data_points-1):]
         subgroup_size = max_subgroup_size
-
-    return xbar_s_chart(data, subgroup_size)
+    return xbar_s_chart(data, subgroup_size=subgroup_size, **params)
