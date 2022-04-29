@@ -272,6 +272,7 @@ def control_chart_base(
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
     max_points: Optional[int] = 60,
+    avg_label: Optional[str] = 'avg',
     ax: Optional[Axis] = None,
 ) -> Axis:
     """
@@ -337,6 +338,8 @@ def control_chart_base(
 
     ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
 
+    ax.axhline(mean, linestyle='--', color='blue', alpha=0.4, zorder=-10)
+
     left, right = ax.get_xlim()
     right_plus = (right - left) * 0.01 + right
 
@@ -351,7 +354,14 @@ def control_chart_base(
     for edge in edges:
         ax.text(right_plus, edge, s=f"{edge:.3g}", va="center", color=text_color)
 
+    # ax.text(x=0, y=mean, s=f'{avg_label}={mean:.3g}', color='blue', zorder=-10)
+
     texts = [
+        {'y': mean,
+         's': f'{avg_label}={mean:.3g}',
+         'color': 'blue', 'zorder': 100,
+         'bbox': dict(facecolor='white', edgecolor='blue', boxstyle='round', alpha=0.8),
+        },
         {
             "y": upper_control_limit,
             "s": f"UCL={upper_control_limit:.3g}",
@@ -451,7 +461,7 @@ def control_chart_base(
                 linewidth=1,
                 color="none",
                 marker="o",
-                label="zone b",
+                label="zone c",
                 edgecolor="green",
                 zorder=zorder,
             )
@@ -510,7 +520,7 @@ def control_chart_base(
                 linewidth=1,
                 color="none",
                 marker="o",
-                label="mixture",
+                label="stratification",
                 edgecolor="orange",
                 zorder=zorder,
             )
@@ -607,6 +617,7 @@ def x_mr_chart(
 
     control_chart_base(
         data,
+        avg_label=r'$\bar{X}$',
         highlight_beyond_limits=highlight_beyond_limits,
         highlight_zone_a=highlight_zone_a,
         highlight_zone_b=highlight_zone_b,
@@ -620,22 +631,23 @@ def x_mr_chart(
 
     # UCL = 1 + 3(d3 / d2) * mRbar
     #     = D4 * mRbar
-    #     = 3.2665
+    #     = 3.2665 * mRbar
     mRbar = diff_data.mean()
     ucl = 3.2665 * mRbar
     lcl = 0.0
     control_chart_base(
         diff_data,
+        avg_label=r'$\bar{R}$',
         upper_control_limit=ucl,
         lower_control_limit=lcl,
         highlight_beyond_limits=highlight_beyond_limits,
-        highlight_zone_a=highlight_zone_a,
-        highlight_zone_b=highlight_zone_b,
-        highlight_zone_c=highlight_zone_c,
-        highlight_trend=highlight_trend,
-        highlight_mixture=highlight_mixture,
-        highlight_stratification=highlight_stratification,
-        highlight_overcontrol=highlight_overcontrol,
+        highlight_zone_a=False,
+        highlight_zone_b=False,
+        highlight_zone_c=False,
+        highlight_trend=False,
+        highlight_mixture=False,
+        highlight_stratification=False,
+        highlight_overcontrol=False,
         ax=axs[1],
     )
 
@@ -727,6 +739,7 @@ def xbar_r_chart(
 
     control_chart_base(
         x_bars,
+        avg_label=r'$\bar{\bar{X}}$',
         lower_control_limit=lcl_x,
         upper_control_limit=ucl_x,
         highlight_beyond_limits=highlight_beyond_limits,
@@ -742,6 +755,7 @@ def xbar_r_chart(
 
     control_chart_base(
         ranges,
+        avg_label=r'$\bar{R}$',
         lower_control_limit=lcl_r,
         upper_control_limit=ucl_r,
         highlight_beyond_limits=highlight_beyond_limits,
