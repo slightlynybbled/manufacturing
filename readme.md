@@ -53,7 +53,11 @@ the dataset requires.  However, if you wish to call a specific type of control c
  - `xbar_r_chart`
  - `xbar_s_chart`
 
-# RoadMap
+# Contributions
+
+Contributions are welcome!  
+
+## RoadMap
 
 Items marked out were added most recently.
 
@@ -64,7 +68,7 @@ Items marked out were added most recently.
  - ~~Add `Xbar-R Chart` (subgroups between 2 and 10)~~
  - ~~Add `Xbar-S Chart` (subgroups of 11 or more)~~
  - Update documentation to reflect recent API changes
- - Back with testing
+ - Add automated testing
 
 # Gallery
 
