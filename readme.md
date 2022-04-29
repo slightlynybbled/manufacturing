@@ -2,7 +2,7 @@
 
 To provide analysis tools and metrics useful in manufacturing environments.
 
-Go to the [documentation](https://manufacturing.readthedocs.io/en/latest/).
+Go to the [documentation](https://slightlynybbled.github.io/manufacturing/_build/html/index.html).
 
 # Project Maturity
 
