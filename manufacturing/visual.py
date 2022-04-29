@@ -960,7 +960,7 @@ def control_chart(
         _logger.warning(
             f"data exceeds the size at which it is easily visualized; truncating to {max_data_points} rows grouped by {max_subgroup_size}"
         )
-        data = data[-max_data_points:]
+        data = data[-(max_data_points-1):]
         subgroup_size = max_subgroup_size
 
     return xbar_s_chart(data, subgroup_size)
