@@ -1,0 +1,241 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Plotting &#8212; manufacturing  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="Importing &amp; Exporting" href="importing_and_exporting.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="plotting">
+<h1>Plotting<a class="headerlink" href="#plotting" title="Permalink to this headline">¶</a></h1>
+<p>The most useful features of <code class="docutils literal notranslate"><span class="pre">manufacturing</span></code> come in the form of the highly
+information-dense plotting tools.</p>
+<section id="ppk-plot">
+<h2>Ppk Plot<a class="headerlink" href="#ppk-plot" title="Permalink to this headline">¶</a></h2>
+<p>The PPK plot takes all of the data - not just a sample - and determines the process
+capability.  This is not a snapshot in time but a look at the entire history.  Careful,
+which this can be can be deceiving!</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">manufacturing.ppk_plot</span></code> will estimate the distribution based on the input
+data, calculate the Ppk, mean, standard deviation, and the estimated % out of control
+for each parameter.  The function will also generate a warning if the data appears
+to be non-normally distributed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">manufacturing</span> <span class="k">as</span> <span class="nn">mn</span>
+
+<span class="c1"># the &#39;data&#39; variable contains a list of integers, floats,</span>
+<span class="c1"># numpy array, or pandas Series</span>
+<span class="n">mn</span><span class="o">.</span><span class="n">ppk_plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">upper_specification_limit</span><span class="o">=</span><span class="mf">3.3</span><span class="p">,</span> <span class="n">lower_specification_limit</span><span class="o">=</span><span class="mf">3.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/ppk_plot.png" src="_images/ppk_plot.png" />
+<p>If <code class="docutils literal notranslate"><span class="pre">manufacturing</span></code> is used in a jupyter notebook or similar environment, then
+the plot will display automatically.  Optionally, you can pass a <code class="docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code>
+instance in order to more directly manipulate the underlying <code class="docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">manufacturing</span> <span class="k">as</span> <span class="nn">mn</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">mn</span><span class="o">.</span><span class="n">ppk_plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">upper_specification_limit</span><span class="o">=</span><span class="mf">3.3</span><span class="p">,</span>
+            <span class="n">lower_specification_limit</span><span class="o">=</span><span class="mf">3.1</span><span class="p">,</span>
+            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">)</span>  <span class="c1"># manipulate the axis as desired</span>
+</pre></div>
+</div>
+</section>
+<section id="cpk-chart">
+<h2>Cpk Chart<a class="headerlink" href="#cpk-chart" title="Permalink to this headline">¶</a></h2>
+<p>The Cpk chart gives snapshots of process capability.  In most cases, the average
+Cpk value should be close to the overall Ppk value.  If not, then the process may
+not be in control.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">manufacturing</span> <span class="k">as</span> <span class="nn">mn</span>
+
+<span class="c1"># the &#39;data&#39; variable contains a list of integers, floats,</span>
+<span class="c1"># numpy array, or pandas Series</span>
+<span class="n">mn</span><span class="o">.</span><span class="n">cpk_plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
+            <span class="n">upper_specification_limit</span><span class="o">=</span><span class="mf">7.4</span><span class="p">,</span>
+            <span class="n">lower_specification_limit</span><span class="o">=-</span><span class="mf">7.4</span><span class="p">,</span>
+            <span class="n">subgroup_size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/cpk_plot.png" src="_images/cpk_plot.png" />
+</section>
+<section id="zone-control-chart">
+<h2>Zone Control Chart<a class="headerlink" href="#zone-control-chart" title="Permalink to this headline">¶</a></h2>
+<p>Perhaps the most useful chart is the <code class="docutils literal notranslate"><span class="pre">manufacturing.control_plot</span></code>, also known as a
+Zone Control Plot.  This plot will highlight up to 8 different rules or violations
+based on the input data set.  If a control chart rule is not violated, then it will
+not be placed on the chart.</p>
+<p>There are three different types of <code class="docutils literal notranslate"><span class="pre">control</span> <span class="pre">charts</span></code> defined within <code class="docutils literal notranslate"><span class="pre">manufacturing</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">x_mr_chart()</span></code> for small data sets</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xbar_r_chart()</span></code> for subgroups between 2 and 10, inclusive</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xbar_s_chart()</span></code> for subgroups larger than 11, inclusive</p></li>
+</ul>
+</div></blockquote>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">control_plot</span></code> function will automatically select the appropriate
+control chart type based on the number of data points supplied.</p>
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Control Chart Rules by Severity
+ :header-rows: 1</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Violation</p></td>
+<td><p>Pattern</p></td>
+</tr>
+<tr class="row-even"><td><p>beyond limits</p></td>
+<td><p>Point is beyond the limits</p></td>
+</tr>
+<tr class="row-odd"><td><p>zone a</p></td>
+<td><p>2 out of 3 consecutive points in zone a or beyond</p></td>
+</tr>
+<tr class="row-even"><td><p>zone b</p></td>
+<td><p>4 out of 5 consecutive points in zone b or beyond</p></td>
+</tr>
+<tr class="row-odd"><td><p>zone c</p></td>
+<td><p>7 or more consecutive points on one side of the average (in zone c or beyond)</p></td>
+</tr>
+<tr class="row-even"><td><p>trend</p></td>
+<td><p>7 consecutive points trending up or trending down</p></td>
+</tr>
+<tr class="row-odd"><td><p>mixture</p></td>
+<td><p>8 consecutive points with no points in zone c</p></td>
+</tr>
+<tr class="row-even"><td><p>stratification</p></td>
+<td><p>15 consecutive points in zone c</p></td>
+</tr>
+<tr class="row-odd"><td><p>over-control</p></td>
+<td><p>14 consecutive points alternating up and down</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">manufacturing</span> <span class="k">as</span> <span class="nn">mn</span>
+
+<span class="c1"># the &#39;data&#39; variable contains a list of integers, floats,</span>
+<span class="c1"># numpy array, or pandas Series</span>
+<span class="n">mn</span><span class="o">.</span><span class="n">control_plot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Depending on the data set, the above command could result in the creation of an
+<span class="math notranslate nohighlight">\(X-mR\)</span> chart, <span class="math notranslate nohighlight">\(\bar{X}-R\)</span> chart, or <span class="math notranslate nohighlight">\(\bar{X}-S\)</span> chart.</p>
+<img alt="_images/xmr_chart.png" src="_images/xmr_chart.png" />
+<img alt="_images/xbarr_chart.png" src="_images/xbarr_chart.png" />
+<img alt="_images/xbars_chart.png" src="_images/xbars_chart.png" />
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/images/logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="importing_and_exporting.html">Importing &amp; Exporting</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Plotting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ppk-plot">Ppk Plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cpk-chart">Cpk Chart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#zone-control-chart">Zone Control Chart</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="importing_and_exporting.html" title="previous chapter">Importing &amp; Exporting</a></li>
+      <li>Next: <a href="api.html" title="next chapter">API</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Jason R. Jones.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/plotting.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
