@@ -22,10 +22,9 @@ jobs:
           poetry install
 
       - name: Build docs
-        working-directory: ./docs
         run: |
           mkdir gh-pages
           touch gh-pages/.nojekyll
-          cd docs
+          cd docs/
           poetry run sphinx-build -b html . _build
           cp -r _build/* ../gh-pages/
