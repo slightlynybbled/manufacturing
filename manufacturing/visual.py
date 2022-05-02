@@ -33,7 +33,7 @@ _logger = logging.getLogger(__name__)
 
 
 def ppk_plot(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_specification_limit: (int, float),
     lower_specification_limit: (int, float),
     threshold_percent: float = 0.001,
@@ -42,7 +42,7 @@ def ppk_plot(
     """
     Shows the statistical distribution of the data along with CPK and limits.
 
-    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param upper_specification_limit: an integer or float which represents the upper control limit, commonly called the UCL
     :param lower_specification_limit: an integer or float which represents the upper control limit, commonly called the UCL
     :param threshold_percent: the threshold at which % of units above/below the number will display on the plot
@@ -160,7 +160,7 @@ def ppk_plot(
 
 
 def cpk_plot(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_specification_limit: (int, float),
     lower_specification_limit: (int, float),
     subgroup_size: int = 30,
@@ -170,7 +170,7 @@ def cpk_plot(
     """
     Boxplot the Cpk in subgroups os size `subgroup_size`.
 
-    :param data: a list, pandas.Series, or ``numpy.array`` representing the data set
+    :param data: a list, pandas.Series, or ``numpy.ndarray`` representing the data set
     :param upper_specification_limit: an integer or float which represents the upper specification limit, commonly called the USL
     :param lower_specification_limit: an integer or float which represents the upper specification limit, commonly called the LSL
     :param subgroup_size: the number of samples to include in each subgroup
@@ -256,6 +256,13 @@ def cpk_plot(
 
 
 def control_plot(*args, **kwargs) -> Axis:
+    """
+    Depreciated - not recommended for usage.  Left for historical reasons.  Use ``control_chart`` instead.
+
+    :param args:
+    :param kwargs:
+    :return:
+    """
     _logger.warning(
         'control_plot function is depreciated and will be removed in a future version; use "control_chart" instead'
     )
@@ -263,7 +270,7 @@ def control_plot(*args, **kwargs) -> Axis:
 
 
 def control_chart_base(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_control_limit: Optional[Union[int, float]] = None,
     lower_control_limit: Optional[Union[int, float]] = None,
     highlight_beyond_limits: bool = True,
@@ -281,7 +288,7 @@ def control_chart_base(
     """
     Create a control plot based on the input data.
 
-    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit; note that this is NOT the specification limit!
     :param lower_control_limit: an optional parameter which, when present, will override the internally caluclated lower control limit; note that this is NOT the specification limit!
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
@@ -576,7 +583,7 @@ def control_chart_base(
 
 
 def x_mr_chart(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     parameter_name: Optional[str] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
@@ -592,7 +599,7 @@ def x_mr_chart(
     """
     Create a I-MR control plot based on the input data.
 
-    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param parameter_name: a string representing the parameter name
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
@@ -668,7 +675,7 @@ def x_mr_chart(
 
 
 def xbar_r_chart(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     subgroup_size: int = 4,
     parameter_name: Optional[str] = None,
     highlight_beyond_limits: bool = True,
@@ -685,7 +692,7 @@ def xbar_r_chart(
     """
     Create a Xbar-R control plot based on the input data.
 
-    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param subgroup_size: an integer that determines the subgroup size
     :param parameter_name: a string representing the parameter name
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
@@ -788,7 +795,7 @@ def xbar_r_chart(
 
 
 def xbar_s_chart(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     subgroup_size: int = 12,
     parameter_name: Optional[str] = None,
     highlight_beyond_limits: bool = True,
@@ -806,7 +813,7 @@ def xbar_s_chart(
     Create a moving Xbar-S control plot based on the input data.  Recommended for datasets \
     which are to be grouped in subsets exceeding 11pcs each.
 
-    :param data: a list, pandas.Series, or numpy.array representing the data set
+    :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param subgroup_size: an integer that determines the subgroup size
     :param parameter_name: a string representing the parameter name
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
@@ -910,7 +917,7 @@ def xbar_s_chart(
 
 
 def control_chart(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     parameter_name: Optional[str] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
@@ -925,9 +932,10 @@ def control_chart(
 ) -> Figure:
     """
     Automatically selects the most appropriate type of control chart, \
-    charts, and returns a Figure.
+    based on the number of samples supplied in the data and the ``max_points``
+    and returns a ``matplotlib.figure.Figure`` containing the control chart(s).
 
-    :param data: (List[int], List[float], pd.Series, np.array),
+    :param data: (List[int], List[float], pd.Series, np.ndarray),
     :param parameter_name: a string representing the parameter name
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted

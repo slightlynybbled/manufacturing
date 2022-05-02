@@ -76,12 +76,12 @@
 <h2>Plotting &amp; Charting<a class="headerlink" href="#plotting-charting" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.ppk_plot">
-<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">ppk_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">array&gt;),</span> <span class="pre">upper_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">threshold_percent:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001,</span> <span class="pre">ax:</span> <span class="pre">typing.Optional[matplotlib.axis.Axis]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.ppk_plot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">ppk_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">upper_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">threshold_percent:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001,</span> <span class="pre">ax:</span> <span class="pre">typing.Optional[matplotlib.axis.Axis]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.ppk_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows the statistical distribution of the data along with CPK and limits.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – a list, pandas.Series, or numpy.array representing the data set</p></li>
+<li><p><strong>data</strong> – a list, pandas.Series, or numpy.ndarray representing the data set</p></li>
 <li><p><strong>upper_specification_limit</strong> – an integer or float which represents the upper control limit, commonly called the UCL</p></li>
 <li><p><strong>lower_specification_limit</strong> – an integer or float which represents the upper control limit, commonly called the UCL</p></li>
 <li><p><strong>threshold_percent</strong> – the threshold at which % of units above/below the number will display on the plot</p></li>
@@ -96,12 +96,12 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.cpk_plot">
-<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">cpk_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">array&gt;),</span> <span class="pre">upper_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">subgroup_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">30,</span> <span class="pre">max_subgroups:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">10,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.cpk_plot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">cpk_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">upper_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">subgroup_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">30,</span> <span class="pre">max_subgroups:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">10,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.cpk_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Boxplot the Cpk in subgroups os size <cite>subgroup_size</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – a list, pandas.Series, or <code class="docutils literal notranslate"><span class="pre">numpy.array</span></code> representing the data set</p></li>
+<li><p><strong>data</strong> – a list, pandas.Series, or <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> representing the data set</p></li>
 <li><p><strong>upper_specification_limit</strong> – an integer or float which represents the upper specification limit, commonly called the USL</p></li>
 <li><p><strong>lower_specification_limit</strong> – an integer or float which represents the upper specification limit, commonly called the LSL</p></li>
 <li><p><strong>subgroup_size</strong> – the number of samples to include in each subgroup</p></li>
@@ -116,9 +116,132 @@
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="manufacturing.control_chart">
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">control_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">parameter_name:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">highlight_beyond_limits:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_a:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_b:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_c:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_trend:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_mixture:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_stratification:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_overcontrol:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">max_points:</span> <span class="pre">typing.Optional[int]</span> <span class="pre">=</span> <span class="pre">60,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.control_chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically selects the most appropriate type of control chart,     based on the number of samples supplied in the data and the <code class="docutils literal notranslate"><span class="pre">max_points</span></code>
+and returns a <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code> containing the control chart(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – (List[int], List[float], pd.Series, np.ndarray),</p></li>
+<li><p><strong>parameter_name</strong> – a string representing the parameter name</p></li>
+<li><p><strong>highlight_beyond_limits</strong> – True if points beyond limits are to be highlighted</p></li>
+<li><p><strong>highlight_zone_a</strong> – True if points that are zone A violations are to be highlighted</p></li>
+<li><p><strong>highlight_zone_b</strong> – True if points that are zone B violations are to be highlighted</p></li>
+<li><p><strong>highlight_zone_c</strong> – True if points that are zone C violations are to be highlighted</p></li>
+<li><p><strong>highlight_trend</strong> – True if points that are trend violations are to be highlighted</p></li>
+<li><p><strong>highlight_mixture</strong> – True if points that are mixture violations are to be highlighted</p></li>
+<li><p><strong>highlight_stratification</strong> – True if points that are stratification violations are to be highlighted</p></li>
+<li><p><strong>highlight_overcontrol</strong> – True if points that are overcontrol violations are to be hightlighted</p></li>
+<li><p><strong>max_points</strong> – the maximum number of points to display (‘None’ to display all)</p></li>
+<li><p><strong>figure</strong> – an instance of matplotlib.figure.Figure</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>instance of matplotlib.figure.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="manufacturing.x_mr_chart">
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">x_mr_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">parameter_name:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">highlight_beyond_limits:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_a:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_b:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_c:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_trend:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_mixture:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_stratification:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_overcontrol:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">max_points:</span> <span class="pre">typing.Optional[int]</span> <span class="pre">=</span> <span class="pre">60,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.x_mr_chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a I-MR control plot based on the input data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – a list, pandas.Series, or numpy.ndarray representing the data set</p></li>
+<li><p><strong>parameter_name</strong> – a string representing the parameter name</p></li>
+<li><p><strong>highlight_beyond_limits</strong> – True if points beyond limits are to be highlighted</p></li>
+<li><p><strong>highlight_zone_a</strong> – True if points that are zone A violations are to be highlighted</p></li>
+<li><p><strong>highlight_zone_b</strong> – True if points that are zone B violations are to be highlighted</p></li>
+<li><p><strong>highlight_zone_c</strong> – True if points that are zone C violations are to be highlighted</p></li>
+<li><p><strong>highlight_trend</strong> – True if points that are trend violations are to be highlighted</p></li>
+<li><p><strong>highlight_mixture</strong> – True if points that are mixture violations are to be highlighted</p></li>
+<li><p><strong>highlight_stratification</strong> – True if points that are stratification violations are to be highlighted</p></li>
+<li><p><strong>highlight_overcontrol</strong> – True if points that are overcontrol violations are to be hightlighted</p></li>
+<li><p><strong>max_points</strong> – the maximum number of points to display (‘None’ to display all)</p></li>
+<li><p><strong>figure</strong> – instance of matplotlib.figure.Figure</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an instance of matplotlib.axis.Axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="manufacturing.xbar_r_chart">
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">xbar_r_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">subgroup_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">4,</span> <span class="pre">parameter_name:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">highlight_beyond_limits:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_a:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_b:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_c:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_trend:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_mixture:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_stratification:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_overcontrol:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">max_points:</span> <span class="pre">typing.Optional[int]</span> <span class="pre">=</span> <span class="pre">60,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.xbar_r_chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Xbar-R control plot based on the input data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – a list, pandas.Series, or numpy.ndarray representing the data set</p></li>
+<li><p><strong>subgroup_size</strong> – an integer that determines the subgroup size</p></li>
+<li><p><strong>parameter_name</strong> – a string representing the parameter name</p></li>
+<li><p><strong>highlight_beyond_limits</strong> – True if points beyond limits are to be highlighted</p></li>
+<li><p><strong>highlight_zone_a</strong> – True if points that are zone A violations are to be highlighted</p></li>
+<li><p><strong>highlight_zone_b</strong> – True if points that are zone B violations are to be highlighted</p></li>
+<li><p><strong>highlight_zone_c</strong> – True if points that are zone C violations are to be highlighted</p></li>
+<li><p><strong>highlight_trend</strong> – True if points that are trend violations are to be highlighted</p></li>
+<li><p><strong>highlight_mixture</strong> – True if points that are mixture violations are to be highlighted</p></li>
+<li><p><strong>highlight_stratification</strong> – True if points that are stratification violations are to be highlighted</p></li>
+<li><p><strong>highlight_overcontrol</strong> – True if points that are overcontrol violations are to be hightlighted</p></li>
+<li><p><strong>max_points</strong> – the maximum number of points to display (‘None’ to display all)</p></li>
+<li><p><strong>figure</strong> – an instance of matplotlib.figure.Figure</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an instance of matplotlib.figure.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="manufacturing.xbar_s_chart">
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">xbar_s_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">subgroup_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">12,</span> <span class="pre">parameter_name:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">highlight_beyond_limits:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_a:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_b:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_c:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_trend:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_mixture:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_stratification:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_overcontrol:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">max_points:</span> <span class="pre">typing.Optional[int]</span> <span class="pre">=</span> <span class="pre">60,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.xbar_s_chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a moving Xbar-S control plot based on the input data.  Recommended for datasets     which are to be grouped in subsets exceeding 11pcs each.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – a list, pandas.Series, or numpy.ndarray representing the data set</p></li>
+<li><p><strong>subgroup_size</strong> – an integer that determines the subgroup size</p></li>
+<li><p><strong>parameter_name</strong> – a string representing the parameter name</p></li>
+<li><p><strong>highlight_beyond_limits</strong> – True if points beyond limits are to be highlighted</p></li>
+<li><p><strong>highlight_zone_a</strong> – True if points that are zone A violations are to be highlighted</p></li>
+<li><p><strong>highlight_zone_b</strong> – True if points that are zone B violations are to be highlighted</p></li>
+<li><p><strong>highlight_zone_c</strong> – True if points that are zone C violations are to be highlighted</p></li>
+<li><p><strong>highlight_trend</strong> – True if points that are trend violations are to be highlighted</p></li>
+<li><p><strong>highlight_mixture</strong> – True if points that are mixture violations are to be highlighted</p></li>
+<li><p><strong>highlight_stratification</strong> – True if points that are stratification violations are to be highlighted</p></li>
+<li><p><strong>highlight_overcontrol</strong> – True if points that are overcontrol violations are to be hightlighted</p></li>
+<li><p><strong>max_points</strong> – the maximum number of points to display (‘None’ to display all)</p></li>
+<li><p><strong>figure</strong> – an instance of matplotlib.figure.Figure</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an instance of matplotlib.figure.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.control_plot">
 <span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">control_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.axis.Axis</span></span></span><a class="headerlink" href="#manufacturing.control_plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Depreciated - not recommended for usage.  Left for historical reasons.  Use <code class="docutils literal notranslate"><span class="pre">control_chart</span></code> instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 <section id="import-export">
@@ -228,7 +351,7 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Jason R. Jones.
+      &copy;2022, Jason R. Jones.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>

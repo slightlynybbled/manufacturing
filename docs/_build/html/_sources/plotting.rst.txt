@@ -118,6 +118,3 @@ Depending on the data set, the above command could result in the creation of an
 .. image:: _static/images/xbarr_chart.png
 
 .. image:: _static/images/xbars_chart.png
-
-
-

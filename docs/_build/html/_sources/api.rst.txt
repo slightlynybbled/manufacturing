@@ -15,6 +15,14 @@ Plotting & Charting
 
 .. autofunction:: manufacturing.cpk_plot
 
+.. autofunction:: manufacturing.control_chart
+
+.. autofunction:: manufacturing.x_mr_chart
+
+.. autofunction:: manufacturing.xbar_r_chart
+
+.. autofunction:: manufacturing.xbar_s_chart
+
 .. autofunction:: manufacturing.control_plot
 
 Import & Export
