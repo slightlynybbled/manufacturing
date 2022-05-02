@@ -23,4 +23,9 @@ jobs:
 
       - name: Build docs
         working-directory: ./docs
-        run: make html
+        run: |
+          mkdir gh-pages
+          touch gh-pages/.nojekyll
+          cd docs
+          poetry run sphinx-build -b html . _build
+          cp -r _build/* ../gh-pages/
