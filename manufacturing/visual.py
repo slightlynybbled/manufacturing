@@ -614,7 +614,7 @@ def x_mr_chart(
     :return: an instance of matplotlib.axis.Axis
     """
     data = coerce(data)
-    data = data[-(max_points + 1) :]
+    data = data[-(max_points + 1):]
     diff_data = abs(data.diff())
     diff_data.reset_index(inplace=True, drop=True)
 
@@ -968,7 +968,7 @@ def control_chart(
     if len(data) < max_points:
         return x_mr_chart(data, **params)
 
-    subgroup_size = len(data) // max_points
+    subgroup_size = 1 + len(data) // max_points
     if subgroup_size < 12:
         return xbar_r_chart(data, subgroup_size=subgroup_size, **params)
 
