@@ -975,7 +975,7 @@ def control_chart(
     # if data is too long, then truncate
     max_subgroup_size = len(c4_table) - 1
     max_data_points = max_subgroup_size * max_points
-    if len(data) > max_data_points:
+    if len(data) > (max_data_points - 1):
         _logger.warning(
             f"data exceeds the size at which it is easily visualized; truncating to {max_data_points} rows grouped by {max_subgroup_size}"
         )

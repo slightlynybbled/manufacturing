@@ -8,9 +8,11 @@ Go to the [documentation](https://slightlynybbled.github.io/manufacturing/index.
 
 Project is currently undergoing frequent updates for documentation and to add
 functionality and update documentation!!  Screenshots and features that you see
-on here may be out of date, but are in progress.  It is expected that 
-v1.2.X series of releases will have complete documentation and be up to 
-industry standards.
+on here may be out of date, but are in progress.
+
+Current focus is to add test coverage and shore up functionality that has 
+been implemented.  All versions before v1.2.0 will be minor bugfixes or minor 
+functionality as it is revealed in test development.
 
 # Installation
 
