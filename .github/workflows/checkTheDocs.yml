@@ -1,8 +1,5 @@
 name: Documentation Check
-on:
-  push:
-    tags:
-      - v[0-9]+.[0-9]+.[0-9]+
+on: push
 
 jobs:
   build-docs:
@@ -31,10 +28,3 @@ jobs:
           cd docs/
           poetry run sphinx-build -b html . _build
           cp -r _build/* ../gh-pages/
-
-      - name: Deploy documentation
-        if: ${{ github.event_name == 'push' }}
-        uses: JamesIves/github-pages-deploy-action@4.1.4
-        with:
-          branch: gh-pages
-          folder: gh-pages
