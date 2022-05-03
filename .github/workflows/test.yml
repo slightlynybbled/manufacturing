@@ -1,8 +1,5 @@
 name: Unit Tests and Documentation Check
-on:
-  push:
-    tags-ignore:
-      - v[0-9]+.*
+on: push
 
 jobs:
   build-docs:
