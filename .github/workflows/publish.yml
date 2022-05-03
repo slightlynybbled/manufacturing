@@ -24,6 +24,9 @@ jobs:
           pip install -U poetry twine wheel
           poetry install
 
+      - name: Run Tests
+        run: poetry run pytest
+
       - name: Build wheel file in `dist/`
         run: poetry build
 

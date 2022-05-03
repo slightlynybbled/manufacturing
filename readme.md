@@ -69,17 +69,17 @@ Items marked out were added most recently.
  - ~~Add `I-MR Chart` (see `examples/imr_chart.py`)~~
  - ~~Add `Xbar-R Chart` (subgroups between 2 and 10)~~
  - ~~Add `Xbar-S Chart` (subgroups of 11 or more)~~
- - Update documentation to reflect recent API changes
+ - ~~Update documentation to reflect recent API changes~~
  - Add automated testing
 
 # Gallery
 
-![Ppk example](images/ppk-chart-example.png)
+![Ppk example](docs/_static/images/ppk_plot.png)
 
-![Cpk example](images/cpk-by-subgroups.png)
+![Cpk example](docs/_static/images/cpk_plot.png)
 
-![X-MR Chart](images/xmr-chart.png)
+![X-MR Chart](docs/_static/images/xmr-chart.png)
 
-![Xbar-R Chart](images/xbar-r-chart.png)
+![Xbar-R Chart](docs/_static/images/xbar-r-chart.png)
 
-![Xbar-S Chart](images/xbar-s-chart.png)
+![Xbar-S Chart](docs/_static/images/xbar-s-chart.png)
