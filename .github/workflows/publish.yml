@@ -25,10 +25,25 @@ jobs:
           poetry install
 
       - name: Run Tests
-        run: poetry run pytest
+        run: poetry run pytest --cov=manufacturing --cov-report=html
 
       - name: Build wheel file in `dist/`
         run: poetry build
+
+      - name: Build docs
+        run: |
+          mkdir gh-pages
+          touch gh-pages/.nojekyll
+          cd docs/
+          poetry run sphinx-build -b html . _build
+          cp -r _build/* ../gh-pages/
+
+      - name: Deploy documentation
+        if: ${{ github.event_name == 'push' }}
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: gh-pages
 
       - name: Publish distribution 📦 to PyPI
         if: startsWith(github.ref, 'refs/tags')

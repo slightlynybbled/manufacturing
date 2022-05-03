@@ -7,3 +7,6 @@ dist/
 docs/_build/
 test_plots/
 htmlcov/
+.pytest_cache/
+
+.coverage
