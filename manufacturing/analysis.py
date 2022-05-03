@@ -277,8 +277,14 @@ def control_zone_a(
     violations = []
     for i in range(len(data) - 2):
         points = data[i : i + 3].to_numpy()
-        values = [1 for p in points if p < zone_b_lower_limit or p > zone_b_upper_limit]
 
+        values = [1 for p in points if p < zone_b_lower_limit]
+        if sum(values) > 2:
+            index = i + np.arange(3)
+            violations.append(pd.Series(data=points, index=index))
+            _logger.info(f"zone a violation found at index {i}")
+
+        values = [1 for p in points if p > zone_b_upper_limit]
         if sum(values) > 2:
             index = i + np.arange(3)
             violations.append(pd.Series(data=points, index=index))
@@ -317,8 +323,14 @@ def control_zone_b(
     violations = []
     for i in range(len(data) - 5):
         points = data[i : i + 5].to_numpy()
-        values = [1 for p in points if p < zone_c_lower_limit or p > zone_c_upper_limit]
 
+        values = [1 for p in points if p < zone_c_lower_limit]
+        if sum(values) > 3:
+            index = i + np.arange(5)
+            violations.append(pd.Series(data=points, index=index))
+            _logger.info(f"zone b violation found at index {i}")
+
+        values = [1 for p in points if p > zone_c_upper_limit]
         if sum(values) > 3:
             index = i + np.arange(5)
             violations.append(pd.Series(data=points, index=index))
@@ -494,14 +506,14 @@ def control_zone_overcontrol(
     lower_control_limit: (int, float),
 ):
     """
-    Returns a pandas.Series containing the data in which 14 consecutive points are alternating above/below the center.
+    Returns a pandas.Series containing the data in which 14 consecutive points are alternating in direction.
 
     :param data: The data to be analyzed
     :param upper_control_limit: the upper control limit
     :param lower_control_limit: the lower control limit
     :return: a pandas.Series object with all out-of-control points
     """
-    _logger.debug("identifying control over-control violations...")
+    _logger.debug("identifying over-control violations...")
     data = coerce(data)
 
     spec_range = (upper_control_limit - lower_control_limit) / 2
@@ -510,21 +522,29 @@ def control_zone_overcontrol(
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
     for i in range(len(data) - 14):
+        print(i)
         points = data[i : i + 14].to_numpy()
-        odds = points[::2]
-        evens = points[1::2]
+        diffs = np.diff(points)
 
-        if odds[0] > 0.0:
-            odds = odds[odds > spec_center]
-            evens = evens[evens < spec_center]
-        else:
-            odds = odds[odds < spec_center]
-            evens = evens[evens > spec_center]
+        values = [1 if d > 0 else d for d in diffs]
+        values = [-1 if v < 0 else v for v in values]
 
-        if len(odds) == len(evens) == 7:
+        print(values, diffs)
+        # count through to look for overcontrol
+        last_value = -values[0]
+        count = 0
+        for v in values:
+            if v != last_value:
+                count += 1
+            else:
+                count = 0
+                break
+            last_value = v
+
+        if count >= 13:
             index = i + np.arange(14)
             violations.append(pd.Series(data=points, index=index))
-            _logger.info(f"over-control violation found at index {i}")
+            _logger.info(f"overcontrol violation found at index {i}")
 
     if len(violations) == 0:
         return pd.Series(dtype="float64")

@@ -576,8 +576,8 @@ def control_chart_base(
                 linewidth=1,
                 color="none",
                 marker="o",
-                label="mixture",
-                edgecolor="blue",
+                label="overcontrol",
+                edgecolor="magenta",
                 zorder=zorder,
             )
             diameter += diameter_inc
