@@ -1,5 +1,8 @@
-name: Documentation Check
-on: push
+name: Unit Tests and Documentation Check
+on:
+  push:
+    tags-ignore:
+      - v[0-9]+.*
 
 jobs:
   build-docs:
@@ -21,6 +24,9 @@ jobs:
           pip install -U poetry twine wheel
           poetry install
 
+      - name: Run Tests
+        run: poetry run pytest --cov=manufacturing --cov-report=html
+
       - name: Build docs
         run: |
           mkdir gh-pages
@@ -28,3 +34,6 @@ jobs:
           cd docs/
           poetry run sphinx-build -b html . _build
           cp -r _build/* ../gh-pages/
+
+      - name: Build wheel file in `dist/`
+        run: poetry build
