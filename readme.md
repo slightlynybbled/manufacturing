@@ -78,8 +78,8 @@ Items marked out were added most recently.
 
 ![Cpk example](docs/_static/images/cpk_plot.png)
 
-![X-MR Chart](docs/_static/images/xmr-chart.png)
+![X-MR Chart](docs/_static/images/xmr_chart.png)
 
-![Xbar-R Chart](docs/_static/images/xbar-r-chart.png)
+![Xbar-R Chart](docs/_static/images/xbarr_chart.png)
 
-![Xbar-S Chart](docs/_static/images/xbar-s-chart.png)
+![Xbar-S Chart](docs/_static/images/xbars_chart.png)
