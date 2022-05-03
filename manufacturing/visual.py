@@ -218,8 +218,12 @@ def cpk_plot(
     p0, p1 = bp["medians"][0].get_xydata()
     x0, _ = p0
     x1, _ = p1
-    ax1.axhline(upper_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
-    ax1.axhline(lower_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
+    ax1.axhline(
+        upper_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5
+    )
+    ax1.axhline(
+        lower_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5
+    )
     ax1.set_xticks([])
     ax1.grid(color="grey", alpha=0.3)
     bp["boxes"][0].set_facecolor("lightblue")
@@ -227,8 +231,12 @@ def cpk_plot(
     bps = ax0.boxplot(data_subgroups, patch_artist=True)
     ax0.set_title(f"Cpk by Subgroups, Size={subgroup_size}")
     ax0.set_xticks([])
-    ax0.axhline(upper_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
-    ax0.axhline(lower_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5)
+    ax0.axhline(
+        upper_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5
+    )
+    ax0.axhline(
+        lower_specification_limit, color="red", linestyle="--", zorder=-1, alpha=0.5
+    )
     ax0.grid(color="grey", alpha=0.3)
 
     for box in bps["boxes"]:
@@ -290,7 +298,7 @@ def control_chart_base(
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
     max_points: Optional[int] = 60,
-    avg_label: Optional[str] = 'avg',
+    avg_label: Optional[str] = "avg",
     show_hist: bool = True,
     ax: Optional[Axis] = None,
 ) -> Axis:
@@ -315,7 +323,7 @@ def control_chart_base(
     """
     truncated = False
     if max_points is not None:
-        _logger.info(f'data set of length {len(data)} truncated to {max_points}')
+        _logger.info(f"data set of length {len(data)} truncated to {max_points}")
         truncated = True
         data = data[-max_points:]
     data = coerce(data)
@@ -361,7 +369,7 @@ def control_chart_base(
 
     ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
 
-    ax.axhline(mean, linestyle='--', color='blue', alpha=0.4, zorder=-10)
+    ax.axhline(mean, linestyle="--", color="blue", alpha=0.4, zorder=-10)
 
     left, right = ax.get_xlim()
     right_plus = (right - left) * 0.01 + right
@@ -380,10 +388,14 @@ def control_chart_base(
     # ax.text(x=0, y=mean, s=f'{avg_label}={mean:.3g}', color='blue', zorder=-10)
 
     texts = [
-        {'y': mean,
-         's': f'{avg_label}={mean:.3g}',
-         'color': 'blue', 'zorder': 100,
-         'bbox': dict(facecolor='white', edgecolor='blue', boxstyle='round', alpha=0.8),
+        {
+            "y": mean,
+            "s": f"{avg_label}={mean:.3g}",
+            "color": "blue",
+            "zorder": 100,
+            "bbox": dict(
+                facecolor="white", edgecolor="blue", boxstyle="round", alpha=0.8
+            ),
         },
         {
             "y": upper_control_limit,
@@ -593,12 +605,12 @@ def control_chart_base(
     ax.axhspan(y_lower, zone_a_lower_limit, color="red", alpha=alpha, zorder=-20)
 
     if show_hist:
-        ax.hist(data, orientation='horizontal', histtype='step')
+        ax.hist(data, orientation="horizontal", histtype="step")
 
     if truncated:
         _, y_upper = ax.get_ylim()
         x_lower, _ = ax.get_xlim()
-        ax.text(x=x_lower, y=y_upper, s='...', ha='right')
+        ax.text(x=x_lower, y=y_upper, s="...", ha="right")
 
     return ax
 
@@ -615,7 +627,7 @@ def x_mr_chart(
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
     max_points: Optional[int] = 60,
-    figure: Optional[Figure] = None
+    figure: Optional[Figure] = None,
 ) -> Figure:
     """
     Create a I-MR control plot based on the input data.
@@ -635,7 +647,7 @@ def x_mr_chart(
     :return: an instance of matplotlib.axis.Axis
     """
     data = coerce(data)
-    data = data[-(max_points + 1):]
+    data = data[-(max_points + 1) :]
     diff_data = abs(data.diff())
     diff_data.reset_index(inplace=True, drop=True)
 
@@ -648,7 +660,7 @@ def x_mr_chart(
 
     control_chart_base(
         data,
-        avg_label=r'$\bar{X}$',
+        avg_label=r"$\bar{X}$",
         highlight_beyond_limits=highlight_beyond_limits,
         highlight_zone_a=highlight_zone_a,
         highlight_zone_b=highlight_zone_b,
@@ -668,7 +680,7 @@ def x_mr_chart(
     lcl = 0.0
     control_chart_base(
         diff_data,
-        avg_label=r'$\bar{R}$',
+        avg_label=r"$\bar{R}$",
         upper_control_limit=ucl,
         lower_control_limit=lcl,
         highlight_beyond_limits=highlight_beyond_limits,
@@ -685,9 +697,9 @@ def x_mr_chart(
     axs[0].set_title("Individual")
     axs[1].set_title("Moving Range")
 
-    fig_title = f'X-mR Chart'
+    fig_title = f"X-mR Chart"
     if parameter_name is not None:
-        fig_title = f'{fig_title}, {parameter_name}'
+        fig_title = f"{fig_title}, {parameter_name}"
     fig.suptitle(fig_title)
 
     fig.tight_layout()
@@ -708,7 +720,7 @@ def xbar_r_chart(
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
     max_points: Optional[int] = 60,
-    figure: Optional[Figure] = None
+    figure: Optional[Figure] = None,
 ) -> Figure:
     """
     Create a Xbar-R control plot based on the input data.
@@ -772,7 +784,7 @@ def xbar_r_chart(
 
     control_chart_base(
         x_bars,
-        avg_label=r'$\bar{\bar{X}}$',
+        avg_label=r"$\bar{\bar{X}}$",
         lower_control_limit=lcl_x,
         upper_control_limit=ucl_x,
         highlight_beyond_limits=highlight_beyond_limits,
@@ -789,7 +801,7 @@ def xbar_r_chart(
 
     control_chart_base(
         ranges,
-        avg_label=r'$\bar{R}$',
+        avg_label=r"$\bar{R}$",
         lower_control_limit=lcl_r,
         upper_control_limit=ucl_r,
         highlight_beyond_limits=highlight_beyond_limits,
@@ -809,7 +821,7 @@ def xbar_r_chart(
 
     fig_title = r"$\bar{X}-R$ Chart, n=" + f"{n}"
     if parameter_name is not None:
-        fig_title = f'{fig_title}, {parameter_name}'
+        fig_title = f"{fig_title}, {parameter_name}"
     fig.suptitle(fig_title)
 
     fig.tight_layout()
@@ -830,7 +842,7 @@ def xbar_s_chart(
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
     max_points: Optional[int] = 60,
-    figure: Optional[Figure] = None
+    figure: Optional[Figure] = None,
 ) -> Figure:
     """
     Create a moving Xbar-S control plot based on the input data.  Recommended for datasets \
@@ -894,7 +906,7 @@ def xbar_s_chart(
 
     control_chart_base(
         x_bars,
-        avg_label=r'$\bar{\bar{X}}$',
+        avg_label=r"$\bar{\bar{X}}$",
         lower_control_limit=lcl_x,
         upper_control_limit=ucl_x,
         highlight_beyond_limits=highlight_beyond_limits,
@@ -911,7 +923,7 @@ def xbar_s_chart(
 
     control_chart_base(
         std_devs,
-        avg_label=r'$\bar{S}$',
+        avg_label=r"$\bar{S}$",
         lower_control_limit=lcl_s,
         upper_control_limit=ucl_s,
         highlight_beyond_limits=highlight_beyond_limits,
@@ -931,7 +943,7 @@ def xbar_s_chart(
 
     fig_title = r"$\bar{X}-S$ Chart, n=" + f"{n}"
     if parameter_name is not None:
-        fig_title = f'{fig_title}, {parameter_name}'
+        fig_title = f"{fig_title}, {parameter_name}"
     fig.suptitle(fig_title)
 
     fig.tight_layout()
@@ -951,7 +963,7 @@ def control_chart(
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
     max_points: Optional[int] = 60,
-    figure: Optional[Figure] = None
+    figure: Optional[Figure] = None,
 ) -> Figure:
     """
     Automatically selects the most appropriate type of control chart, \
@@ -985,7 +997,7 @@ def control_chart(
         "highlight_stratification": highlight_stratification,
         "highlight_overcontrol": highlight_overcontrol,
         "max_points": max_points,
-        "figure": figure
+        "figure": figure,
     }
 
     if len(data) < max_points:
@@ -1002,6 +1014,6 @@ def control_chart(
         _logger.warning(
             f"data exceeds the size at which it is easily visualized; truncating to {max_data_points} rows grouped by {max_subgroup_size}"
         )
-        data = data[-(max_data_points-1):]
+        data = data[-(max_data_points - 1) :]
         subgroup_size = max_subgroup_size
     return xbar_s_chart(data, subgroup_size=subgroup_size, **params)

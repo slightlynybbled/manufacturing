@@ -192,12 +192,16 @@ def calc_ppk(
 
     zupper = abs(
         calc_ppu(
-            data=data, upper_specification_limit=upper_specification_limit, skip_normality_test=True
+            data=data,
+            upper_specification_limit=upper_specification_limit,
+            skip_normality_test=True,
         )
     )
     zlower = abs(
         calc_ppl(
-            data=data, lower_specification_limit=lower_specification_limit, skip_normality_test=True
+            data=data,
+            lower_specification_limit=lower_specification_limit,
+            skip_normality_test=True,
         )
     )
 
@@ -425,7 +429,9 @@ def control_zone_mixture(
     violations = []
     for i in range(len(data) - 7):
         points = data[i : i + 8].to_numpy()
-        values = [1 for p in points if p > zone_c_upper_limit and p < zone_c_lower_limit]
+        values = [
+            1 for p in points if p > zone_c_upper_limit and p < zone_c_lower_limit
+        ]
 
         if sum(values) > 7:
             index = i + np.arange(8)
@@ -465,7 +471,9 @@ def control_zone_stratification(
     violations = []
     for i in range(len(data) - 14):
         points = data[i : i + 15].to_numpy()
-        values = [1 for p in points if p < zone_c_upper_limit and p > zone_c_lower_limit]
+        values = [
+            1 for p in points if p < zone_c_upper_limit and p > zone_c_lower_limit
+        ]
 
         if sum(values) > 14:
             index = i + np.arange(15)

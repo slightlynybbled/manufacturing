@@ -89,7 +89,9 @@ def generate_production_report(
 
         # generate zpk subgroup plot
         fig, axs = plt.subplots(1, 2, sharey=True, gridspec_kw={"width_ratios": [4, 1]})
-        cpk_plot(df[c], upper_specification_limit=ucl, lower_specification_limit=lcl, axs=axs)
+        cpk_plot(
+            df[c], upper_specification_limit=ucl, lower_specification_limit=lcl, axs=axs
+        )
         plot_name = build_path / f"cpk_plot_{fig_name}.png"
         fig.savefig(plot_name)
         text += f"![Cpk Plot: {fig_name}]({plot_name.name})\n\n"
