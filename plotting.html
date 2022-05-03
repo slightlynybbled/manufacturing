@@ -56,8 +56,8 @@ to be non-normally distributed.</p>
 </div>
 <img alt="_images/ppk_plot.png" src="_images/ppk_plot.png" />
 <p>If <code class="docutils literal notranslate"><span class="pre">manufacturing</span></code> is used in a jupyter notebook or similar environment, then
-the plot will display automatically.  Optionally, you can pass a <code class="docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code>
-instance in order to more directly manipulate the underlying <code class="docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code>.</p>
+the plot will display automatically.  Optionally, you can pass a <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code>
+instance in order to more directly manipulate the underlying <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">manufacturing</span> <span class="k">as</span> <span class="nn">mn</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
@@ -65,7 +65,7 @@ instance in order to more directly manipulate the underlying <code class="docuti
 <span class="n">mn</span><span class="o">.</span><span class="n">ppk_plot</span><span class="p">(</span><span class="n">data</span><span class="p">,</span>
             <span class="n">upper_specification_limit</span><span class="o">=</span><span class="mf">3.3</span><span class="p">,</span>
             <span class="n">lower_specification_limit</span><span class="o">=</span><span class="mf">3.1</span><span class="p">,</span>
-            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+            <span class="n">figure</span><span class="o">=</span><span class="n">fig</span><span class="p">)</span>
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">)</span>  <span class="c1"># manipulate the axis as desired</span>
 </pre></div>
