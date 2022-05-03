@@ -61,7 +61,9 @@ def test_sizes(plot_dir):
 
             fig = mn.control_chart(data, max_points=point_sizes)
             fig.savefig(path / f'test_sizes_cc_{point_sizes}_{len(data)}.png')
+
             plt.cla()
+            plt.close('all')
 
     # modify subgroup sizes to raise value error when improperly specified
     with pytest.raises(ValueError):
@@ -75,6 +77,8 @@ def test_sizes(plot_dir):
     mn.xbar_s_chart(data, subgroup_size=30)
     with pytest.raises(IndexError):
         mn.xbar_s_chart(data, subgroup_size=31)
+
+    plt.close('all')
 
 
 def test_ppk_plot(plot_dir):
@@ -92,6 +96,9 @@ def test_ppk_plot(plot_dir):
                           lower_specification_limit=8)
         fig.savefig(path / f'test_ppk_plot_{len(data)}.png')
 
+        plt.cla()
+        plt.close('all')
+
 
 def test_cpk_plot(plot_dir):
     path = plot_dir
@@ -106,3 +113,6 @@ def test_cpk_plot(plot_dir):
         fig = mn.cpk_plot(data, upper_specification_limit=12,
                           lower_specification_limit=8)
         fig.savefig(path / f'test_cpk_plot_{len(data)}.png')
+
+        plt.cla()
+        plt.close('all')
