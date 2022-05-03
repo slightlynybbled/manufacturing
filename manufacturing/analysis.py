@@ -23,7 +23,7 @@ def normality_test(
     _logger.debug("checking data for normality")
 
     stat, p = shapiro(data)
-    _logger.debug(f"shapiro statistics={stat:.03f}, p={p:.03f}")
+    _logger.debug(f"shapiro statistics={stat:.03g}, p={p:.03g}")
     if p > alpha:
         is_normal_shapiro_test = True
         _logger.debug("shapiro test indicates that the distribution is normal")
@@ -39,7 +39,7 @@ def normality_test(
         success = False
 
     if success:
-        _logger.debug(f"k^2 statistics={stat:.03f}, p={p:.03f}")
+        _logger.debug(f"k^2 statistics={stat:.03g}, p={p:.03g}")
         if p > alpha:
             is_normal_k2 = True
             _logger.debug("k^2 test indicates that the distribution is normal")
@@ -61,7 +61,7 @@ def normality_test(
     return is_normal
 
 
-def suggest_control_limits(
+def suggest_specification_limits(
     data: (List[int], List[float], pd.Series, np.array), sigma_level: float = 3.0
 ):
     """
@@ -71,29 +71,29 @@ def suggest_control_limits(
     :param data: the data to be analyzed
     :param sigma_level: the sigma level; the default value is 3.0, but some users \
     may prefer a higher sigma level for their process
-    :return: a `dict` containing the `upper_control_limit` and `lower_control_limit` keys
+    :return: a ``tuple`` containing the ``upper_specification_limit`` and ``upper_specification_limit`` keys
     """
-    _logger.debug("defining control limits...")
+    _logger.debug("defining specification limits...")
     data = coerce(data)
     normality_test(data)
 
     mean = data.mean()
-    sigma = data.std()
+    sigma = data.std() * 1.25  # add a buffer to allow normal process variation
 
     return mean - sigma_level * sigma, mean + sigma_level * sigma
 
 
 def calc_pp(
     data: (List[int], List[float], pd.Series, np.array),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    upper_specification_limit: (int, float),
+    lower_specification_limit: (int, float),
 ):
     """
     Calculate and return the Pp of the provided dataset given the control limits.
 
     :param data: the data to be analyzed
-    :param upper_control_limit: the upper control limit
-    :param lower_control_limit: the lower control limit
+    :param upper_specification_limit: the upper control limit
+    :param lower_specification_limit: the lower control limit
     :return: the pp level
     """
     _logger.debug("calculating pp...")
@@ -101,23 +101,23 @@ def calc_pp(
 
     normality_test(data)
 
-    pp = (upper_control_limit - lower_control_limit) / 6 * data.std()
+    pp = (upper_specification_limit - lower_specification_limit) / 6 * data.std()
 
-    _logger.debug(f"cp = {pp:.03f} on the supplied dataset of length {len(data)}")
+    _logger.debug(f"cp = {pp:.03g} on the supplied dataset of length {len(data)}")
 
     return pp
 
 
 def calc_ppu(
     data: (List[int], List[float], pd.Series, np.array),
-    upper_control_limit: (int, float),
+    upper_specification_limit: (int, float),
     skip_normality_test: bool = True,
 ):
     """
     Calculate and return the Pp (upper) of the provided dataset given the upper control limit.
 
     :param data: the data to be analyzed
-    :param upper_control_limit: the upper control limit
+    :param upper_specification_limit: the upper control limit
     :param skip_normality_test: used when the normality test is not necessary
     :return: the pp level
     """
@@ -130,7 +130,7 @@ def calc_ppu(
     mean = data.mean()
     std_dev = data.std()
 
-    ppu = (upper_control_limit - mean) / (3 * std_dev)
+    ppu = (upper_specification_limit - mean) / (3 * std_dev)
 
     _logger.debug(
         f"dataset of length {len(data)}, " f"mean={mean}, " f"std_dev={std_dev}"
@@ -142,14 +142,14 @@ def calc_ppu(
 
 def calc_ppl(
     data: (List[int], List[float], pd.Series, np.array),
-    lower_control_limit: (int, float),
+    lower_specification_limit: (int, float),
     skip_normality_test=True,
 ):
     """
     Calculate and return the Pp (lower) of the provided dataset given the lower control limit.
 
     :param data: the data to be analyzed
-    :param lower_control_limit: the lower control limit
+    :param lower_specification_limit: the lower control limit
     :param skip_normality_test: used when the normality test is not necessary
     :return: the pp level
     """
@@ -162,7 +162,7 @@ def calc_ppl(
     mean = data.mean()
     std_dev = data.std()
 
-    ppl = (mean - lower_control_limit) / (3 * std_dev)
+    ppl = (mean - lower_specification_limit) / (3 * std_dev)
 
     _logger.debug(
         f"dataset of length {len(data)}, " f"mean={mean}, " f"std_dev={std_dev}"
@@ -174,15 +174,15 @@ def calc_ppl(
 
 def calc_ppk(
     data: (List[int], List[float], pd.Series, np.array),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    upper_specification_limit: (int, float),
+    lower_specification_limit: (int, float),
 ):
     """
     Calculate and return the Pp (upper) of the provided dataset given the upper control limit.
 
     :param data: the data to be analyzed
-    :param upper_control_limit: the upper control limit
-    :param lower_control_limit: the lower control limit
+    :param upper_specification_limit: the upper specification limit
+    :param lower_specification_limit: the lower control limit
     :return: the ppk level
     """
     _logger.debug("calculating ppk...")
@@ -192,12 +192,12 @@ def calc_ppk(
 
     zupper = abs(
         calc_ppu(
-            data=data, upper_control_limit=upper_control_limit, skip_normality_test=True
+            data=data, upper_specification_limit=upper_specification_limit, skip_normality_test=True
         )
     )
     zlower = abs(
         calc_ppl(
-            data=data, lower_control_limit=lower_control_limit, skip_normality_test=True
+            data=data, lower_specification_limit=lower_specification_limit, skip_normality_test=True
         )
     )
 
@@ -205,10 +205,10 @@ def calc_ppk(
 
     _logger.debug(
         f"dataset of length {len(data)}, "
-        f"zupper={zupper:.03f}, "
-        f"zlower={zlower:.03f}"
+        f"zupper={zupper:.03g}, "
+        f"zlower={zlower:.03g}"
     )
-    _logger.debug(f"cpk = {cpk:.03f}")
+    _logger.debug(f"cpk = {cpk:.03g}")
 
     ratio = zupper / zlower
     if ratio < 1:

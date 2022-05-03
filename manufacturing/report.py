@@ -8,7 +8,7 @@ from subprocess import check_call
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from manufacturing.analysis import normality_test, suggest_control_limits
+from manufacturing.analysis import normality_test, suggest_specification_limits
 from manufacturing.data_import import parse_col_for_limits
 from manufacturing.visual import ppk_plot, cpk_plot, control_chart
 
@@ -71,7 +71,7 @@ def generate_production_report(
                 f"Established limits:\n\n * LCL = {lcl:.02g}\n * UCL = {ucl:.02g}\n\n"
             )
         else:
-            lcl, ucl = suggest_control_limits(df[c])
+            lcl, ucl = suggest_specification_limits(df[c])
             text += (
                 f"Recommended limits:\n\n * LCL = {lcl:.02g}\n * UCL = {ucl:.02g}\n\n"
             )

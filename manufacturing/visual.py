@@ -37,7 +37,7 @@ def ppk_plot(
     upper_specification_limit: (int, float),
     lower_specification_limit: (int, float),
     threshold_percent: float = 0.001,
-    ax: Optional[Axis] = None,
+    figure: Optional[Figure] = None,
 ):
     """
     Shows the statistical distribution of the data along with CPK and limits.
@@ -46,16 +46,23 @@ def ppk_plot(
     :param upper_specification_limit: an integer or float which represents the upper control limit, commonly called the UCL
     :param lower_specification_limit: an integer or float which represents the upper control limit, commonly called the UCL
     :param threshold_percent: the threshold at which % of units above/below the number will display on the plot
-    :param ax: an instance of matplotlig.axis.Axis
-    :return: None
+    :param figure: an instance of matplotlig.axis.Axis
+    :return: ``matplotlib.figure.Figure``
     """
 
     data = coerce(data)
     mean = data.mean()
     std = data.std()
 
-    if ax is None:
+    if figure is None:
         fig, ax = plt.subplots()
+    else:
+        fig = figure
+        axs = fig.get_axes()
+        if len(axs) > 0:
+            ax = axs[0]
+        else:
+            ax = axs
 
     ax.hist(data, density=True, label="data", alpha=0.3)
     x = np.linspace(mean - 4 * std, mean + 4 * std, 100)
@@ -94,22 +101,22 @@ def ppk_plot(
 
     lower_percent = 100.0 * stats.norm.cdf(lower_specification_limit, mean, std)
     lower_percent_text = (
-        f"{lower_percent:.02f}% < LSL" if lower_percent > threshold_percent else None
+        f"{lower_percent:.02g}% < LSL" if lower_percent > threshold_percent else None
     )
 
     higher_percent = 100.0 - 100.0 * stats.norm.cdf(
         upper_specification_limit, mean, std
     )
     higher_percent_text = (
-        f"{higher_percent:.02f}% > USL" if higher_percent > threshold_percent else None
+        f"{higher_percent:.02g}% > USL" if higher_percent > threshold_percent else None
     )
 
     left, right = ax.get_xlim()
     bottom, top = ax.get_ylim()
     cpk = calc_ppk(
         data,
-        upper_control_limit=upper_specification_limit,
-        lower_control_limit=lower_specification_limit,
+        upper_specification_limit=upper_specification_limit,
+        lower_specification_limit=lower_specification_limit,
     )
 
     lower_sigma_level = (mean - lower_specification_limit) / std
@@ -136,7 +143,7 @@ def ppk_plot(
     else:
         ax.text(right, top * 0.95, s=f"limit > $6\sigma$", ha="right")
 
-    strings = [f"Ppk = {cpk:.02f}"]
+    strings = [f"Ppk = {cpk:.02g}"]
 
     strings.append(f"$\mu = {mean:.3g}$")
     strings.append(f"$\sigma = {std:.3g}$")
@@ -157,6 +164,7 @@ def ppk_plot(
     )
 
     ax.legend(loc="lower right")
+    return fig
 
 
 def cpk_plot(
@@ -236,8 +244,8 @@ def cpk_plot(
     for i, bp_median in enumerate(bps["medians"]):
         cpk = calc_ppk(
             data_subgroups[i],
-            upper_control_limit=upper_specification_limit,
-            lower_control_limit=lower_specification_limit,
+            upper_specification_limit=upper_specification_limit,
+            lower_specification_limit=lower_specification_limit,
         )
         cpks.append(cpk)
     cpks = pd.Series(cpks)
@@ -247,8 +255,8 @@ def cpk_plot(
 
     ppk = calc_ppk(
         data,
-        upper_control_limit=upper_specification_limit,
-        lower_control_limit=lower_specification_limit,
+        upper_specification_limit=upper_specification_limit,
+        lower_specification_limit=lower_specification_limit,
     )
     ax1.table([[f"$Ppk: {ppk:.02g}$"], [f"$Cpk_{{av}}:{cpks.mean():.02g}$"]])
 
