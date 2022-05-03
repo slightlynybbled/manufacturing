@@ -1,6 +1,7 @@
-import pytest
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pytest
 
 import manufacturing as mn
 
@@ -49,17 +50,18 @@ def test_sizes(plot_dir):
         for size in [29, 35, 59, 60, 61, 119, 120, 121, 599, 600,
                      601, 1799, 1800, 1801, 2000, 2800]:
             data = np.random.normal(loc=10, scale=1.0, size=size)
-            fig = mn.x_mr_chart(data)
+            fig = mn.x_mr_chart(data, max_points=point_sizes)
             fig.savefig(path / f'test_sizes_xmr_{point_sizes}_{len(data)}.png')
 
-            fig = mn.xbar_r_chart(data)
+            fig = mn.xbar_r_chart(data, max_points=point_sizes)
             fig.savefig(path / f'test_sizes_xbarr_{point_sizes}_{len(data)}.png')
 
-            fig = mn.xbar_s_chart(data)
+            fig = mn.xbar_s_chart(data, max_points=point_sizes)
             fig.savefig(path / f'test_sizes_xbars_{point_sizes}_{len(data)}.png')
 
             fig = mn.control_chart(data, max_points=point_sizes)
             fig.savefig(path / f'test_sizes_cc_{point_sizes}_{len(data)}.png')
+            plt.cla()
 
     # modify subgroup sizes to raise value error when improperly specified
     with pytest.raises(ValueError):

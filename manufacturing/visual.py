@@ -72,25 +72,25 @@ def ppk_plot(
     bottom, top = ax.get_ylim()
 
     ax.axvline(mean, linestyle="--")
-    ax.text(mean, top * 1.01, s="$\mu$", ha="center")
+    ax.text(mean, top * 1.01, s=r"$\mu$", ha="center")
 
     ax.axvline(mean + std, alpha=0.6, linestyle="--")
-    ax.text(mean + std, top * 1.01, s="$\sigma$", ha="center")
+    ax.text(mean + std, top * 1.01, s=r"$\sigma$", ha="center")
 
     ax.axvline(mean - std, alpha=0.6, linestyle="--")
-    ax.text(mean - std, top * 1.01, s="$-\sigma$", ha="center")
+    ax.text(mean - std, top * 1.01, s=r"$-\sigma$", ha="center")
 
     ax.axvline(mean + 2 * std, alpha=0.4, linestyle="--")
-    ax.text(mean + 2 * std, top * 1.01, s="$2\sigma$", ha="center")
+    ax.text(mean + 2 * std, top * 1.01, s=r"$2\sigma$", ha="center")
 
     ax.axvline(mean - 2 * std, alpha=0.4, linestyle="--")
-    ax.text(mean - 2 * std, top * 1.01, s="-$2\sigma$", ha="center")
+    ax.text(mean - 2 * std, top * 1.01, s=r"-$2\sigma$", ha="center")
 
     ax.axvline(mean + 3 * std, alpha=0.2, linestyle="--")
-    ax.text(mean + 3 * std, top * 1.01, s="$3\sigma$", ha="center")
+    ax.text(mean + 3 * std, top * 1.01, s=r"$3\sigma$", ha="center")
 
     ax.axvline(mean - 3 * std, alpha=0.2, linestyle="--")
-    ax.text(mean - 3 * std, top * 1.01, s="-$3\sigma$", ha="center")
+    ax.text(mean - 3 * std, top * 1.01, s=r"-$3\sigma$", ha="center")
 
     ax.fill_between(
         x, pdf, where=x < lower_specification_limit, facecolor="red", alpha=0.5
@@ -291,6 +291,7 @@ def control_chart_base(
     highlight_overcontrol: bool = False,
     max_points: Optional[int] = 60,
     avg_label: Optional[str] = 'avg',
+    show_hist: bool = True,
     ax: Optional[Axis] = None,
 ) -> Axis:
     """
@@ -308,10 +309,14 @@ def control_chart_base(
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
     :param max_points: the maximum number of points to display ('None' to display all)
+    :param show_hist: show a histogram to the left of the plot
     :param ax: an instance of matplotlib.axis.Axis
     :return: an instance of matplotlib.axis.Axis
     """
+    truncated = False
     if max_points is not None:
+        _logger.info(f'data set of length {len(data)} truncated to {max_points}')
+        truncated = True
         data = data[-max_points:]
     data = coerce(data)
 
@@ -587,6 +592,14 @@ def control_chart_base(
     )
     ax.axhspan(y_lower, zone_a_lower_limit, color="red", alpha=alpha, zorder=-20)
 
+    if show_hist:
+        ax.hist(data, orientation='horizontal', histtype='step')
+
+    if truncated:
+        _, y_upper = ax.get_ylim()
+        x_lower, _ = ax.get_xlim()
+        ax.text(x=x_lower, y=y_upper, s='...', ha='right')
+
     return ax
 
 
@@ -770,6 +783,7 @@ def xbar_r_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
+        max_points=max_points,
         ax=axs[0],
     )
 
@@ -786,6 +800,7 @@ def xbar_r_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
+        max_points=max_points,
         ax=axs[1],
     )
 
