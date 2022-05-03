@@ -522,14 +522,12 @@ def control_zone_overcontrol(
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
     for i in range(len(data) - 14):
-        print(i)
         points = data[i : i + 14].to_numpy()
         diffs = np.diff(points)
 
         values = [1 if d > 0 else d for d in diffs]
         values = [-1 if v < 0 else v for v in values]
 
-        print(values, diffs)
         # count through to look for overcontrol
         last_value = -values[0]
         count = 0
