@@ -37,32 +37,15 @@
 <section id="calculations">
 <h2>Calculations<a class="headerlink" href="#calculations" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="manufacturing.suggest_control_limits">
-<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">suggest_control_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">array&gt;),</span> <span class="pre">sigma_level:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">3.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.suggest_control_limits" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a data set and a sigma level, will return a dict containing the <cite>upper_control_limit</cite> and     <cite>lower_control_limit</cite>. values</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> – the data to be analyzed</p></li>
-<li><p><strong>sigma_level</strong> – the sigma level; the default value is 3.0, but some users     may prefer a higher sigma level for their process</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a <cite>dict</cite> containing the <cite>upper_control_limit</cite> and <cite>lower_control_limit</cite> keys</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.calc_ppk">
-<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">calc_ppk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">array&gt;),</span> <span class="pre">upper_control_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_control_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.calc_ppk" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">calc_ppk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">array&gt;),</span> <span class="pre">upper_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.calc_ppk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate and return the Pp (upper) of the provided dataset given the upper control limit.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – the data to be analyzed</p></li>
-<li><p><strong>upper_control_limit</strong> – the upper control limit</p></li>
-<li><p><strong>lower_control_limit</strong> – the lower control limit</p></li>
+<li><p><strong>upper_specification_limit</strong> – the upper specification limit</p></li>
+<li><p><strong>lower_specification_limit</strong> – the lower control limit</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -76,7 +59,7 @@
 <h2>Plotting &amp; Charting<a class="headerlink" href="#plotting-charting" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.ppk_plot">
-<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">ppk_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">upper_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">threshold_percent:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001,</span> <span class="pre">ax:</span> <span class="pre">typing.Optional[matplotlib.axis.Axis]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.ppk_plot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">ppk_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">upper_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">threshold_percent:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">0.001,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.ppk_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shows the statistical distribution of the data along with CPK and limits.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -85,11 +68,11 @@
 <li><p><strong>upper_specification_limit</strong> – an integer or float which represents the upper control limit, commonly called the UCL</p></li>
 <li><p><strong>lower_specification_limit</strong> – an integer or float which represents the upper control limit, commonly called the UCL</p></li>
 <li><p><strong>threshold_percent</strong> – the threshold at which % of units above/below the number will display on the plot</p></li>
-<li><p><strong>ax</strong> – an instance of matplotlig.axis.Axis</p></li>
+<li><p><strong>figure</strong> – an instance of matplotlig.axis.Axis</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p>
 </dd>
 </dl>
 </dd></dl>
