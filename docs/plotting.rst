@@ -27,8 +27,8 @@ to be non-normally distributed.
 .. image:: _static/images/ppk_plot.png
 
 If ``manufacturing`` is used in a jupyter notebook or similar environment, then
-the plot will display automatically.  Optionally, you can pass a ``matplotlib.axes.Axes``
-instance in order to more directly manipulate the underlying ``matplotlib.axes.Axes``.
+the plot will display automatically.  Optionally, you can pass a ``matplotlib.figure.Figure``
+instance in order to more directly manipulate the underlying ``matplotlib.figure.Figure``.
 
 .. code-block:: python
 
@@ -39,7 +39,7 @@ instance in order to more directly manipulate the underlying ``matplotlib.axes.A
     mn.ppk_plot(data,
                 upper_specification_limit=3.3,
                 lower_specification_limit=3.1,
-                ax=ax)
+                figure=fig)
 
     ax.set_xlim(3.0, 3.5)  # manipulate the axis as desired
 
