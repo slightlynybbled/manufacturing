@@ -630,8 +630,8 @@ def x_mr_chart(
     max_points: Optional[int] = 60,
     figure: Optional[Figure] = None,
 ) -> Figure:
-    """
-    Create a I-MR control plot based on the input data.
+    r"""
+    Create a :math:`X-mR` control plot based on the input data.
 
     :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param parameter_name: a string representing the parameter name
@@ -723,8 +723,8 @@ def xbar_r_chart(
     max_points: Optional[int] = 60,
     figure: Optional[Figure] = None,
 ) -> Figure:
-    """
-    Create a Xbar-R control plot based on the input data.
+    r"""
+    Create a :math:`\bar{X}-R` control plot based on the input data.
 
     :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param subgroup_size: an integer that determines the subgroup size
@@ -845,8 +845,8 @@ def xbar_s_chart(
     max_points: Optional[int] = 60,
     figure: Optional[Figure] = None,
 ) -> Figure:
-    """
-    Create a moving Xbar-S control plot based on the input data.  Recommended for datasets \
+    r"""
+    Create a moving :math:`\bar{X}-S` control plot based on the input data.  Recommended for datasets \
     which are to be grouped in subsets exceeding 11pcs each.
 
     :param data: a list, pandas.Series, or numpy.ndarray representing the data set

@@ -71,7 +71,7 @@ Zone Control Plot.  This plot will highlight up to 8 different rules or violatio
 based on the input data set.  If a control chart rule is not violated, then it will
 not be placed on the chart.
 
-There are three different types of ``control charts`` defined within ``manufacturing``:
+There are three different types of control charts defined within ``manufacturing``:
 
  * :meth:`manufacturing.x_mr_chart()` for small data sets
  * :meth:`manufacturing.xbar_r_chart()` for subgroups between 2 and 10, inclusive
@@ -118,3 +118,21 @@ Depending on the data set, the above command could result in the creation of an
 .. image:: _static/images/xbarr_chart.png
 
 .. image:: _static/images/xbars_chart.png
+
+Anatomy of a  Control Chart
+===========================
+
+A control chart is an information-dense representation of data coming
+off of testers.  The ``manufacturing`` control chart has several sections
+that warrant further explanation:
+
+ * chart type - the chart type, usually based on recommended groupings
+ * group size - when present, indicates how many samples were grouped to present each datapoint
+ * distribution histogram - the statistical distribution of the data
+ * more data indicator - when present, indicates that data was truncated before display in order to to not present so much information that the plot becomes unreadable
+ * out of control indicators - when present, indicate that the process is out of control or nearly so
+ * upper control limit - the upper control limit as calculated from the data on the plot
+ * avg value - the average value as calculated from the data on the plot
+ * lower control limit - the lower control limit as calculated from the data on the plot
+
+.. image:: _static/images/x_bar_s-anatomy.png
