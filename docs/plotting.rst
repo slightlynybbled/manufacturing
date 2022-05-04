@@ -7,7 +7,7 @@ information-dense plotting tools.
 Ppk Plot
 ---------
 
-The PPK plot takes all of the data - not just a sample - and determines the process
+The :meth:`manufacturing.ppk_plot` takes all of the data - not just a sample - and determines the process
 capability.  This is not a snapshot in time but a look at the entire history.  Careful,
 which this can be can be deceiving!
 
@@ -46,7 +46,7 @@ instance in order to more directly manipulate the underlying ``matplotlib.figure
 Cpk Chart
 ---------
 
-The Cpk chart gives snapshots of process capability.  In most cases, the average
+The :meth:`manufacturing.cpk_plot` gives snapshots of process capability.  In most cases, the average
 Cpk value should be close to the overall Ppk value.  If not, then the process may
 not be in control.
 
@@ -66,18 +66,18 @@ not be in control.
 Zone Control Chart
 ------------------
 
-Perhaps the most useful chart is the ``manufacturing.control_plot``, also known as a
+Perhaps the most useful chart is the :meth:`manufacturing.control_plot`, also known as a
 Zone Control Plot.  This plot will highlight up to 8 different rules or violations
 based on the input data set.  If a control chart rule is not violated, then it will
 not be placed on the chart.
 
 There are three different types of ``control charts`` defined within ``manufacturing``:
 
- * ``x_mr_chart()`` for small data sets
- * ``xbar_r_chart()`` for subgroups between 2 and 10, inclusive
- * ``xbar_s_chart()`` for subgroups larger than 11, inclusive
+ * :meth:`manufacturing.x_mr_chart()` for small data sets
+ * :meth:`manufacturing.xbar_r_chart()` for subgroups between 2 and 10, inclusive
+ * :meth:`manufacturing.xbar_s_chart()` for subgroups larger than 11, inclusive
 
-Using the ``control_plot`` function will automatically select the appropriate
+Using the :meth:`manufacturing.control_plot` function will automatically select the appropriate
 control chart type based on the number of data points supplied.
 
 .. list-table:: Control Chart Rules by Severity
