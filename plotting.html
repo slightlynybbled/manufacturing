@@ -40,7 +40,7 @@
 information-dense plotting tools.</p>
 <section id="ppk-plot">
 <h2>Ppk Plot<a class="headerlink" href="#ppk-plot" title="Permalink to this headline">¶</a></h2>
-<p>The PPK plot takes all of the data - not just a sample - and determines the process
+<p>The <a class="reference internal" href="api.html#manufacturing.ppk_plot" title="manufacturing.ppk_plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">manufacturing.ppk_plot()</span></code></a> takes all of the data - not just a sample - and determines the process
 capability.  This is not a snapshot in time but a look at the entire history.  Careful,
 which this can be can be deceiving!</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">manufacturing.ppk_plot</span></code> will estimate the distribution based on the input
@@ -73,7 +73,7 @@ instance in order to more directly manipulate the underlying <code class="docuti
 </section>
 <section id="cpk-chart">
 <h2>Cpk Chart<a class="headerlink" href="#cpk-chart" title="Permalink to this headline">¶</a></h2>
-<p>The Cpk chart gives snapshots of process capability.  In most cases, the average
+<p>The <a class="reference internal" href="api.html#manufacturing.cpk_plot" title="manufacturing.cpk_plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">manufacturing.cpk_plot()</span></code></a> gives snapshots of process capability.  In most cases, the average
 Cpk value should be close to the overall Ppk value.  If not, then the process may
 not be in control.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">manufacturing</span> <span class="k">as</span> <span class="nn">mn</span>
@@ -90,19 +90,19 @@ not be in control.</p>
 </section>
 <section id="zone-control-chart">
 <h2>Zone Control Chart<a class="headerlink" href="#zone-control-chart" title="Permalink to this headline">¶</a></h2>
-<p>Perhaps the most useful chart is the <code class="docutils literal notranslate"><span class="pre">manufacturing.control_plot</span></code>, also known as a
+<p>Perhaps the most useful chart is the <a class="reference internal" href="api.html#manufacturing.control_plot" title="manufacturing.control_plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">manufacturing.control_plot()</span></code></a>, also known as a
 Zone Control Plot.  This plot will highlight up to 8 different rules or violations
 based on the input data set.  If a control chart rule is not violated, then it will
 not be placed on the chart.</p>
-<p>There are three different types of <code class="docutils literal notranslate"><span class="pre">control</span> <span class="pre">charts</span></code> defined within <code class="docutils literal notranslate"><span class="pre">manufacturing</span></code>:</p>
+<p>There are three different types of control charts defined within <code class="docutils literal notranslate"><span class="pre">manufacturing</span></code>:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">x_mr_chart()</span></code> for small data sets</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">xbar_r_chart()</span></code> for subgroups between 2 and 10, inclusive</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">xbar_s_chart()</span></code> for subgroups larger than 11, inclusive</p></li>
+<li><p><a class="reference internal" href="api.html#manufacturing.x_mr_chart" title="manufacturing.x_mr_chart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">manufacturing.x_mr_chart()</span></code></a> for small data sets</p></li>
+<li><p><a class="reference internal" href="api.html#manufacturing.xbar_r_chart" title="manufacturing.xbar_r_chart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">manufacturing.xbar_r_chart()</span></code></a> for subgroups between 2 and 10, inclusive</p></li>
+<li><p><a class="reference internal" href="api.html#manufacturing.xbar_s_chart" title="manufacturing.xbar_s_chart"><code class="xref py py-meth docutils literal notranslate"><span class="pre">manufacturing.xbar_s_chart()</span></code></a> for subgroups larger than 11, inclusive</p></li>
 </ul>
 </div></blockquote>
-<p>Using the <code class="docutils literal notranslate"><span class="pre">control_plot</span></code> function will automatically select the appropriate
+<p>Using the <a class="reference internal" href="api.html#manufacturing.control_plot" title="manufacturing.control_plot"><code class="xref py py-meth docutils literal notranslate"><span class="pre">manufacturing.control_plot()</span></code></a> function will automatically select the appropriate
 control chart type based on the number of data points supplied.</p>
 <table class="docutils align-default" id="id1">
 <caption><span class="caption-text">Control Chart Rules by Severity
@@ -155,6 +155,25 @@ control chart type based on the number of data points supplied.</p>
 <img alt="_images/xbars_chart.png" src="_images/xbars_chart.png" />
 </section>
 </section>
+<section id="anatomy-of-a-control-chart">
+<h1>Anatomy of a  Control Chart<a class="headerlink" href="#anatomy-of-a-control-chart" title="Permalink to this headline">¶</a></h1>
+<p>A control chart is an information-dense representation of data coming
+off of testers.  The <code class="docutils literal notranslate"><span class="pre">manufacturing</span></code> control chart has several sections
+that warrant further explanation:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>chart type - the chart type, usually based on recommended groupings</p></li>
+<li><p>group size - when present, indicates how many samples were grouped to present each datapoint</p></li>
+<li><p>distribution histogram - the statistical distribution of the data</p></li>
+<li><p>more data indicator - when present, indicates that data was truncated before display in order to to not present so much information that the plot becomes unreadable</p></li>
+<li><p>out of control indicators - when present, indicate that the process is out of control or nearly so</p></li>
+<li><p>upper control limit - the upper control limit as calculated from the data on the plot</p></li>
+<li><p>avg value - the average value as calculated from the data on the plot</p></li>
+<li><p>lower control limit - the lower control limit as calculated from the data on the plot</p></li>
+</ul>
+</div></blockquote>
+<img alt="_images/x_bar_s-anatomy.png" src="_images/x_bar_s-anatomy.png" />
+</section>
 
 
           </div>
@@ -188,6 +207,7 @@ control chart type based on the number of data points supplied.</p>
 <li class="toctree-l2"><a class="reference internal" href="#zone-control-chart">Zone Control Chart</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="#anatomy-of-a-control-chart">Anatomy of a  Control Chart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 

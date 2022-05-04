@@ -13,6 +13,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Plotting" href="plotting.html" />
@@ -36,6 +37,24 @@
 <h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
 <section id="calculations">
 <h2>Calculations<a class="headerlink" href="#calculations" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="manufacturing.suggest_specification_limits">
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">suggest_specification_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">array&gt;),</span> <span class="pre">sigma_level:</span> <span class="pre">float</span> <span class="pre">=</span> <span class="pre">3.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.suggest_specification_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a data set and a sigma level, will return a dict containing the <cite>upper_control_limit</cite> and     <cite>lower_control_limit</cite>. values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – the data to be analyzed</p></li>
+<li><p><strong>sigma_level</strong> – the sigma level; the default value is 3.0, but some users     may prefer a higher sigma level for their process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a <code class="docutils literal notranslate"><span class="pre">tuple</span></code> containing the <code class="docutils literal notranslate"><span class="pre">upper_specification_limit</span></code> and <code class="docutils literal notranslate"><span class="pre">upper_specification_limit</span></code> keys</p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.calc_ppk">
 <span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">calc_ppk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;built-in</span> <span class="pre">function</span> <span class="pre">array&gt;),</span> <span class="pre">upper_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.calc_ppk" title="Permalink to this definition">¶</a></dt>
@@ -77,6 +96,7 @@
 </dl>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.cpk_plot">
 <span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">cpk_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">upper_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">subgroup_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">30,</span> <span class="pre">max_subgroups:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">10,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.cpk_plot" title="Permalink to this definition">¶</a></dt>
@@ -98,6 +118,7 @@
 </dl>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.control_chart">
 <span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">control_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">parameter_name:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">highlight_beyond_limits:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_a:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_b:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_c:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_trend:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_mixture:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_stratification:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_overcontrol:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">max_points:</span> <span class="pre">typing.Optional[int]</span> <span class="pre">=</span> <span class="pre">60,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.control_chart" title="Permalink to this definition">¶</a></dt>
@@ -126,10 +147,11 @@ and returns a <code class="docutils literal notranslate"><span class="pre">matpl
 </dl>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.x_mr_chart">
 <span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">x_mr_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">parameter_name:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">highlight_beyond_limits:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_a:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_b:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_c:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_trend:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_mixture:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_stratification:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_overcontrol:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">max_points:</span> <span class="pre">typing.Optional[int]</span> <span class="pre">=</span> <span class="pre">60,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.x_mr_chart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a I-MR control plot based on the input data.</p>
+<dd><p>Create a <span class="math notranslate nohighlight">\(X-mR\)</span> control plot based on the input data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -153,10 +175,11 @@ and returns a <code class="docutils literal notranslate"><span class="pre">matpl
 </dl>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.xbar_r_chart">
 <span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">xbar_r_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">subgroup_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">4,</span> <span class="pre">parameter_name:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">highlight_beyond_limits:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_a:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_b:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_c:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_trend:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_mixture:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_stratification:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_overcontrol:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">max_points:</span> <span class="pre">typing.Optional[int]</span> <span class="pre">=</span> <span class="pre">60,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.xbar_r_chart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a Xbar-R control plot based on the input data.</p>
+<dd><p>Create a <span class="math notranslate nohighlight">\(\bar{X}-R\)</span> control plot based on the input data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -181,10 +204,11 @@ and returns a <code class="docutils literal notranslate"><span class="pre">matpl
 </dl>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.xbar_s_chart">
 <span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">xbar_s_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">subgroup_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">12,</span> <span class="pre">parameter_name:</span> <span class="pre">typing.Optional[str]</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">highlight_beyond_limits:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_a:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_b:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_zone_c:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_trend:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">highlight_mixture:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_stratification:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">highlight_overcontrol:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">max_points:</span> <span class="pre">typing.Optional[int]</span> <span class="pre">=</span> <span class="pre">60,</span> <span class="pre">figure:</span> <span class="pre">typing.Optional[matplotlib.figure.Figure]</span> <span class="pre">=</span> <span class="pre">None</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.xbar_s_chart" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a moving Xbar-S control plot based on the input data.  Recommended for datasets     which are to be grouped in subsets exceeding 11pcs each.</p>
+<dd><p>Create a moving <span class="math notranslate nohighlight">\(\bar{X}-S\)</span> control plot based on the input data.  Recommended for datasets which are to be grouped in subsets exceeding 11pcs each.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -209,6 +233,7 @@ and returns a <code class="docutils literal notranslate"><span class="pre">matpl
 </dl>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.control_plot">
 <span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">control_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.axis.Axis</span></span></span><a class="headerlink" href="#manufacturing.control_plot" title="Permalink to this definition">¶</a></dt>
@@ -247,6 +272,7 @@ and returns a <code class="docutils literal notranslate"><span class="pre">matpl
 </dl>
 </dd></dl>
 
+<hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.import_excel">
 <span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">import_excel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path:</span> <span class="pre">(&lt;class</span> <span class="pre">'str'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">&lt;class</span> <span class="pre">'pathlib.Path'&gt;)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columnname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.import_excel" title="Permalink to this definition">¶</a></dt>
@@ -261,6 +287,29 @@ and returns a <code class="docutils literal notranslate"><span class="pre">matpl
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>a pandas series of the data which is to be analyzed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py" id="manufacturing.data_import.parse_col_for_limits">
+<span class="sig-prename descclassname"><span class="pre">manufacturing.data_import.</span></span><span class="sig-name descname"><span class="pre">parse_col_for_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">columnname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.data_import.parse_col_for_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the upper and lower specification limits embedded into the column header.</p>
+<p>Examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">speed</span></code> - just a column header called “speed”</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">speed</span> <span class="pre">(lsl=10.4)</span></code> - a column header with a lower specification limit built-in (no upper)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">speed</span> <span class="pre">(lsl=10.4</span> <span class="pre">usl=15.1)</span></code> - a column header with both lower and upper specification limits</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>columnname</strong> – the column name to parse</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2-value tuple of the form <cite>(lsl, usl)</cite>; returns <cite>(None, None)</cite> if values not found</p>
 </dd>
 </dl>
 </dd></dl>
@@ -295,6 +344,7 @@ and returns a <code class="docutils literal notranslate"><span class="pre">matpl
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="importing_and_exporting.html">Importing &amp; Exporting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plotting.html#anatomy-of-a-control-chart">Anatomy of a  Control Chart</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#calculations">Calculations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#plotting-charting">Plotting &amp; Charting</a></li>
