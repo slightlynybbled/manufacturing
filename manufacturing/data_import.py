@@ -7,33 +7,38 @@ _logger = logging.getLogger(__name__)
 
 def parse_col_for_limits(columnname: str):
     """
-    Return the upper and lower control limits embedded into the column header.
+    Return the upper and lower specification limits embedded into the column header.
+
+    Examples
 
     :param columnname: the column name to parse
-    :return: 2-value tuple of the form `(lcl, ucl)`; returns `(None, None)` if values not found
+    :return: 2-value tuple of the form `(lsl, usl)`; returns `(None, None)` if values not found
     """
+    lsl, usl = None, None
     if "(" in columnname and ")" in columnname:
         _logger.info(f"parentheses detected, loading thresholds")
         strings = columnname.split("(")[1].replace(")", "")
-        str1, str2 = strings.split(" ")
+        strings = strings.strip()
+        if not strings:
+            return None, None
 
-        if "lcl" in str1.lower():
-            lcl = float(str1.split("=")[1])
-        elif "lcl" in str2.lower():
-            lcl = float(str2.split("=")[1])
-        else:
-            lcl = None
+        parts = strings.split(" ")
 
-        if "ucl" in str1.lower():
-            ucl = float(str1.split("=")[1])
-        elif "ucl" in str2.lower():
-            ucl = float(str2.split("=")[1])
-        else:
-            ucl = None
-    else:
-        lcl, ucl = None, None
+        for part in parts:
+            if 'lsl' in part.lower():
+                lsl_str = part.split('=')[1]
+                try:
+                    lsl = int(lsl_str)
+                except ValueError:
+                    lsl = float(lsl_str)
+            elif 'usl' in part.lower():
+                usl_str = part.split('=')[1]
+                try:
+                    usl = int(usl_str)
+                except ValueError:
+                    usl = float(usl_str)
 
-    return lcl, ucl
+    return lsl, usl
 
 
 def import_csv(file_path: (str, Path), columnname: str, **kwargs):
