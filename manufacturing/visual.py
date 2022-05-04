@@ -317,6 +317,7 @@ def control_chart_base(
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
     :param max_points: the maximum number of points to display ('None' to display all)
+    :param avg_label: the label that is applied to the average on the plot
     :param show_hist: show a histogram to the left of the plot
     :param ax: an instance of matplotlib.axis.Axis
     :return: an instance of matplotlib.axis.Axis
