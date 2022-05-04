@@ -9,7 +9,11 @@ def parse_col_for_limits(columnname: str):
     """
     Return the upper and lower specification limits embedded into the column header.
 
-    Examples
+    Examples:
+
+      * ``speed`` - just a column header called "speed"
+      * ``speed (lsl=10.4)`` - a column header with a lower specification limit built-in (no upper)
+      * ``speed (lsl=10.4 usl=15.1)`` - a column header with both lower and upper specification limits
 
     :param columnname: the column name to parse
     :return: 2-value tuple of the form `(lsl, usl)`; returns `(None, None)` if values not found
