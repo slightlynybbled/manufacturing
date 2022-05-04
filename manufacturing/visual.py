@@ -125,11 +125,11 @@ def ppk_plot(
         ax.text(
             lower_specification_limit,
             top * 0.95,
-            s=f"$-{lower_sigma_level:.01f}\sigma$",
+            s=f"$-{lower_sigma_level:.01f}" + r"\sigma$",
             ha="center",
         )
     else:
-        ax.text(left, top * 0.95, s=f"limit < $-6\sigma$", ha="left")
+        ax.text(left, top * 0.95, s=r"limit < $-6\sigma$", ha="left")
 
     upper_sigma_level = (upper_specification_limit - mean) / std
     if upper_sigma_level < 6.0:
@@ -137,16 +137,16 @@ def ppk_plot(
         ax.text(
             upper_specification_limit,
             top * 0.95,
-            s=f"${upper_sigma_level:.01f}\sigma$",
+            s=f"${upper_sigma_level:.01f}" + r"\sigma$",
             ha="center",
         )
     else:
-        ax.text(right, top * 0.95, s=f"limit > $6\sigma$", ha="right")
+        ax.text(right, top * 0.95, s=r"limit > $6\sigma$", ha="right")
 
     strings = [f"Ppk = {cpk:.02g}"]
 
-    strings.append(f"$\mu = {mean:.3g}$")
-    strings.append(f"$\sigma = {std:.3g}$")
+    strings.append(r"$\mu = " + f"{mean:.3g}$")
+    strings.append(r"$\sigma = " + f"{std:.3g}$")
 
     if lower_percent_text:
         strings.append(lower_percent_text)
