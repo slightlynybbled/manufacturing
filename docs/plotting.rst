@@ -120,7 +120,7 @@ Depending on the data set, the above command could result in the creation of an
 .. image:: _static/images/xbars_chart.png
 
 Anatomy of a  Control Chart
-===========================
+---------------------------
 
 A control chart is an information-dense representation of data coming
 off of testers.  The ``manufacturing`` control chart has several sections
