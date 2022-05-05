@@ -325,7 +325,8 @@ def control_chart_base(
     truncated = False
     if max_points is not None:
         _logger.info(f"data set of length {len(data)} truncated to {max_points}")
-        truncated = True
+        if len(data) > max_points:
+            truncated = True
         data = data[-max_points:]
     data = coerce(data)
 
