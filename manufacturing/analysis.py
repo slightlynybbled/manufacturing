@@ -321,7 +321,7 @@ def control_zone_b(
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
-    for i in range(len(data) - 5):
+    for i in range(len(data) - 4):
         points = data[i : i + 5].to_numpy()
 
         values = [1 for p in points if p < zone_c_lower_limit]
