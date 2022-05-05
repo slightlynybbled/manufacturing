@@ -43,7 +43,7 @@ convenient when data is formatted with the control limits located in the headers
 <section id="data-format">
 <h3>Data Format<a class="headerlink" href="#data-format" title="Permalink to this headline">¶</a></h3>
 <p>Data may be imported from a CSV file.  The expected format of the imported data is as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">header0</span><span class="p">,</span><span class="n">header1</span> <span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">X</span> <span class="nb">max</span><span class="o">=</span><span class="n">Y</span><span class="p">),</span><span class="n">header2</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">header0</span><span class="p">,</span><span class="n">header1</span> <span class="p">(</span><span class="n">usl</span><span class="o">=</span><span class="n">X</span> <span class="n">lsl</span><span class="o">=</span><span class="n">Y</span><span class="p">),</span><span class="n">header2</span>
 <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span>
 <span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span>
 <span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span>
@@ -53,28 +53,28 @@ convenient when data is formatted with the control limits located in the headers
 <p>Things to notice:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The control limit values <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">Y</span></code> are specified in the header for one of the columns.</p></li>
-<li><p>The control limits values are not specified in the other columns.</p></li>
+<li><p>The specification limit values <code class="docutils literal notranslate"><span class="pre">X</span></code> and <code class="docutils literal notranslate"><span class="pre">Y</span></code> are specified in the header for one of the columns.</p></li>
+<li><p>The specification limit values are not specified in the other columns.</p></li>
 </ul>
 </div></blockquote>
 </section>
 <section id="usage">
 <h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">manufacturing.import_csv</span></code> is utilized for the import operation.  If control limits are not in the header, then
+<p>The <code class="docutils literal notranslate"><span class="pre">manufacturing.import_csv</span></code> is utilized for the import operation.  If specification limits are not in the header, then
 the data will be directly imported into a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">manufacturing</span><span class="o">.</span><span class="n">import_csv</span><span class="p">(</span><span class="s1">&#39;data.csv&#39;</span><span class="p">,</span>
                                 <span class="n">columnname</span><span class="o">=</span><span class="s1">&#39;header0&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This method brings in the data, but doesn’t bring in the control limits.  The data is brought in as a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>
+<p>This method brings in the data, but doesn’t bring in the specification limits.  The data is brought in as a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>
 and all of the operations that may be done with a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> apply.</p>
-<p>A somewhat more useful use case is when the control limits are embedded within the column header.  For instance:</p>
+<p>A somewhat more useful use case is when the specification limits are embedded within the column header.  For instance:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">manufacturing</span><span class="o">.</span><span class="n">import_csv</span><span class="p">(</span><span class="s1">&#39;data.csv&#39;</span><span class="p">,</span>
-                                <span class="n">columnname</span><span class="o">=</span><span class="s1">&#39;header1 (min=2.0 max=3.0)&#39;</span><span class="p">)</span>
+                                <span class="n">columnname</span><span class="o">=</span><span class="s1">&#39;header1 (lsl=2.0 usl=3.0)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In this case, the <code class="docutils literal notranslate"><span class="pre">data</span></code> contains a dictionary with keys <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">upper_control_limit</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">lower_control_limit</span></code>.  These keys are utilized throughout the library analysis and plotting tools, which is
+<p>In this case, the <code class="docutils literal notranslate"><span class="pre">data</span></code> contains a dictionary with keys <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">upper_specification_limit</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">lower_specification_limit</span></code>.  These keys are utilized throughout the library analysis and plotting tools, which is
 why they are imported directly here.</p>
 <dl class="py function">
 <dt class="sig sig-object py">
@@ -102,27 +102,27 @@ why they are imported directly here.</p>
 <h3>Data Format<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <p>Data may be imported from an MS Excel file.  Much like importing from CSV, the expected format of the
 imported data is as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">header0</span><span class="p">,</span><span class="n">header1</span> <span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="n">X</span> <span class="nb">max</span><span class="o">=</span><span class="n">Y</span><span class="p">),</span><span class="n">header2</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">header0</span><span class="p">,</span><span class="n">header1</span> <span class="p">(</span><span class="n">lsl</span><span class="o">=</span><span class="n">X</span> <span class="n">usl</span><span class="o">=</span><span class="n">Y</span><span class="p">),</span><span class="n">header2</span>
 </pre></div>
 </div>
 </section>
 <section id="id2">
 <h3>Usage<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal notranslate"><span class="pre">manufacturing.import_excel</span></code> is utilized for the import operation.  If control limits are not in the header, then
+<p>The <code class="docutils literal notranslate"><span class="pre">manufacturing.import_excel</span></code> is utilized for the import operation.  If specification limits are not in the header, then
 the data will be directly imported into a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">manufacturing</span><span class="o">.</span><span class="n">import_excel</span><span class="p">(</span><span class="s1">&#39;data.xlsx&#39;</span><span class="p">,</span>
                                   <span class="n">columnname</span><span class="o">=</span><span class="s1">&#39;header0&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This method brings in the data, but doesn’t bring in the control limits.  The data is brought in as a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>
+<p>This method brings in the data, but doesn’t bring in the specification limits.  The data is brought in as a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code>
 and all of the operations that may be done with a <code class="docutils literal notranslate"><span class="pre">pandas.Series</span></code> apply.</p>
-<p>A somewhat more useful use case is when the control limits are embedded within the column header.  For instance:</p>
+<p>A somewhat more useful use case is when the specification limits are embedded within the column header.  For instance:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">manufacturing</span><span class="o">.</span><span class="n">import_excel</span><span class="p">(</span><span class="s1">&#39;data.xlsx&#39;</span><span class="p">,</span>
-                                  <span class="n">columnname</span><span class="o">=</span><span class="s1">&#39;header1 (min=2.0 max=3.0)&#39;</span><span class="p">)</span>
+                                  <span class="n">columnname</span><span class="o">=</span><span class="s1">&#39;header1 (lsl=2.0 usl=3.0)&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In this case, the <code class="docutils literal notranslate"><span class="pre">data</span></code> contains a dictionary with keys <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">upper_control_limit</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">lower_control_limit</span></code>.  These keys are utilized throughout the library analysis and plotting tools, which is
+<p>In this case, the <code class="docutils literal notranslate"><span class="pre">data</span></code> contains a dictionary with keys <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">upper_specification_limit</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">lower_specification_limit</span></code>.  These keys are utilized throughout the library analysis and plotting tools, which is
 why they are imported directly here.</p>
 <dl class="py function">
 <dt class="sig sig-object py">
@@ -177,7 +177,6 @@ why they are imported directly here.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="plotting.html">Plotting</a></li>
-<li class="toctree-l1"><a class="reference internal" href="plotting.html#anatomy-of-a-control-chart">Anatomy of a  Control Chart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
