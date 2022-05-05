@@ -11,7 +11,7 @@ _logger = logging.getLogger(__name__)
 
 
 def normality_test(
-    data: (List[int], List[float], pd.Series, np.array), alpha: float = 0.05
+    data: (List[int], List[float], pd.Series, np.ndarray), alpha: float = 0.05
 ):
     """
     Checks the data for normality and returns True if normality can't be demonstrated False.
@@ -62,7 +62,7 @@ def normality_test(
 
 
 def suggest_specification_limits(
-    data: (List[int], List[float], pd.Series, np.array), sigma_level: float = 3.0
+    data: (List[int], List[float], pd.Series, np.ndarray), sigma_level: float = 3.0
 ):
     """
     Given a data set and a sigma level, will return a dict containing the `upper_control_limit` and \
@@ -84,7 +84,7 @@ def suggest_specification_limits(
 
 
 def calc_pp(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_specification_limit: (int, float),
     lower_specification_limit: (int, float),
 ):
@@ -109,7 +109,7 @@ def calc_pp(
 
 
 def calc_ppu(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_specification_limit: (int, float),
     skip_normality_test: bool = True,
 ):
@@ -141,7 +141,7 @@ def calc_ppu(
 
 
 def calc_ppl(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     lower_specification_limit: (int, float),
     skip_normality_test=True,
 ):
@@ -173,7 +173,7 @@ def calc_ppl(
 
 
 def calc_ppk(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_specification_limit: (int, float),
     lower_specification_limit: (int, float),
 ):
@@ -228,7 +228,7 @@ def calc_ppk(
 
 
 def control_beyond_limits(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
 ) -> pd.Series:
@@ -253,7 +253,7 @@ def control_beyond_limits(
 
 
 def control_zone_a(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
 ) -> pd.Series:
@@ -299,7 +299,7 @@ def control_zone_a(
 
 
 def control_zone_b(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
 ) -> pd.Series:
@@ -345,7 +345,7 @@ def control_zone_b(
 
 
 def control_zone_c(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
 ):
@@ -383,7 +383,7 @@ def control_zone_c(
 
 
 def control_zone_trend(
-    data: (List[int], List[float], pd.Series, np.array)
+    data: (List[int], List[float], pd.Series, np.ndarray)
 ) -> pd.Series:
     _logger.debug("identifying control trend violations...")
     data = coerce(data)
@@ -417,7 +417,7 @@ def control_zone_trend(
 
 
 def control_zone_mixture(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
 ) -> pd.Series:
@@ -459,7 +459,7 @@ def control_zone_mixture(
 
 
 def control_zone_stratification(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
 ) -> pd.Series:
@@ -501,7 +501,7 @@ def control_zone_stratification(
 
 
 def control_zone_overcontrol(
-    data: (List[int], List[float], pd.Series, np.array),
+    data: (List[int], List[float], pd.Series, np.ndarray),
     upper_control_limit: (int, float),
     lower_control_limit: (int, float),
 ):
