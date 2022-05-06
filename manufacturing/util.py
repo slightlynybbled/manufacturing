@@ -25,4 +25,4 @@ def coerce(data: (List[int], List[float], pd.Series, np.array)) -> pd.Series:
             "floats, a pandas.Series, or numpy.array"
         )
 
-    return data.reset_index(drop=True)
+    return data

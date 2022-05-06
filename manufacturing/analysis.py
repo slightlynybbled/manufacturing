@@ -326,13 +326,13 @@ def control_zone_b(
 
         values = [1 for p in points if p < zone_c_lower_limit]
         if sum(values) > 3:
-            index = i + np.arange(5)
+            index = i + np.arange(5) + data.index[0]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone b violation found at index {i}")
 
         values = [1 for p in points if p > zone_c_upper_limit]
         if sum(values) > 3:
-            index = i + np.arange(5)
+            index = i + np.arange(5) + data.index[0]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone b violation found at index {i}")
 
@@ -341,6 +341,7 @@ def control_zone_b(
 
     s = pd.concat(violations)
     s = s.loc[~s.index.duplicated()]
+
     return s
 
 
@@ -370,7 +371,7 @@ def control_zone_c(
         values = [1 if p > spec_center else -1 for p in points]
 
         if abs(sum(values)) > 6:
-            index = i + np.arange(7)
+            index = i + np.arange(7) + data.index[0]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone c violation found at index {i}")
 
@@ -408,7 +409,7 @@ def control_zone_trend(
 
         if len(pos_dataset) >= 7 or len(neg_dataset) >= 7:
             points = data[i: i + 7].to_numpy()
-            index = i + np.arange(7)
+            index = i + np.arange(7) + data.index[0]
             try:
                 violations.append(pd.Series(index=index, data=points))
                 _logger.info(f"trend violation found at index {i+6}")

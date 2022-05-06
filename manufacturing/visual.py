@@ -322,12 +322,6 @@ def control_chart_base(
     :param ax: an instance of matplotlib.axis.Axis
     :return: an instance of matplotlib.axis.Axis
     """
-    truncated = False
-    if max_points is not None:
-        _logger.info(f"data set of length {len(data)} truncated to {max_points}")
-        if len(data) > max_points:
-            truncated = True
-        data = data[-max_points:]
     data = coerce(data)
 
     # when data is considered an extreme outlier,
@@ -344,12 +338,6 @@ def control_chart_base(
     for i, v in bad_data.iteritems():
         if v > max_data or v < min_data:
             data.iloc[i] = np.nan
-
-    if ax is None:
-        fig, ax = plt.subplots()
-
-    ax.plot(data, marker=".")
-    ax.set_title("Zone Control Chart")
 
     # for purposes of gathering statistics, only use
     # data that is not considered outliers
@@ -369,10 +357,24 @@ def control_chart_base(
     zone_a_upper_limit = spec_center + spec_range
     zone_a_lower_limit = spec_center - spec_range
 
+    truncated = False
+    if max_points is not None:
+        _logger.info(f"data set of length {len(data)} truncated to {max_points}")
+        if len(data) > max_points:
+            truncated = True
+        data = data[-max_points:]
+
+    if ax is None:
+        fig, ax = plt.subplots()
+
+    ax.plot(data, marker=".")
+    ax.set_title("Zone Control Chart")
+
     ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
 
     ax.axhline(mean, linestyle="--", color="blue", alpha=0.4, zorder=-10)
 
+    ax.set_xlim(data.index[0])
     left, right = ax.get_xlim()
     right_plus = (right - left) * 0.01 + right
 
@@ -649,9 +651,7 @@ def x_mr_chart(
     :return: an instance of matplotlib.axis.Axis
     """
     data = coerce(data)
-    data = data[-(max_points + 1) :]
     diff_data = abs(data.diff())
-    diff_data.reset_index(inplace=True, drop=True)
 
     # create an I-MR chart using a combination of control_chart and moving_range
     if figure is None:
@@ -671,6 +671,7 @@ def x_mr_chart(
         highlight_mixture=highlight_mixture,
         highlight_stratification=highlight_stratification,
         highlight_overcontrol=highlight_overcontrol,
+        max_points=max_points,
         ax=axs[0],
     )
 
@@ -693,6 +694,7 @@ def x_mr_chart(
         highlight_mixture=False,
         highlight_stratification=False,
         highlight_overcontrol=False,
+        max_points=max_points,
         ax=axs[1],
     )
 
@@ -1013,9 +1015,5 @@ def control_chart(
     max_subgroup_size = len(c4_table) - 1
     max_data_points = max_subgroup_size * max_points
     if len(data) > (max_data_points - 1):
-        _logger.warning(
-            f"data exceeds the size at which it is easily visualized; truncating to {max_data_points} rows grouped by {max_subgroup_size}"
-        )
-        data = data[-(max_data_points - 1) :]
         subgroup_size = max_subgroup_size
     return xbar_s_chart(data, subgroup_size=subgroup_size, **params)
