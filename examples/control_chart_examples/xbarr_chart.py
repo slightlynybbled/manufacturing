@@ -7,7 +7,7 @@ from manufacturing import import_csv, xbar_r_chart
 
 logging.basicConfig(level=logging.INFO)
 
-data = import_csv('../data/pm-high-speed.csv', columnname='speed', delimiter=',')
+data = import_csv('data/pm-high-speed.csv', columnname='speed', delimiter=',')
 xbar_r_chart(data, subgroup_size=4, parameter_name='speed')
 
 plt.show()
