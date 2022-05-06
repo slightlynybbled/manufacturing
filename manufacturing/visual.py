@@ -307,7 +307,7 @@ def control_chart_base(
 
     :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit; note that this is NOT the specification limit!
-    :param lower_control_limit: an optional parameter which, when present, will override the internally caluclated lower control limit; note that this is NOT the specification limit!
+    :param lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limit; note that this is NOT the specification limit!
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
@@ -622,6 +622,10 @@ def control_chart_base(
 def x_mr_chart(
     data: (List[int], List[float], pd.Series, np.ndarray),
     parameter_name: Optional[str] = None,
+    x_upper_control_limit: Optional[float, int] = None,
+    x_lower_control_limit: Optional[float, int] = None,
+    mr_upper_control_limit: Optional[float, int] = None,
+    mr_lower_control_limit: Optional[float, int] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -638,6 +642,10 @@ def x_mr_chart(
 
     :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param parameter_name: a string representing the parameter name
+    :param x_upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit for the X plot; note that this is NOT the specification limit!
+    :param x_lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limit for the X plot; note that this is NOT the specification limit!
+    :param mr_upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit for the mR plot; note that this is NOT the specification limit!
+    :param mr_lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limitfor the mR plot; note that this is NOT the specification limit!
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
@@ -660,27 +668,41 @@ def x_mr_chart(
         fig = figure
         axs = fig.axes
 
+    params = {
+        'highlight_beyond_limits': highlight_beyond_limits,
+        'highlight_zone_a': highlight_zone_a,
+        'highlight_zone_b': highlight_zone_b,
+        'highlight_zone_c': highlight_zone_c,
+        'highlight_trend': highlight_trend,
+        'highlight_mixture': highlight_mixture,
+        'highlight_stratification': highlight_stratification,
+        'highlight_overcontrol': highlight_overcontrol,
+        'max_points': max_points,
+    }
+
     control_chart_base(
         data,
         avg_label=r"$\bar{X}$",
-        highlight_beyond_limits=highlight_beyond_limits,
-        highlight_zone_a=highlight_zone_a,
-        highlight_zone_b=highlight_zone_b,
-        highlight_zone_c=highlight_zone_c,
-        highlight_trend=highlight_trend,
-        highlight_mixture=highlight_mixture,
-        highlight_stratification=highlight_stratification,
-        highlight_overcontrol=highlight_overcontrol,
-        max_points=max_points,
+        upper_control_limit=x_upper_control_limit,
+        lower_control_limit=x_lower_control_limit,
         ax=axs[0],
+        **params
     )
 
     # UCL = 1 + 3(d3 / d2) * mRbar
     #     = D4 * mRbar
     #     = 3.2665 * mRbar
     mRbar = diff_data.mean()
-    ucl = 3.2665 * mRbar
-    lcl = 0.0
+    if mr_upper_control_limit is not None:
+        ucl = mr_upper_control_limit
+    else:
+        ucl = 3.2665 * mRbar
+
+    if mr_lower_control_limit is not None:
+        lcl = mr_lower_control_limit
+    else:
+        lcl = 0.0
+
     control_chart_base(
         diff_data,
         avg_label=r"$\bar{R}$",
@@ -715,6 +737,10 @@ def xbar_r_chart(
     data: (List[int], List[float], pd.Series, np.ndarray),
     subgroup_size: int = 4,
     parameter_name: Optional[str] = None,
+    xbar_upper_control_limit: Optional[float, int] = None,
+    xbar_lower_control_limit: Optional[float, int] = None,
+    r_upper_control_limit: Optional[float, int] = None,
+    r_lower_control_limit: Optional[float, int] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -732,6 +758,10 @@ def xbar_r_chart(
     :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param subgroup_size: an integer that determines the subgroup size
     :param parameter_name: a string representing the parameter name
+    :param xbar_upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit for the X plot; note that this is NOT the specification limit!
+    :param xbar_lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limit for the X plot; note that this is NOT the specification limit!
+    :param r_upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit for the R plot; note that this is NOT the specification limit!
+    :param r_lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limitfor the R plot; note that this is NOT the specification limit!
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
@@ -780,27 +810,40 @@ def xbar_r_chart(
     lcl_x, ucl_x = x_bar_bar - dev, x_bar_bar + dev
     lcl_r, ucl_r = calc_D3(n) * r_bar, calc_D4(n) * r_bar
 
+    if xbar_upper_control_limit is not None:
+        ucl_x = xbar_upper_control_limit
+    if xbar_lower_control_limit is not None:
+        lcl_x = xbar_lower_control_limit
+    if r_upper_control_limit is not None:
+        ucl_r = r_upper_control_limit
+    if r_lower_control_limit is not None:
+        lcl_r = r_lower_control_limit
+
     if figure is None:
         fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
     else:
         fig = figure
         axs = fig.axes
 
+    params = {
+        'highlight_beyond_limits': highlight_beyond_limits,
+        'highlight_zone_a': highlight_zone_a,
+        'highlight_zone_b': highlight_zone_b,
+        'highlight_zone_c': highlight_zone_c,
+        'highlight_trend': highlight_trend,
+        'highlight_mixture': highlight_mixture,
+        'highlight_stratification': highlight_stratification,
+        'highlight_overcontrol': highlight_overcontrol,
+        'max_points': max_points,
+    }
+
     control_chart_base(
         x_bars,
         avg_label=r"$\bar{\bar{X}}$",
         lower_control_limit=lcl_x,
         upper_control_limit=ucl_x,
-        highlight_beyond_limits=highlight_beyond_limits,
-        highlight_zone_a=highlight_zone_a,
-        highlight_zone_b=highlight_zone_b,
-        highlight_zone_c=highlight_zone_c,
-        highlight_trend=highlight_trend,
-        highlight_mixture=highlight_mixture,
-        highlight_stratification=highlight_stratification,
-        highlight_overcontrol=highlight_overcontrol,
-        max_points=max_points,
         ax=axs[0],
+        **params
     )
 
     control_chart_base(
@@ -808,16 +851,8 @@ def xbar_r_chart(
         avg_label=r"$\bar{R}$",
         lower_control_limit=lcl_r,
         upper_control_limit=ucl_r,
-        highlight_beyond_limits=highlight_beyond_limits,
-        highlight_zone_a=highlight_zone_a,
-        highlight_zone_b=highlight_zone_b,
-        highlight_zone_c=highlight_zone_c,
-        highlight_trend=highlight_trend,
-        highlight_mixture=highlight_mixture,
-        highlight_stratification=highlight_stratification,
-        highlight_overcontrol=highlight_overcontrol,
-        max_points=max_points,
         ax=axs[1],
+        **params
     )
 
     axs[0].set_title("Group Averages")
@@ -837,6 +872,10 @@ def xbar_s_chart(
     data: (List[int], List[float], pd.Series, np.ndarray),
     subgroup_size: int = 12,
     parameter_name: Optional[str] = None,
+    xbar_upper_control_limit: Optional[float, int] = None,
+    xbar_lower_control_limit: Optional[float, int] = None,
+    s_upper_control_limit: Optional[float, int] = None,
+    s_lower_control_limit: Optional[float, int] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -855,6 +894,10 @@ def xbar_s_chart(
     :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param subgroup_size: an integer that determines the subgroup size
     :param parameter_name: a string representing the parameter name
+    :param xbar_upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit for the X plot; note that this is NOT the specification limit!
+    :param xbar_lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limit for the X plot; note that this is NOT the specification limit!
+    :param s_upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit for the R plot; note that this is NOT the specification limit!
+    :param s_lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limitfor the R plot; note that this is NOT the specification limit!
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
@@ -902,27 +945,40 @@ def xbar_s_chart(
     lcl_x, ucl_x = x_bar_bar - dev, x_bar_bar + dev
     lcl_s, ucl_s = s_bar * calc_B3(n), s_bar * calc_B4(n)
 
+    if xbar_upper_control_limit is not None:
+        ucl_x = xbar_upper_control_limit
+    if xbar_lower_control_limit is not None:
+        lcl_x = xbar_lower_control_limit
+    if s_upper_control_limit is not None:
+        ucl_s = s_upper_control_limit
+    if s_lower_control_limit is not None:
+        lcl_s = s_lower_control_limit
+
     if figure is None:
         fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
     else:
         fig = figure
         axs = fig.axes
 
+    params = {
+        'highlight_beyond_limits': highlight_beyond_limits,
+        'highlight_zone_a': highlight_zone_a,
+        'highlight_zone_b': highlight_zone_b,
+        'highlight_zone_c': highlight_zone_c,
+        'highlight_trend': highlight_trend,
+        'highlight_mixture': highlight_mixture,
+        'highlight_stratification': highlight_stratification,
+        'highlight_overcontrol': highlight_overcontrol,
+        'max_points': max_points,
+    }
+
     control_chart_base(
         x_bars,
         avg_label=r"$\bar{\bar{X}}$",
         lower_control_limit=lcl_x,
         upper_control_limit=ucl_x,
-        highlight_beyond_limits=highlight_beyond_limits,
-        highlight_zone_a=highlight_zone_a,
-        highlight_zone_b=highlight_zone_b,
-        highlight_zone_c=highlight_zone_c,
-        highlight_trend=highlight_trend,
-        highlight_mixture=highlight_mixture,
-        highlight_stratification=highlight_stratification,
-        highlight_overcontrol=highlight_overcontrol,
-        max_points=max_points,
         ax=axs[0],
+        **params
     )
 
     control_chart_base(
@@ -930,16 +986,8 @@ def xbar_s_chart(
         avg_label=r"$\bar{S}$",
         lower_control_limit=lcl_s,
         upper_control_limit=ucl_s,
-        highlight_beyond_limits=highlight_beyond_limits,
-        highlight_zone_a=highlight_zone_a,
-        highlight_zone_b=highlight_zone_b,
-        highlight_zone_c=highlight_zone_c,
-        highlight_trend=highlight_trend,
-        highlight_mixture=highlight_mixture,
-        highlight_stratification=highlight_stratification,
-        highlight_overcontrol=highlight_overcontrol,
-        max_points=max_points,
         ax=axs[1],
+        **params
     )
 
     axs[0].set_title("Group Averages")
@@ -958,6 +1006,10 @@ def xbar_s_chart(
 def control_chart(
     data: (List[int], List[float], pd.Series, np.ndarray),
     parameter_name: Optional[str] = None,
+    x_upper_control_limit: Optional[float, int] = None,
+    x_lower_control_limit: Optional[float, int] = None,
+    r_upper_control_limit: Optional[float, int] = None,
+    r_lower_control_limit: Optional[float, int] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -976,6 +1028,10 @@ def control_chart(
 
     :param data: (List[int], List[float], pd.Series, np.ndarray),
     :param parameter_name: a string representing the parameter name
+    :param x_upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit for the X plot; note that this is NOT the specification limit!
+    :param x_lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limit for the X plot; note that this is NOT the specification limit!
+    :param r_upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit for the R/S plot; note that this is NOT the specification limit!
+    :param r_lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limitfor the R/S plot; note that this is NOT the specification limit!
     :param highlight_beyond_limits: True if points beyond limits are to be highlighted
     :param highlight_zone_a: True if points that are zone A violations are to be highlighted
     :param highlight_zone_b: True if points that are zone B violations are to be highlighted
@@ -1005,15 +1061,32 @@ def control_chart(
     }
 
     if len(data) < max_points:
-        return x_mr_chart(data, **params)
+        return x_mr_chart(data,
+                          x_upper_control_limit=x_upper_control_limit,
+                          x_lower_control_limit=x_lower_control_limit,
+                          mr_upper_control_limit=r_upper_control_limit,
+                          mr_lower_control_limit=r_lower_control_limit,
+                          **params)
 
     subgroup_size = 1 + len(data) // max_points
     if subgroup_size < 12:
-        return xbar_r_chart(data, subgroup_size=subgroup_size, **params)
+        return xbar_r_chart(data,
+                            subgroup_size=subgroup_size,
+                            xbar_upper_control_limit=x_upper_control_limit,
+                            xbar_lower_control_limit=x_lower_control_limit,
+                            r_upper_control_limit=r_upper_control_limit,
+                            r_lower_control_limit=r_lower_control_limit,
+                            **params)
 
     # if data is too long, then truncate
     max_subgroup_size = len(c4_table) - 1
     max_data_points = max_subgroup_size * max_points
     if len(data) > (max_data_points - 1):
         subgroup_size = max_subgroup_size
-    return xbar_s_chart(data, subgroup_size=subgroup_size, **params)
+    return xbar_s_chart(data,
+                        subgroup_size=subgroup_size,
+                        xbar_upper_control_limit=x_upper_control_limit,
+                        xbar_lower_control_limit=x_lower_control_limit,
+                        s_upper_control_limit=r_upper_control_limit,
+                        s_lower_control_limit=r_lower_control_limit,
+                        **params)
