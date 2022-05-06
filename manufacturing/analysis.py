@@ -385,6 +385,11 @@ def control_zone_c(
 def control_zone_trend(
     data: (List[int], List[float], pd.Series, np.ndarray)
 ) -> pd.Series:
+    """
+    Returns a pandas.Series containing the data in which 6 consecutive points are in the same direction
+    :param data:
+    :return:
+    """
     _logger.debug("identifying control trend violations...")
     data = coerce(data)
 
@@ -402,8 +407,10 @@ def control_zone_trend(
         neg_dataset = [v for v in diff_data[i : i + 7] if v <= 0]
 
         if len(pos_dataset) >= 7 or len(neg_dataset) >= 7:
+            points = data[i: i + 7].to_numpy()
+            index = i + np.arange(7)
             try:
-                violations.append(pd.Series(index=[i + 6], data=data[i + 6]))
+                violations.append(pd.Series(index=index, data=points))
                 _logger.info(f"trend violation found at index {i+6}")
             except KeyError:
                 break
@@ -484,9 +491,8 @@ def control_zone_stratification(
     for i in range(len(data) - 14):
         points = data[i : i + 15].to_numpy()
         values = [
-            1 for p in points if p < zone_c_upper_limit and p > zone_c_lower_limit
+            1 if zone_c_lower_limit < p < zone_c_upper_limit else 0 for p in points
         ]
-
         if sum(values) > 14:
             index = i + np.arange(15)
             violations.append(pd.Series(data=points, index=index))
@@ -497,6 +503,7 @@ def control_zone_stratification(
 
     s = pd.concat(violations)
     s = s.loc[~s.index.duplicated()]
+
     return s
 
 
