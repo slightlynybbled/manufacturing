@@ -408,7 +408,7 @@ def control_zone_trend(
         neg_dataset = [v for v in diff_data[i : i + 7] if v <= 0]
 
         if len(pos_dataset) >= 7 or len(neg_dataset) >= 7:
-            points = data[i: i + 7].to_numpy()
+            points = data[i : i + 7].to_numpy()
             index = i + np.arange(7) + data.index[0]
             try:
                 violations.append(pd.Series(index=index, data=points))

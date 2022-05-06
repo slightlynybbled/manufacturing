@@ -29,14 +29,14 @@ def parse_col_for_limits(columnname: str):
         parts = strings.split(" ")
 
         for part in parts:
-            if 'lsl' in part.lower():
-                lsl_str = part.split('=')[1]
+            if "lsl" in part.lower():
+                lsl_str = part.split("=")[1]
                 try:
                     lsl = int(lsl_str)
                 except ValueError:
                     lsl = float(lsl_str)
-            elif 'usl' in part.lower():
-                usl_str = part.split('=')[1]
+            elif "usl" in part.lower():
+                usl_str = part.split("=")[1]
                 try:
                     usl = int(usl_str)
                 except ValueError:

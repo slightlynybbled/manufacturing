@@ -669,15 +669,15 @@ def x_mr_chart(
         axs = fig.axes
 
     params = {
-        'highlight_beyond_limits': highlight_beyond_limits,
-        'highlight_zone_a': highlight_zone_a,
-        'highlight_zone_b': highlight_zone_b,
-        'highlight_zone_c': highlight_zone_c,
-        'highlight_trend': highlight_trend,
-        'highlight_mixture': highlight_mixture,
-        'highlight_stratification': highlight_stratification,
-        'highlight_overcontrol': highlight_overcontrol,
-        'max_points': max_points,
+        "highlight_beyond_limits": highlight_beyond_limits,
+        "highlight_zone_a": highlight_zone_a,
+        "highlight_zone_b": highlight_zone_b,
+        "highlight_zone_c": highlight_zone_c,
+        "highlight_trend": highlight_trend,
+        "highlight_mixture": highlight_mixture,
+        "highlight_stratification": highlight_stratification,
+        "highlight_overcontrol": highlight_overcontrol,
+        "max_points": max_points,
     }
 
     control_chart_base(
@@ -686,7 +686,7 @@ def x_mr_chart(
         upper_control_limit=x_upper_control_limit,
         lower_control_limit=x_lower_control_limit,
         ax=axs[0],
-        **params
+        **params,
     )
 
     # UCL = 1 + 3(d3 / d2) * mRbar
@@ -826,15 +826,15 @@ def xbar_r_chart(
         axs = fig.axes
 
     params = {
-        'highlight_beyond_limits': highlight_beyond_limits,
-        'highlight_zone_a': highlight_zone_a,
-        'highlight_zone_b': highlight_zone_b,
-        'highlight_zone_c': highlight_zone_c,
-        'highlight_trend': highlight_trend,
-        'highlight_mixture': highlight_mixture,
-        'highlight_stratification': highlight_stratification,
-        'highlight_overcontrol': highlight_overcontrol,
-        'max_points': max_points,
+        "highlight_beyond_limits": highlight_beyond_limits,
+        "highlight_zone_a": highlight_zone_a,
+        "highlight_zone_b": highlight_zone_b,
+        "highlight_zone_c": highlight_zone_c,
+        "highlight_trend": highlight_trend,
+        "highlight_mixture": highlight_mixture,
+        "highlight_stratification": highlight_stratification,
+        "highlight_overcontrol": highlight_overcontrol,
+        "max_points": max_points,
     }
 
     control_chart_base(
@@ -843,7 +843,7 @@ def xbar_r_chart(
         lower_control_limit=lcl_x,
         upper_control_limit=ucl_x,
         ax=axs[0],
-        **params
+        **params,
     )
 
     control_chart_base(
@@ -852,7 +852,7 @@ def xbar_r_chart(
         lower_control_limit=lcl_r,
         upper_control_limit=ucl_r,
         ax=axs[1],
-        **params
+        **params,
     )
 
     axs[0].set_title("Group Averages")
@@ -961,15 +961,15 @@ def xbar_s_chart(
         axs = fig.axes
 
     params = {
-        'highlight_beyond_limits': highlight_beyond_limits,
-        'highlight_zone_a': highlight_zone_a,
-        'highlight_zone_b': highlight_zone_b,
-        'highlight_zone_c': highlight_zone_c,
-        'highlight_trend': highlight_trend,
-        'highlight_mixture': highlight_mixture,
-        'highlight_stratification': highlight_stratification,
-        'highlight_overcontrol': highlight_overcontrol,
-        'max_points': max_points,
+        "highlight_beyond_limits": highlight_beyond_limits,
+        "highlight_zone_a": highlight_zone_a,
+        "highlight_zone_b": highlight_zone_b,
+        "highlight_zone_c": highlight_zone_c,
+        "highlight_trend": highlight_trend,
+        "highlight_mixture": highlight_mixture,
+        "highlight_stratification": highlight_stratification,
+        "highlight_overcontrol": highlight_overcontrol,
+        "max_points": max_points,
     }
 
     control_chart_base(
@@ -978,7 +978,7 @@ def xbar_s_chart(
         lower_control_limit=lcl_x,
         upper_control_limit=ucl_x,
         ax=axs[0],
-        **params
+        **params,
     )
 
     control_chart_base(
@@ -987,7 +987,7 @@ def xbar_s_chart(
         lower_control_limit=lcl_s,
         upper_control_limit=ucl_s,
         ax=axs[1],
-        **params
+        **params,
     )
 
     axs[0].set_title("Group Averages")
@@ -1061,32 +1061,38 @@ def control_chart(
     }
 
     if len(data) < max_points:
-        return x_mr_chart(data,
-                          x_upper_control_limit=x_upper_control_limit,
-                          x_lower_control_limit=x_lower_control_limit,
-                          mr_upper_control_limit=r_upper_control_limit,
-                          mr_lower_control_limit=r_lower_control_limit,
-                          **params)
+        return x_mr_chart(
+            data,
+            x_upper_control_limit=x_upper_control_limit,
+            x_lower_control_limit=x_lower_control_limit,
+            mr_upper_control_limit=r_upper_control_limit,
+            mr_lower_control_limit=r_lower_control_limit,
+            **params,
+        )
 
     subgroup_size = 1 + len(data) // max_points
     if subgroup_size < 12:
-        return xbar_r_chart(data,
-                            subgroup_size=subgroup_size,
-                            xbar_upper_control_limit=x_upper_control_limit,
-                            xbar_lower_control_limit=x_lower_control_limit,
-                            r_upper_control_limit=r_upper_control_limit,
-                            r_lower_control_limit=r_lower_control_limit,
-                            **params)
+        return xbar_r_chart(
+            data,
+            subgroup_size=subgroup_size,
+            xbar_upper_control_limit=x_upper_control_limit,
+            xbar_lower_control_limit=x_lower_control_limit,
+            r_upper_control_limit=r_upper_control_limit,
+            r_lower_control_limit=r_lower_control_limit,
+            **params,
+        )
 
     # if data is too long, then truncate
     max_subgroup_size = len(c4_table) - 1
     max_data_points = max_subgroup_size * max_points
     if len(data) > (max_data_points - 1):
         subgroup_size = max_subgroup_size
-    return xbar_s_chart(data,
-                        subgroup_size=subgroup_size,
-                        xbar_upper_control_limit=x_upper_control_limit,
-                        xbar_lower_control_limit=x_lower_control_limit,
-                        s_upper_control_limit=r_upper_control_limit,
-                        s_lower_control_limit=r_lower_control_limit,
-                        **params)
+    return xbar_s_chart(
+        data,
+        subgroup_size=subgroup_size,
+        xbar_upper_control_limit=x_upper_control_limit,
+        xbar_lower_control_limit=x_lower_control_limit,
+        s_upper_control_limit=r_upper_control_limit,
+        s_lower_control_limit=r_lower_control_limit,
+        **params,
+    )
