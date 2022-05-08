@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 data = import_csv('data/example_data-no-limits.csv', columnname='value')
 
 # raw calculation of ppk
-ppk = calc_ppk(data, lower_control_limit=-2.5, upper_control_limit=2.5)
+ppk = calc_ppk(data, lower_specification_limit=-2.5, upper_specification_limit=2.5)
 print(f'Ppk = {ppk:.3g}')
 
 # and then plot
@@ -21,7 +21,7 @@ plt.show()
 # within the column headers.  The format is "columnname (lcl=X ucl=Y)".  The return
 # type is a dictionary with the keys "data", "upper_control_limit", and "lower_control_limit".
 # These key names make it somewhat easier to unpack `data` into `calc_ppk` and `ppk_plot`.
-data = import_csv('data/example_data.csv', columnname='value (lcl=-2.5 ucl=2.5)')
+data = import_csv('data/example_data.csv', columnname='value (lsl=-2.5 usl=2.5)')
 
 # raw calculation of ppk
 ppk = calc_ppk(**data)
