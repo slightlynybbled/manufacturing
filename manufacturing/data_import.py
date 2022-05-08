@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+
 import pandas as pd
 
 _logger = logging.getLogger(__name__)
@@ -45,7 +46,7 @@ def parse_col_for_limits(columnname: str):
     return lsl, usl
 
 
-def import_csv(file_path: (str, Path), columnname: str, **kwargs):
+def import_csv(file_path: (str, Path), columnname: str, **kwargs) -> dict:
     """
     Imports data from a csv file and outputs the specified column of data as a `pandas.Series`
 
@@ -71,7 +72,7 @@ def import_csv(file_path: (str, Path), columnname: str, **kwargs):
     return data
 
 
-def import_excel(file_path: (str, Path), columnname, **kwargs):
+def import_excel(file_path: (str, Path), columnname: str, **kwargs) -> dict:
     """
     Imports data from an excel file and outputs the specified column of data as a `pandas.Series`
 

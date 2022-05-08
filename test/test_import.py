@@ -29,3 +29,10 @@ def test_parse_col_for_limits():
 
     lsl, usl = mn.data_import.parse_col_for_limits('bemf (usl=3.2 lsl=1.5)')
     assert lsl == pytest.approx(1.5) and usl == pytest.approx(3.2)
+
+
+def test_import_csv():
+    data = mn.import_csv(file_path='test/data/example_data.csv',
+                         columnname='value (lsl=-2.5 usl=2.5)')
+    assert isinstance(data, dict)
+    assert 2.5 == pytest.approx(-2.5, data.get('upper_specification_limit'))
