@@ -22,7 +22,7 @@ def generate_production_report(
     **kwargs,
 ):
     """
-
+    Generate a report
 
     :param input_file: the input file to be analyzed
     :param output_file: the output file to be analyzed
@@ -81,7 +81,10 @@ def generate_production_report(
         # generate visual Ppk plot
         fig, ax = plt.subplots(1, 1)
         ppk_plot(
-            df[c], upper_specification_limit=ucl, lower_specification_limit=lcl, ax=ax
+            df[c],
+            upper_specification_limit=ucl,
+            lower_specification_limit=lcl,
+            figure=fig,
         )
         plot_name = build_path / f"ppk_plot_{fig_name}.png"
         fig.savefig(plot_name)
@@ -90,7 +93,10 @@ def generate_production_report(
         # generate zpk subgroup plot
         fig, axs = plt.subplots(1, 2, sharey=True, gridspec_kw={"width_ratios": [4, 1]})
         cpk_plot(
-            df[c], upper_specification_limit=ucl, lower_specification_limit=lcl, axs=axs
+            df[c],
+            upper_specification_limit=ucl,
+            lower_specification_limit=lcl,
+            figure=fig,
         )
         plot_name = build_path / f"cpk_plot_{fig_name}.png"
         fig.savefig(plot_name)
