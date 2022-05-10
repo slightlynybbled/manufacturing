@@ -36,7 +36,9 @@ def ppk_plot(
     data: (List[int], List[float], pd.Series, np.ndarray),
     upper_specification_limit: (int, float),
     lower_specification_limit: (int, float),
+    parameter_name: Optional[str] = None,
     threshold_percent: float = 0.001,
+    is_subset: bool = False,
     figure: Optional[Figure] = None,
 ):
     """
@@ -45,10 +47,13 @@ def ppk_plot(
     :param data: a list, pandas.Series, or numpy.ndarray representing the data set
     :param upper_specification_limit: an integer or float which represents the upper control limit, commonly called the UCL
     :param lower_specification_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param parameter_name: a string that shows up in the title
     :param threshold_percent: the threshold at which % of units above/below the number will display on the plot
-    :param figure: an instance of matplotlig.axis.Axis
+    :param is_subset: False if the data represents a complete dataset, else True; determines if Ppk or Cpk are in the titles
+    :param figure: an instance of ``matplotlig.axis.Axis``
     :return: ``matplotlib.figure.Figure``
     """
+    plot_type = 'Ppk' if not is_subset else 'Cpk'
 
     data = coerce(data)
     mean = data.mean()
@@ -143,7 +148,7 @@ def ppk_plot(
     else:
         ax.text(right, top * 0.95, s=r"limit > $6\sigma$", ha="right")
 
-    strings = [f"Ppk = {cpk:.02g}"]
+    strings = [f"{plot_type} = {cpk:.02g}"]
 
     strings.append(r"$\mu = " + f"{mean:.3g}$")
     strings.append(r"$\sigma = " + f"{std:.3g}$")
@@ -164,6 +169,10 @@ def ppk_plot(
     )
 
     ax.legend(loc="lower right")
+
+    if parameter_name is not None:
+        fig.suptitle(f'{plot_type}, {parameter_name}')
+
     return fig
 
 
@@ -171,6 +180,7 @@ def cpk_plot(
     data: (List[int], List[float], pd.Series, np.ndarray),
     upper_specification_limit: (int, float),
     lower_specification_limit: (int, float),
+    parameter_name: Optional[str] = None,
     subgroup_size: int = 30,
     max_subgroups: int = 10,
     figure: Optional[Figure] = None,
@@ -181,6 +191,7 @@ def cpk_plot(
     :param data: a list, pandas.Series, or ``numpy.ndarray`` representing the data set
     :param upper_specification_limit: an integer or float which represents the upper specification limit, commonly called the USL
     :param lower_specification_limit: an integer or float which represents the upper specification limit, commonly called the LSL
+    :param parameter_name: the name of the parameter that will be displayed on the plot
     :param subgroup_size: the number of samples to include in each subgroup
     :param max_subgroups: the maximum number of subgroups to display
     :param figure: two instances of matplotlib.axis.Axis
@@ -192,8 +203,9 @@ def cpk_plot(
 
     data = coerce(data)
 
-    # todo: offer options of historical subgrouping, such as subgroup history = 'all' or 'recent', something that
-    # allows a better historical subgrouping
+    # todo: offer options of historical subgrouping, such as subgroup
+    #  history = 'all' or 'recent', something that
+    #  allows a better historical subgrouping
     data_subgroups = []
     for i, c in enumerate(chunk(data[::-1], subgroup_size)):
         if i >= max_subgroups:
@@ -267,6 +279,9 @@ def cpk_plot(
         lower_specification_limit=lower_specification_limit,
     )
     ax1.table([[f"$Ppk: {ppk:.02g}$"], [f"$Cpk_{{av}}:{cpks.mean():.02g}$"]])
+
+    if parameter_name is not None:
+        fig.suptitle(f'Cpk, {parameter_name}')
 
     return fig
 

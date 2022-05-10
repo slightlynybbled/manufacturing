@@ -8,6 +8,8 @@ data = import_excel('data/example_data_with_faults.xlsx',
                     columnname='value')
 
 ppk_plot(**data,
+         parameter_name='Current',
          upper_specification_limit=10.1,
          lower_specification_limit=5.5)
+
 plt.show()
