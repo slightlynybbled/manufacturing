@@ -53,7 +53,7 @@ def ppk_plot(
     :param figure: an instance of ``matplotlig.axis.Axis``
     :return: ``matplotlib.figure.Figure``
     """
-    plot_type = 'Ppk' if not is_subset else 'Cpk'
+    plot_type = "Ppk" if not is_subset else "Cpk"
 
     data = coerce(data)
     mean = data.mean()
@@ -171,7 +171,7 @@ def ppk_plot(
     ax.legend(loc="lower right")
 
     if parameter_name is not None:
-        fig.suptitle(f'{plot_type}, {parameter_name}')
+        fig.suptitle(f"{plot_type}, {parameter_name}")
 
     return fig
 
@@ -281,7 +281,7 @@ def cpk_plot(
     ax1.table([[f"$Ppk: {ppk:.02g}$"], [f"$Cpk_{{av}}:{cpks.mean():.02g}$"]])
 
     if parameter_name is not None:
-        fig.suptitle(f'Cpk, {parameter_name}')
+        fig.suptitle(f"Cpk, {parameter_name}")
 
     return fig
 
@@ -300,7 +300,7 @@ def control_plot(*args, **kwargs) -> Axis:
     return control_chart_base(*args, **kwargs)
 
 
-def _remove_outliers(data: pd.Series) -> 'pd.Series':
+def _remove_outliers(data: pd.Series) -> "pd.Series":
     # when data is considered an extreme outlier,
     # then we will re-scale the y limits
     q25 = data.quantile(0.25)
