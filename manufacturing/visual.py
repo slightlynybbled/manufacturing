@@ -27,7 +27,7 @@ from manufacturing.lookup_tables import (
     calc_D3,
     calc_D4,
 )
-from manufacturing.util import coerce
+from manufacturing.util import coerce, remove_outliers
 
 _logger = logging.getLogger(__name__)
 
@@ -56,6 +56,8 @@ def ppk_plot(
     plot_type = "Ppk" if not is_subset else "Cpk"
 
     data = coerce(data)
+    data = remove_outliers(data)
+
     mean = data.mean()
     std = data.std()
 
@@ -202,6 +204,7 @@ def cpk_plot(
         return (seq[pos : pos + size] for pos in range(0, len(seq), size))
 
     data = coerce(data)
+    data = remove_outliers(data)
 
     # todo: offer options of historical subgrouping, such as subgroup
     #  history = 'all' or 'recent', something that
@@ -298,25 +301,6 @@ def control_plot(*args, **kwargs) -> Axis:
         'control_plot function is depreciated and will be removed in a future version; use "control_chart" instead'
     )
     return control_chart_base(*args, **kwargs)
-
-
-def _remove_outliers(data: pd.Series) -> "pd.Series":
-    # when data is considered an extreme outlier,
-    # then we will re-scale the y limits
-    q25 = data.quantile(0.25)
-    q50 = data.quantile(0.50)
-    q75 = data.quantile(0.75)
-    iqr = (q75 - q25) * 2
-    min_data = q50 - (iqr * 1.5)
-    max_data = q50 + (iqr * 1.5)
-
-    # identify data that is way outside of normal
-    bad_data = data[~((data - data.mean()).abs() < 3 * data.std())]
-    for i, v in bad_data.iteritems():
-        if v > max_data or v < min_data:
-            data.iloc[i] = np.nan
-
-    return data.dropna()
 
 
 def control_chart_base(
@@ -690,7 +674,7 @@ def x_mr_chart(
     :return: an instance of matplotlib.axis.Axis
     """
     data = coerce(data)
-    data = _remove_outliers(data)
+    data = remove_outliers(data)
     diff_data = abs(data.diff())
 
     # create an I-MR chart using a combination of control_chart and moving_range
@@ -815,7 +799,7 @@ def xbar_r_chart(
             "xbar_r_chart is recommended for subgroup sizes of more than 11"
         )
     data = coerce(data)
-    data = _remove_outliers(data)
+    data = remove_outliers(data)
 
     # determine how many arrays are in the data
     k = len(data) // subgroup_size
@@ -954,7 +938,7 @@ def xbar_s_chart(
             f"of less than {len(c4_table)}"
         )
     data = coerce(data)
-    data = _remove_outliers(data)
+    data = remove_outliers(data)
 
     # determine how many arrays are in the data
     k = len(data) // subgroup_size

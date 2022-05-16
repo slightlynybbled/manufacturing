@@ -26,3 +26,22 @@ def coerce(data: (List[int], List[float], pd.Series, np.array)) -> pd.Series:
         )
 
     return data
+
+
+def remove_outliers(data: pd.Series) -> "pd.Series":
+    # when data is considered an extreme outlier,
+    # then we will re-scale the y limits
+    q25 = data.quantile(0.25)
+    q50 = data.quantile(0.50)
+    q75 = data.quantile(0.75)
+    iqr = (q75 - q25) * 2
+    min_data = q50 - (iqr * 1.5)
+    max_data = q50 + (iqr * 1.5)
+
+    # identify data that is way outside of normal
+    bad_data = data[~((data - data.mean()).abs() < 3 * data.std())]
+    for i, v in bad_data.iteritems():
+        if v > max_data or v < min_data:
+            data.iloc[i] = np.nan
+
+    return data.dropna()
