@@ -606,7 +606,8 @@ def control_chart_base(
     ax.set_ylim(bottom=min_y, top=max_y)
 
     if show_legend:
-        ax.legend(loc="lower left")
+        legend = ax.legend(loc="lower left")
+        legend.set_zorder(100)
 
     fig = plt.gcf()
     fig.tight_layout()
@@ -624,7 +625,7 @@ def control_chart_base(
     ax.axhspan(y_lower, zone_a_lower_limit, color="red", alpha=alpha, zorder=-20)
 
     if show_hist:
-        ax.hist(data, orientation="horizontal", histtype="step")
+        ax.hist(data, orientation="horizontal", histtype="stepfilled", alpha=0.3)
 
     if truncated:
         _, y_upper = ax.get_ylim()
