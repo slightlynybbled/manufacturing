@@ -65,11 +65,8 @@ def ppk_plot(
         fig, ax = plt.subplots()
     else:
         fig = figure
-        axs = fig.get_axes()
-        if len(axs) > 0:
-            ax = axs[0]
-        else:
-            ax = axs
+        fig.clear()
+        ax = fig.add_subplot(1, 1, 1)
 
     ax.hist(data, density=True, label="data", alpha=0.3)
     x = np.linspace(mean - 4 * std, mean + 4 * std, 100)
@@ -222,8 +219,12 @@ def cpk_plot(
             1, 2, sharey="all", gridspec_kw={"width_ratios": [4, 1]}
         )
     else:
-        axs = figure.axes
         fig = figure
+        fig.clear()
+        gs = fig.add_gridspec(nrows=1, ncols=2, width_ratios=[4, 1])
+        ax0 = fig.add_subplot(gs[0, 0])
+        ax1 = fig.add_subplot(gs[0, 1], sharey=ax0)
+        axs = [ax0, ax1]
 
     ax0, ax1, *_ = axs
 
@@ -683,7 +684,10 @@ def x_mr_chart(
         fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
     else:
         fig = figure
-        axs = fig.axes
+        fig.clear()
+        ax0 = fig.add_subplot(211)
+        ax1 = fig.add_subplot(212, sharex=ax0)
+        axs = [ax0, ax1]
 
     params = {
         "highlight_beyond_limits": highlight_beyond_limits,
@@ -841,7 +845,10 @@ def xbar_r_chart(
         fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
     else:
         fig = figure
-        axs = fig.axes
+        fig.clear()
+        ax0 = fig.add_subplot(211)
+        ax1 = fig.add_subplot(212, sharex=ax0)
+        axs = [ax0, ax1]
 
     params = {
         "highlight_beyond_limits": highlight_beyond_limits,
@@ -977,7 +984,10 @@ def xbar_s_chart(
         fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
     else:
         fig = figure
-        axs = fig.axes
+        fig.clear()
+        ax0 = fig.add_subplot(211)
+        ax1 = fig.add_subplot(212, sharex=ax0)
+        axs = [ax0, ax1]
 
     params = {
         "highlight_beyond_limits": highlight_beyond_limits,
