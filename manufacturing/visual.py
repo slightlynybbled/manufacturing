@@ -172,6 +172,8 @@ def ppk_plot(
     if parameter_name is not None:
         fig.suptitle(f"{plot_type}, {parameter_name}")
 
+    fig.tight_layout()
+
     return fig
 
 
@@ -286,6 +288,8 @@ def cpk_plot(
 
     if parameter_name is not None:
         fig.suptitle(f"Cpk, {parameter_name}")
+
+    fig.tight_layout()
 
     return fig
 
