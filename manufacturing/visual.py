@@ -608,10 +608,6 @@ def control_chart_base(
     max_y = max(upper_control_limit + iqr * 0.25, mean + iqr)
     ax.set_ylim(bottom=min_y, top=max_y)
 
-    if show_legend:
-        legend = ax.legend(loc="lower left")
-        legend.set_zorder(100)
-
     # add background bands
     y_lower, y_upper = ax.get_ylim()
     alpha = 0.2
@@ -626,15 +622,22 @@ def control_chart_base(
 
     if show_hist:
         ax_hist = ax.twiny()
-        ax_hist.hist(data, density=True, orientation='horizontal', zorder=-100, alpha=0.3, color='orange')
+        ax_hist.hist(data, density=True, orientation='horizontal',
+                     zorder=-100, alpha=0.4, color='orange')
         _, xmax = ax_hist.get_xlim()
         ax_hist.set_xlim(0, xmax * 5)
         ax_hist.get_xaxis().set_visible(False)
+        ax.set_zorder(1)
+        ax.patch.set_visible(False)
 
     if truncated:
         _, y_upper = ax.get_ylim()
         x_lower, _ = ax.get_xlim()
         ax.text(x=x_lower, y=y_lower, s="...", ha="right")
+
+    if show_legend:
+        legend = ax.legend(loc="lower left")
+        legend.set_zorder(200)
 
     fig = plt.gcf()
     fig.tight_layout()
