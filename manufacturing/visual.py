@@ -397,8 +397,6 @@ def control_chart_base(
     for edge in edges:
         ax.text(right_plus, edge, s=f"{edge:.3g}", va="center", color=text_color)
 
-    # ax.text(x=0, y=mean, s=f'{avg_label}={mean:.3g}', color='blue', zorder=-10)
-
     texts = [
         {
             "y": mean,
@@ -614,9 +612,6 @@ def control_chart_base(
         legend = ax.legend(loc="lower left")
         legend.set_zorder(100)
 
-    fig = plt.gcf()
-    fig.tight_layout()
-
     # add background bands
     y_lower, y_upper = ax.get_ylim()
     alpha = 0.2
@@ -630,12 +625,19 @@ def control_chart_base(
     ax.axhspan(y_lower, zone_a_lower_limit, color="red", alpha=alpha, zorder=-20)
 
     if show_hist:
-        ax.hist(data, orientation="horizontal", histtype="stepfilled", alpha=0.3)
+        ax_hist = ax.twiny()
+        ax_hist.hist(data, density=True, orientation='horizontal', zorder=-100, alpha=0.3, color='orange')
+        _, xmax = ax_hist.get_xlim()
+        ax_hist.set_xlim(0, xmax * 5)
+        ax_hist.get_xaxis().set_visible(False)
 
     if truncated:
         _, y_upper = ax.get_ylim()
         x_lower, _ = ax.get_xlim()
-        ax.text(x=x_lower, y=y_upper, s="...", ha="right")
+        ax.text(x=x_lower, y=y_lower, s="...", ha="right")
+
+    fig = plt.gcf()
+    fig.tight_layout()
 
     return ax
 
@@ -1129,3 +1131,21 @@ def control_chart(
         s_lower_control_limit=r_lower_control_limit,
         **params,
     )
+
+
+if __name__ == '__main__':
+    from manufacturing.data_import import import_csv
+    data = import_csv('../examples/data/example_data_with_faults.csv', columnname='value')
+    data = remove_outliers(data)
+
+    fig, ax = plt.subplots()
+    control_chart_base(data=data, ax=ax)
+
+    ax_hist = ax.twiny()
+    ax_hist.hist(data, density=True, orientation='horizontal', zorder=-100, alpha=0.3, color='orange')
+    _, xmax = ax_hist.get_xlim()
+    ax_hist.set_xlim(0, xmax*5)
+    ax_hist.get_xaxis().set_visible(False)
+
+    fig.tight_layout()
+    plt.show()
