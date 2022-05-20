@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import manufacturing as mn
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 response = input('this is a long running process that will create up to '
                  '1GB of files on your hard drive and will take a while to run... '
@@ -43,8 +44,7 @@ data = df['param']
 # create several test plots
 img_path = Path(data_path.parent) / 'long_running'
 img_path.mkdir(exist_ok=True)
-for i in range(num_of_points):
-    print(i)
+for i in tqdm(range(num_of_points)):
     new_data = data[0 : i+10]
 
     fig = mn.control_chart(new_data)
