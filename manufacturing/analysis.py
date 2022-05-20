@@ -280,13 +280,13 @@ def control_zone_a(
 
         try:
             iter(zone_b_lower_limit)
-            zblls = zone_b_lower_limit[i : i+3]
+            zblls = zone_b_lower_limit[i : i + 3]
         except TypeError:
             zblls = None
 
         try:
             iter(zone_b_upper_limit)
-            zbuls = zone_b_upper_limit[i : i+3]
+            zbuls = zone_b_upper_limit[i : i + 3]
         except TypeError:
             zbuls = None
 
@@ -345,13 +345,13 @@ def control_zone_b(
         points = data[i : i + 5].to_numpy()
         try:
             iter(zone_c_lower_limit)
-            zclls = zone_c_lower_limit[i : i+5]
+            zclls = zone_c_lower_limit[i : i + 5]
         except TypeError:
             zclls = None
 
         try:
             iter(zone_c_upper_limit)
-            zculs = zone_c_upper_limit[i : i+5]
+            zculs = zone_c_upper_limit[i : i + 5]
         except TypeError:
             zculs = None
 
@@ -408,7 +408,7 @@ def control_zone_c(
         points = data[i : i + 7].to_numpy()
         try:
             iter(spec_center)
-            center_points = spec_center[i:i+7]
+            center_points = spec_center[i : i + 7]
         except TypeError:
             center_points = None
 

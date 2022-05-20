@@ -31,7 +31,7 @@ from manufacturing.util import coerce, remove_outliers
 
 _logger = logging.getLogger(__name__)
 
-ListValues = NewType('ListValues', Union[List[int], List[float], pd.Series, np.ndarray])
+ListValues = NewType("ListValues", Union[List[int], List[float], pd.Series, np.ndarray])
 
 
 def ppk_plot(
@@ -400,7 +400,7 @@ def control_chart_base(
 
     try:
         iter(spec_center)
-        ax.plot(spec_center, linestyle='--', color='red', alpha=0.2)
+        ax.plot(spec_center, linestyle="--", color="red", alpha=0.2)
     except TypeError:
         ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
 
@@ -623,18 +623,50 @@ def control_chart_base(
 
     # add background bands
     x_lower, x_upper = min(data.index), max(data.index)
-    xs = [i for i in range(x_lower, x_upper+1)]
+    xs = [i for i in range(x_lower, x_upper + 1)]
     y_lower, y_upper = ax.get_ylim()
     alpha = 0.2
-    ax.fill_between(xs, zone_a_upper_limit, y2=y_upper, color='red', alpha=alpha, zorder=-20, interpolate=True)
-    ax.fill_between(xs, zone_c_upper_limit, y2=zone_b_upper_limit, color='gray', alpha=alpha, zorder=-20, interpolate=True)
-    ax.fill_between(xs, zone_c_lower_limit, y2=zone_b_lower_limit, color='gray', alpha=alpha, zorder=-20, interpolate=True)
-    ax.fill_between(xs, y_lower, y2=zone_a_lower_limit, color='red', alpha=alpha, zorder=-20, interpolate=True)
+    ax.fill_between(
+        xs,
+        zone_a_upper_limit,
+        y2=y_upper,
+        color="red",
+        alpha=alpha,
+        zorder=-20,
+        interpolate=True,
+    )
+    ax.fill_between(
+        xs,
+        zone_c_upper_limit,
+        y2=zone_b_upper_limit,
+        color="gray",
+        alpha=alpha,
+        zorder=-20,
+        interpolate=True,
+    )
+    ax.fill_between(
+        xs,
+        zone_c_lower_limit,
+        y2=zone_b_lower_limit,
+        color="gray",
+        alpha=alpha,
+        zorder=-20,
+        interpolate=True,
+    )
+    ax.fill_between(
+        xs,
+        y_lower,
+        y2=zone_a_lower_limit,
+        color="red",
+        alpha=alpha,
+        zorder=-20,
+        interpolate=True,
+    )
 
     ax.set_xlim(x_lower, x_upper)
 
     for t in texts:
-        t['y'] = _resolve_right(t['y'])
+        t["y"] = _resolve_right(t["y"])
         ax.text(x=x_upper + 0.5, va="center", **t)
 
     text_color = "red"
@@ -653,8 +685,14 @@ def control_chart_base(
 
     if show_hist:
         ax_hist = ax.twiny()
-        ax_hist.hist(data, density=True, orientation='horizontal',
-                     zorder=-100, alpha=0.4, color='orange')
+        ax_hist.hist(
+            data,
+            density=True,
+            orientation="horizontal",
+            zorder=-100,
+            alpha=0.4,
+            color="orange",
+        )
         _, xmax = ax_hist.get_xlim()
         ax_hist.set_xlim(0, xmax * 5)
         ax_hist.get_xaxis().set_visible(False)
@@ -1096,31 +1134,31 @@ def p_chart(
     :return: an instance of `matplotlib.figure.Figure` on which the plot has been created
     """
     if not isinstance(data, pd.DataFrame):
-        raise ValueError('data must be of type `pandas.Dataframe`')
+        raise ValueError("data must be of type `pandas.Dataframe`")
 
     columns = data.columns
-    if 'pass' not in columns:
+    if "pass" not in columns:
         raise ValueError('the dataframe must contain the column "pass"')
-    if 'datetime' not in columns and 'lotid' not in columns:
+    if "datetime" not in columns and "lotid" not in columns:
         raise ValueError('the dataframe must contain "lotid" or "datetime"')
 
-    if 'lot_id' not in columns and 'datetime' in columns:
-        data['datetime'] = pd.to_datetime(data['datetime'])
-        data.set_index('datetime', inplace=True)
+    if "lot_id" not in columns and "datetime" in columns:
+        data["datetime"] = pd.to_datetime(data["datetime"])
+        data.set_index("datetime", inplace=True)
 
         # separate data into reasonable lots
         rules = [
-            'H',   # hourly
-            'B',   # daily (business days)
-            'W',   # weekly
-            '2W',  # every 2 weeks
-            'M',   # monthly
+            "H",  # hourly
+            "B",  # daily (business days)
+            "W",  # weekly
+            "2W",  # every 2 weeks
+            "M",  # monthly
         ]
 
         sample_rule = None
         for rule in rules:
-            pass_rates = data['pass'].resample(rule).mean()  # pass rate will be 1.0
-            size = data['pass'].resample(rule).size().sum()
+            pass_rates = data["pass"].resample(rule).mean()  # pass rate will be 1.0
+            size = data["pass"].resample(rule).size().sum()
 
             value_counts = pass_rates.value_counts()
             ratio = value_counts.iloc[0] / size
@@ -1130,15 +1168,17 @@ def p_chart(
                 break
 
         if sample_rule is None:
-            raise ValueError('no valid sample interval resulted in an appropriate nonconformance ratio')
+            raise ValueError(
+                "no valid sample interval resulted in an appropriate nonconformance ratio"
+            )
 
-        sampled_dfs = data['pass'].resample(sample_rule)
-    elif 'lotid' in columns:
-        sampled_dfs = data.groupby(by='lotid')['pass']
+        sampled_dfs = data["pass"].resample(sample_rule)
+    elif "lotid" in columns:
+        sampled_dfs = data.groupby(by="lotid")["pass"]
     else:
         raise ValueError('"datetime" or "lotid" must be columns within the dataframe')
 
-    pbar = len(data[data['pass'] == False]) / len(data)
+    pbar = len(data[data["pass"] == False]) / len(data)
 
     ps = []
     ucls = []
@@ -1164,7 +1204,9 @@ def p_chart(
             ucls.append(ucl)
             lcls.append(lcl)
         else:
-            _logger.warning(f'sample set eliminated due to insufficient lot size of {n_i}')
+            _logger.warning(
+                f"sample set eliminated due to insufficient lot size of {n_i}"
+            )
 
     if figure is None:
         fig, ax = plt.subplots(1, 1, figsize=(12, 9))
@@ -1186,7 +1228,7 @@ def p_chart(
         highlight_stratification=False,
         highlight_overcontrol=False,
         ax=ax,
-        avg_label=r'$\bar{p}$'
+        avg_label=r"$\bar{p}$",
     )
 
     y_low, y_high = ax.get_ylim()
@@ -1300,18 +1342,28 @@ def control_chart(
     )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from manufacturing.data_import import import_csv
-    data = import_csv('../examples/data/example_data_with_faults.csv', columnname='value')
+
+    data = import_csv(
+        "../examples/data/example_data_with_faults.csv", columnname="value"
+    )
     data = remove_outliers(data)
 
     fig, ax = plt.subplots()
     control_chart_base(data=data, ax=ax)
 
     ax_hist = ax.twiny()
-    ax_hist.hist(data, density=True, orientation='horizontal', zorder=-100, alpha=0.3, color='orange')
+    ax_hist.hist(
+        data,
+        density=True,
+        orientation="horizontal",
+        zorder=-100,
+        alpha=0.3,
+        color="orange",
+    )
     _, xmax = ax_hist.get_xlim()
-    ax_hist.set_xlim(0, xmax*5)
+    ax_hist.set_xlim(0, xmax * 5)
     ax_hist.get_xaxis().set_visible(False)
 
     fig.tight_layout()

@@ -47,7 +47,9 @@ def parse_col_for_limits(columnname: str):
     return lsl, usl
 
 
-def import_csv(file_path: (str, Path), columnname: str, **kwargs) -> Union[dict, pd.Series]:
+def import_csv(
+    file_path: (str, Path), columnname: str, **kwargs
+) -> Union[dict, pd.Series]:
     """
     Imports data from a csv file and outputs the specified column of data as a `pandas.Series`
 
@@ -73,7 +75,9 @@ def import_csv(file_path: (str, Path), columnname: str, **kwargs) -> Union[dict,
     return data
 
 
-def import_excel(file_path: (str, Path), columnname: str, **kwargs) -> Union[dict, pd.Series]:
+def import_excel(
+    file_path: (str, Path), columnname: str, **kwargs
+) -> Union[dict, pd.Series]:
     """
     Imports data from an excel file and outputs the specified column of data as a `pandas.Series`
 
