@@ -398,8 +398,12 @@ def control_chart_base(
 
     ax.plot(data, marker=".")
 
-    # ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
-    ax.plot(spec_center, linestyle='--', color='red', alpha=0.2)
+    try:
+        iter(spec_center)
+        ax.plot(spec_center, linestyle='--', color='red', alpha=0.2)
+    except TypeError:
+        ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
+
     ax.axhline(mean, linestyle="--", color="blue", alpha=0.3, zorder=-10)
 
     texts = [
@@ -1080,16 +1084,16 @@ def p_chart(
 
       - `pass`, which contains a `True`/`False` or `1`/`0` indication of pass/fail \
       status of a test sequence
-      - `lotid` or `datetime`, either of which will be used to create subgroups; if `lotid` is
-      provided, then data will be subgrouped into the defined lots; if `datetime` is provided,
-      then lot sizes will be based on time units (hour, day, week, year) and will automatically
+      - `lotid` or `datetime`, either of which will be used to create subgroups; if `lotid` is \
+      provided, then data will be subgrouped into the defined lots; if `datetime` is provided, \
+      then lot sizes will be based on time units (hour, day, week, year) and will automatically \
       be chosen to ensure that some defects are present in each lot size
 
     :param data: a dataframe containing two columns, `pass` and `lotid` or `datetime`
-    :param parameter_name:
-    :param highlight_beyond_limits:
+    :param parameter_name: a string representing the parameter name
+    :param highlight_beyond_limits: `True` or `False`
     :param figure: instance of `matplotlib.figure.Figure` on which to create the plot
-    :return:
+    :return: an instance of `matplotlib.figure.Figure` on which the plot has been created
     """
     if not isinstance(data, pd.DataFrame):
         raise ValueError('data must be of type `pandas.Dataframe`')

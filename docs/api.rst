@@ -37,7 +37,7 @@ Plotting & Charting
 
 ----
 
-.. autofunction:: manufacturing.control_plot
+.. autofunction:: manufacturing.p_chart
 
 Import & Export
 ---------------

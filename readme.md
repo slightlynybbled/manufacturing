@@ -10,9 +10,7 @@ Project is currently undergoing frequent updates for documentation and to add
 functionality and update documentation!!  Screenshots and features that you see
 on here may be out of date, but are in progress.
 
-Current focus is to add test coverage and shore up functionality that has 
-been implemented.  All versions before v1.2.0 will be minor bugfixes or minor 
-functionality as it is revealed in test development.
+Current focus is to add more plot types.
 
 # Installation
 
@@ -54,6 +52,7 @@ the dataset requires.  However, if you wish to call a specific type of control c
  - `x_mr_chart`
  - `xbar_r_chart`
  - `xbar_s_chart`
+ - `p_chart`
 
 # Contributions
 
@@ -70,7 +69,7 @@ Items marked out were added most recently.
  - ~~Add `Xbar-R Chart` (subgroups between 2 and 10)~~
  - ~~Add `Xbar-S Chart` (subgroups of 11 or more)~~
  - ~~Update documentation to reflect recent API changes~~
- - Add `p chart`
+ - ~~Add `p chart`~~
  - Add `np chart`
  - Add `u chart`
  - Add `c chart`

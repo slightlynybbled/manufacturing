@@ -136,3 +136,10 @@ that warrant further explanation:
  * lower control limit - the lower control limit as calculated from the data on the plot
 
 .. image:: _static/images/x_bar_s-anatomy.png
+
+Additional Chart Types
+----------------------
+
+One may also utilize the :meth:`manufacturing.p_chart()`, which requires a `pandas.DataFrame` rather than a `pandas.Series`.
+
+.. image:: _static/images/p_chart.png
