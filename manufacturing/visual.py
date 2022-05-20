@@ -1101,13 +1101,6 @@ def p_chart(
     :param upper_control_limit:
     :param lower_control_limit:
     :param highlight_beyond_limits:
-    :param highlight_zone_a:
-    :param highlight_zone_b:
-    :param highlight_zone_c:
-    :param highlight_trend:
-    :param highlight_mixture:
-    :param highlight_stratification:
-    :param highlight_overcontrol:
     :param max_points:
     :param figure:
     :return:
