@@ -397,7 +397,6 @@ def control_chart_base(
         fig, ax = plt.subplots()
 
     ax.plot(data, marker=".")
-    ax.set_title("P-Chart")
 
     # ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
     ax.plot(spec_center, linestyle='--', color='red', alpha=0.2)
@@ -1072,17 +1071,7 @@ def xbar_s_chart(
 def p_chart(
     data: (List[int], List[float], pd.Series, np.ndarray),
     parameter_name: Optional[str] = None,
-    upper_control_limit: Optional[Union[float, int]] = None,
-    lower_control_limit: Optional[Union[float, int]] = None,
     highlight_beyond_limits: bool = True,
-    highlight_zone_a: bool = True,
-    highlight_zone_b: bool = True,
-    highlight_zone_c: bool = True,
-    highlight_trend: bool = True,
-    highlight_mixture: bool = False,
-    highlight_stratification: bool = False,
-    highlight_overcontrol: bool = False,
-    max_points: Optional[int] = 60,
     figure: Optional[Figure] = None,
 ) -> Figure:
     """
@@ -1098,11 +1087,8 @@ def p_chart(
 
     :param data: a dataframe containing two columns, `pass` and `lotid` or `datetime`
     :param parameter_name:
-    :param upper_control_limit:
-    :param lower_control_limit:
     :param highlight_beyond_limits:
-    :param max_points:
-    :param figure:
+    :param figure: instance of `matplotlib.figure.Figure` on which to create the plot
     :return:
     """
     if not isinstance(data, pd.DataFrame):
@@ -1114,11 +1100,105 @@ def p_chart(
     if 'datetime' not in columns and 'lotid' not in columns:
         raise ValueError('the dataframe must contain "lotid" or "datetime"')
 
-    if 'lotid' in columns and 'datetime' not in columns:
+    if 'lot_id' not in columns and 'datetime' in columns:
         data['datetime'] = pd.to_datetime(data['datetime'])
-        raise NotImplementedError('usage of pre-defined lots not currently implemented')
+        data.set_index('datetime', inplace=True)
 
+        # separate data into reasonable lots
+        rules = [
+            'H',   # hourly
+            'B',   # daily (business days)
+            'W',   # weekly
+            '2W',  # every 2 weeks
+            'M',   # monthly
+        ]
 
+        sample_rule = None
+        for rule in rules:
+            pass_rates = data['pass'].resample(rule).mean()  # pass rate will be 1.0
+            size = data['pass'].resample(rule).size().sum()
+
+            value_counts = pass_rates.value_counts()
+            ratio = value_counts.iloc[0] / size
+
+            if ratio <= 0.005:  # less than 0.5% of intervals show 100% pass rate
+                sample_rule = rule
+                break
+
+        if sample_rule is None:
+            raise ValueError('no valid sample interval resulted in an appropriate nonconformance ratio')
+
+        sampled_dfs = data['pass'].resample(sample_rule)
+    elif 'lotid' in columns:
+        sampled_dfs = data.groupby(by='lotid')['pass']
+    else:
+        raise ValueError('"datetime" or "lotid" must be columns within the dataframe')
+
+    pbar = len(data[data['pass'] == False]) / len(data)
+
+    ps = []
+    ucls = []
+    lcls = []
+    for ts, sampled_df in sampled_dfs:
+        n_i = sampled_df.size
+
+        if n_i >= 20:
+            n_i_inverse = 1.0 / n_i
+
+            if n_i_inverse is not None:
+                ucl = pbar + 3 * np.sqrt(pbar * (1 - pbar) * n_i_inverse)
+                lcl = pbar - 3 * np.sqrt(pbar * (1 - pbar) * n_i_inverse)
+            else:
+                ucl = lcl = np.nan
+
+            if lcl < 0.0:
+                lcl = 0.0
+            if ucl > 1.0:
+                ucl = 1.0
+
+            ps.append(1.0 - sampled_df.mean())
+            ucls.append(ucl)
+            lcls.append(lcl)
+        else:
+            _logger.warning(f'sample set eliminated due to insufficient lot size of {n_i}')
+
+    if figure is None:
+        fig, ax = plt.subplots(1, 1, figsize=(12, 9))
+    else:
+        fig = figure
+        fig.clear()
+        ax = fig.add_subplot(11)
+
+    control_chart_base(
+        data=ps,
+        upper_control_limit=ucls,
+        lower_control_limit=lcls,
+        highlight_beyond_limits=highlight_beyond_limits,
+        highlight_zone_a=False,
+        highlight_zone_b=False,
+        highlight_zone_c=False,
+        highlight_trend=False,
+        highlight_mixture=False,
+        highlight_stratification=False,
+        highlight_overcontrol=False,
+        ax=ax,
+        avg_label=r'$\bar{p}$'
+    )
+
+    y_low, y_high = ax.get_ylim()
+    if y_high > 1.0:
+        ax.set_ylim(0.0, 1.0)
+    else:
+        ax.set_ylim(0.0)
+
+    fig_title = f"P-Chart"
+    if parameter_name is not None:
+        fig_title = f"{fig_title}, {parameter_name}"
+    fig.suptitle(fig_title)
+
+    fig.tight_layout()
+
+    return fig
 
 
 def control_chart(
