@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional, Union
+from typing import List, NewType, Optional, Union
 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -31,9 +31,11 @@ from manufacturing.util import coerce, remove_outliers
 
 _logger = logging.getLogger(__name__)
 
+ListValues = NewType('ListValues', Union[List[int], List[float], pd.Series, np.ndarray])
+
 
 def ppk_plot(
-    data: (List[int], List[float], pd.Series, np.ndarray),
+    data: ListValues,
     upper_specification_limit: (int, float),
     lower_specification_limit: (int, float),
     parameter_name: Optional[str] = None,
@@ -178,7 +180,7 @@ def ppk_plot(
 
 
 def cpk_plot(
-    data: (List[int], List[float], pd.Series, np.ndarray),
+    data: ListValues,
     upper_specification_limit: (int, float),
     lower_specification_limit: (int, float),
     parameter_name: Optional[str] = None,
@@ -308,10 +310,19 @@ def control_plot(*args, **kwargs) -> Axis:
     return control_chart_base(*args, **kwargs)
 
 
+def _resolve_right(value) -> Union[int, float]:
+    try:
+        iter(value)
+        return value.iloc[-1]
+    except TypeError:
+        ...
+    return value
+
+
 def control_chart_base(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_control_limit: Optional[Union[int, float]] = None,
-    lower_control_limit: Optional[Union[int, float]] = None,
+    data: ListValues,
+    upper_control_limit: Optional[Union[int, float, ListValues]] = None,
+    lower_control_limit: Optional[Union[int, float, ListValues]] = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -346,6 +357,16 @@ def control_chart_base(
     :return: an instance of matplotlib.axis.Axis
     """
     data = coerce(data)
+    try:
+        iter(upper_control_limit)
+        upper_control_limit = coerce(upper_control_limit)
+    except TypeError:
+        ...
+    try:
+        iter(lower_control_limit)
+        lower_control_limit = coerce(lower_control_limit)
+    except TypeError:
+        ...
 
     # for purposes of gathering statistics, only use
     # data that is not considered outliers
@@ -376,26 +397,11 @@ def control_chart_base(
         fig, ax = plt.subplots()
 
     ax.plot(data, marker=".")
-    ax.set_title("Zone Control Chart")
+    ax.set_title("P-Chart")
 
-    ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
-
-    ax.axhline(mean, linestyle="--", color="blue", alpha=0.4, zorder=-10)
-
-    ax.set_xlim(data.index[0])
-    left, right = ax.get_xlim()
-    right_plus = (right - left) * 0.01 + right
-
-    text_color = "red"
-    edges = [
-        zone_c_upper_limit,
-        zone_c_lower_limit,
-        zone_b_upper_limit,
-        zone_b_lower_limit,
-        spec_center,
-    ]
-    for edge in edges:
-        ax.text(right_plus, edge, s=f"{edge:.3g}", va="center", color=text_color)
+    # ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
+    ax.plot(spec_center, linestyle='--', color='red', alpha=0.2)
+    ax.axhline(mean, linestyle="--", color="blue", alpha=0.3, zorder=-10)
 
     texts = [
         {
@@ -408,13 +414,13 @@ def control_chart_base(
             ),
         },
         {
-            "y": upper_control_limit,
-            "s": f"UCL={upper_control_limit:.3g}",
+            "y": _resolve_right(upper_control_limit),
+            "s": f"UCL={_resolve_right(upper_control_limit):.3g}",
             "color": "red",
         },
         {
-            "y": lower_control_limit,
-            "s": f"LCL={lower_control_limit:.3g}",
+            "y": _resolve_right(lower_control_limit),
+            "s": f"LCL={_resolve_right(lower_control_limit):.3g}",
             "color": "red",
         },
         {"y": (spec_center + zone_c_upper_limit) / 2, "s": "Zone C"},
@@ -424,8 +430,6 @@ def control_chart_base(
         {"y": (zone_a_upper_limit + zone_b_upper_limit) / 2, "s": "Zone A"},
         {"y": (zone_a_lower_limit + zone_b_lower_limit) / 2, "s": "Zone A"},
     ]
-    for t in texts:
-        ax.text(x=right_plus, va="center", **t)
 
     diameter = 30
     diameter_inc = 35
@@ -604,21 +608,45 @@ def control_chart_base(
 
     q25, q75 = data.quantile(0.25), data.quantile(0.75)
     iqr = q75 - q25
-    min_y = min(lower_control_limit - iqr * 0.25, mean - iqr)
-    max_y = max(upper_control_limit + iqr * 0.25, mean + iqr)
+    try:
+        min_y = min(lower_control_limit - iqr * 0.25, mean - iqr)
+    except ValueError:
+        min_y = min(min(lower_control_limit), 0)
+    try:
+        max_y = max(upper_control_limit + iqr * 0.25, mean + iqr)
+    except ValueError:
+        max_y = max(max(upper_control_limit), mean + iqr)
     ax.set_ylim(bottom=min_y, top=max_y)
 
     # add background bands
+    x_lower, x_upper = min(data.index), max(data.index)
+    xs = [i for i in range(x_lower, x_upper+1)]
     y_lower, y_upper = ax.get_ylim()
     alpha = 0.2
-    ax.axhspan(y_upper, zone_a_upper_limit, color="red", alpha=alpha, zorder=-20)
-    ax.axhspan(
-        zone_c_upper_limit, zone_b_upper_limit, color="gray", alpha=alpha, zorder=-20
-    )
-    ax.axhspan(
-        zone_c_lower_limit, zone_b_lower_limit, color="gray", alpha=alpha, zorder=-20
-    )
-    ax.axhspan(y_lower, zone_a_lower_limit, color="red", alpha=alpha, zorder=-20)
+    ax.fill_between(xs, zone_a_upper_limit, y2=y_upper, color='red', alpha=alpha, zorder=-20, interpolate=True)
+    ax.fill_between(xs, zone_c_upper_limit, y2=zone_b_upper_limit, color='gray', alpha=alpha, zorder=-20, interpolate=True)
+    ax.fill_between(xs, zone_c_lower_limit, y2=zone_b_lower_limit, color='gray', alpha=alpha, zorder=-20, interpolate=True)
+    ax.fill_between(xs, y_lower, y2=zone_a_lower_limit, color='red', alpha=alpha, zorder=-20, interpolate=True)
+
+    ax.set_xlim(x_lower, x_upper)
+
+    for t in texts:
+        t['y'] = _resolve_right(t['y'])
+        ax.text(x=x_upper + 0.5, va="center", **t)
+
+    text_color = "red"
+    edges = [
+        zone_c_upper_limit,
+        zone_c_lower_limit,
+        zone_b_upper_limit,
+        zone_b_lower_limit,
+        spec_center,
+    ]
+    for edge in edges:
+        try:
+            iter(edge)
+        except TypeError:
+            ax.text(x_upper + 0.5, edge, s=f"{edge:.3g}", va="center", color=text_color)
 
     if show_hist:
         ax_hist = ax.twiny()
@@ -1041,6 +1069,65 @@ def xbar_s_chart(
     return fig
 
 
+def p_chart(
+    data: (List[int], List[float], pd.Series, np.ndarray),
+    parameter_name: Optional[str] = None,
+    upper_control_limit: Optional[Union[float, int]] = None,
+    lower_control_limit: Optional[Union[float, int]] = None,
+    highlight_beyond_limits: bool = True,
+    highlight_zone_a: bool = True,
+    highlight_zone_b: bool = True,
+    highlight_zone_c: bool = True,
+    highlight_trend: bool = True,
+    highlight_mixture: bool = False,
+    highlight_stratification: bool = False,
+    highlight_overcontrol: bool = False,
+    max_points: Optional[int] = 60,
+    figure: Optional[Figure] = None,
+) -> Figure:
+    """
+    Create a p-chart based on the provided data.  The `data` must be a dataframe \
+    which contains the following columns:
+
+      - `pass`, which contains a `True`/`False` or `1`/`0` indication of pass/fail \
+      status of a test sequence
+      - `lotid` or `datetime`, either of which will be used to create subgroups; if `lotid` is
+      provided, then data will be subgrouped into the defined lots; if `datetime` is provided,
+      then lot sizes will be based on time units (hour, day, week, year) and will automatically
+      be chosen to ensure that some defects are present in each lot size
+
+    :param data: a dataframe containing two columns, `pass` and `lotid` or `datetime`
+    :param parameter_name:
+    :param upper_control_limit:
+    :param lower_control_limit:
+    :param highlight_beyond_limits:
+    :param highlight_zone_a:
+    :param highlight_zone_b:
+    :param highlight_zone_c:
+    :param highlight_trend:
+    :param highlight_mixture:
+    :param highlight_stratification:
+    :param highlight_overcontrol:
+    :param max_points:
+    :param figure:
+    :return:
+    """
+    if not isinstance(data, pd.DataFrame):
+        raise ValueError('data must be of type `pandas.Dataframe`')
+
+    columns = data.columns
+    if 'pass' not in columns:
+        raise ValueError('the dataframe must contain the column "pass"')
+    if 'datetime' not in columns and 'lotid' not in columns:
+        raise ValueError('the dataframe must contain "lotid" or "datetime"')
+
+    if 'lotid' in columns and 'datetime' not in columns:
+        data['datetime'] = pd.to_datetime(data['datetime'])
+        raise NotImplementedError('usage of pre-defined lots not currently implemented')
+
+
+
+
 def control_chart(
     data: (List[int], List[float], pd.Series, np.ndarray),
     parameter_name: Optional[str] = None,
@@ -1061,7 +1148,7 @@ def control_chart(
 ) -> Figure:
     """
     Automatically selects the most appropriate type of control chart, \
-    based on the number of samples supplied in the data and the ``max_points``
+    based on the number of samples supplied in the data and the ``max_points`` \
     and returns a ``matplotlib.figure.Figure`` containing the control chart(s).
 
     :param data: (List[int], List[float], pd.Series, np.ndarray),

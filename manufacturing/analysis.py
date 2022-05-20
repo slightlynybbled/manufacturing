@@ -278,13 +278,33 @@ def control_zone_a(
     for i in range(len(data) - 2):
         points = data[i : i + 3].to_numpy()
 
-        values = [1 for p in points if p < zone_b_lower_limit]
+        try:
+            iter(zone_b_lower_limit)
+            zblls = zone_b_lower_limit[i : i+3]
+        except TypeError:
+            zblls = None
+
+        try:
+            iter(zone_b_upper_limit)
+            zbuls = zone_b_upper_limit[i : i+3]
+        except TypeError:
+            zbuls = None
+
+        if zblls is not None:
+            values = [1 for p in points if p < zblls[i]]
+        else:
+            values = [1 for p in points if p < zone_b_lower_limit]
+
         if sum(values) > 2:
             index = i + np.arange(3)
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone a violation found at index {i}")
 
-        values = [1 for p in points if p > zone_b_upper_limit]
+        if zbuls is not None:
+            values = [1 for p in points if p > zone_b_upper_limit[i]]
+        else:
+            values = [1 for p in points if p > zone_b_upper_limit]
+
         if sum(values) > 2:
             index = i + np.arange(3)
             violations.append(pd.Series(data=points, index=index))
@@ -323,14 +343,32 @@ def control_zone_b(
     violations = []
     for i in range(len(data) - 4):
         points = data[i : i + 5].to_numpy()
+        try:
+            iter(zone_c_lower_limit)
+            zclls = zone_c_lower_limit[i : i+5]
+        except TypeError:
+            zclls = None
 
-        values = [1 for p in points if p < zone_c_lower_limit]
+        try:
+            iter(zone_c_upper_limit)
+            zculs = zone_c_upper_limit[i : i+5]
+        except TypeError:
+            zculs = None
+
+        if zclls is not None:
+            values = [1 for p in points if p < zclls[i]]
+        else:
+            values = [1 for p in points if p < zone_c_lower_limit]
+
         if sum(values) > 3:
             index = i + np.arange(5) + data.index[0]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone b violation found at index {i}")
 
-        values = [1 for p in points if p > zone_c_upper_limit]
+        if zculs is not None:
+            values = [1 for p in points if p > zculs[i]]
+        else:
+            values = [1 for p in points if p > zone_c_upper_limit]
         if sum(values) > 3:
             index = i + np.arange(5) + data.index[0]
             violations.append(pd.Series(data=points, index=index))
@@ -368,7 +406,16 @@ def control_zone_c(
     violations = []
     for i in range(len(data) - 6):
         points = data[i : i + 7].to_numpy()
-        values = [1 if p > spec_center else -1 for p in points]
+        try:
+            iter(spec_center)
+            center_points = spec_center[i:i+7]
+        except TypeError:
+            center_points = None
+
+        if center_points is not None:
+            values = [1 if p > c else -1 for p, c in zip(points, center_points)]
+        else:
+            values = [1 if p > spec_center else -1 for p in points]
 
         if abs(sum(values)) > 6:
             index = i + np.arange(7) + data.index[0]
