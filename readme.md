@@ -70,7 +70,11 @@ Items marked out were added most recently.
  - ~~Add `Xbar-R Chart` (subgroups between 2 and 10)~~
  - ~~Add `Xbar-S Chart` (subgroups of 11 or more)~~
  - ~~Update documentation to reflect recent API changes~~
- - Add automated testing
+ - Add `p chart`
+ - Add `np chart`
+ - Add `u chart`
+ - Add `c chart`
+ - Add automated testing (partially implemented)
 
 # Gallery
 
