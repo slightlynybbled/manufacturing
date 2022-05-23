@@ -52,8 +52,8 @@ def ppk_plot(
     :param parameter_name: a string that shows up in the title
     :param threshold_percent: the threshold at which % of units above/below the number will display on the plot
     :param is_subset: False if the data represents a complete dataset, else True; determines if Ppk or Cpk are in the titles
-    :param figure: an instance of ``matplotlig.axis.Axis``
-    :return: ``matplotlib.figure.Figure``
+    :param figure: an instance of ``matplotlib.figure.Figure``
+    :return: an instance of ``matplotlib.figure.Figure``
     """
     plot_type = "Ppk" if not is_subset else "Cpk"
 
@@ -197,7 +197,7 @@ def cpk_plot(
     :param parameter_name: the name of the parameter that will be displayed on the plot
     :param subgroup_size: the number of samples to include in each subgroup
     :param max_subgroups: the maximum number of subgroups to display
-    :param figure: two instances of matplotlib.axis.Axis
+    :param figure: an instance of ``matplotlib.figure.Figure``
     :return: an instance of ``matplotlib.figure.Figure``
     """
 
@@ -353,8 +353,8 @@ def control_chart_base(
     :param max_points: the maximum number of points to display ('None' to display all)
     :param avg_label: the label that is applied to the average on the plot
     :param show_hist: show a histogram to the left of the plot
-    :param ax: an instance of matplotlib.axis.Axis
-    :return: an instance of matplotlib.axis.Axis
+    :param ax: an `instance of matplotlib.axis.Axis`
+    :return: an instance of `matplotlib.axis.Axis`
     """
     data = coerce(data)
     try:
@@ -750,8 +750,8 @@ def x_mr_chart(
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
     :param max_points: the maximum number of points to display ('None' to display all)
-    :param figure: instance of matplotlib.figure.Figure
-    :return: an instance of matplotlib.axis.Axis
+    :param figure: an instance of ``matplotlib.figure.Figure``
+    :return: an instance of ``matplotlib.figure.Figure``
     """
     data = coerce(data)
     data = remove_outliers(data)
@@ -870,8 +870,8 @@ def xbar_r_chart(
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
     :param max_points: the maximum number of points to display ('None' to display all)
-    :param figure: an instance of matplotlib.figure.Figure
-    :return: an instance of matplotlib.figure.Figure
+    :param figure: an instance of ``matplotlib.figure.Figure``
+    :return: an instance of ``matplotlib.figure.Figure``
     """
     if subgroup_size < 2:
         raise ValueError(
@@ -1010,8 +1010,8 @@ def xbar_s_chart(
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
     :param max_points: the maximum number of points to display ('None' to display all)
-    :param figure: an instance of matplotlib.figure.Figure
-    :return: an instance of matplotlib.figure.Figure
+    :param figure: an instance of ``matplotlib.figure.Figure``
+    :return: an instance of ``matplotlib.figure.Figure``
     """
     if subgroup_size < 11:
         raise ValueError(
@@ -1127,11 +1127,17 @@ def p_chart(
       then lot sizes will be based on time units (hour, day, week, year) and will automatically \
       be chosen to ensure that some defects are present in each lot size
 
+    Assumptions:
+
+     - The probability of non-conformance is the same for each item
+     - Each unit is independent of the other
+     - The testing procedure is the same for each lot
+
     :param data: a dataframe containing two columns, `pass` and `lotid` or `datetime`
     :param parameter_name: a string representing the parameter name
     :param highlight_beyond_limits: `True` or `False`
-    :param figure: instance of `matplotlib.figure.Figure` on which to create the plot
-    :return: an instance of `matplotlib.figure.Figure` on which the plot has been created
+    :param figure: an instance of ``matplotlib.figure.Figure``
+    :return: an instance of ``matplotlib.figure.Figure``
     """
     if not isinstance(data, pd.DataFrame):
         raise ValueError("data must be of type `pandas.Dataframe`")
@@ -1247,6 +1253,83 @@ def p_chart(
     return fig
 
 
+def np_chart(data: pd.Series, num_of_lots: int = 100,
+             parameter_name: str = None,
+             highlight_beyond_limits: bool = True,
+             figure: Optional[Figure] = None) -> Figure:
+    """
+    Create a np-chart based on the provided data.
+
+    Assumptions:
+
+     - `True` represents conformance to specification and `False` represents non-conformance
+     - The probability of non-conformance is the same for each item
+     - Each unit is independent of the other (no duplicates!)
+     - The testing procedure should be the same for each lot
+
+    :param data: a list, pandas.Series, or numpy.ndarray representing the data set and consisting of only True/False values
+    :param num_of_lots: the number of lots into which to split the data; as this number goes up, the number of units in each lot will decrease
+    :param parameter_name: a string representing the parameter name
+    :param highlight_beyond_limits: True if points beyond limits are to be highlighted
+    :param figure: an instance of `matplotlib.figure.Figure`
+    :return: an instance of `matplotlib.figure.Figure`
+    """
+
+    total_defectives = data.value_counts()[False]
+    k = num_of_lots
+    n_pbar = total_defectives / k
+
+    series = np.array_split(data, num_of_lots)
+    n = len(series[-1])
+    if n < 30:
+        _logger.warning('subgroup size may be too small for np chart')
+
+    defectives = []
+    for s in series:
+        try:
+            defectives.append(s.value_counts()[False])
+        except KeyError:
+            defectives.append(0)
+
+    pbar = total_defectives / len(data)
+
+    ucl = n_pbar + 3 * np.sqrt(n_pbar * (1 - pbar))
+    lcl = n_pbar - 3 * np.sqrt(n_pbar * (1 - pbar))
+    if lcl < 0.0:
+        lcl = 0.0
+
+    if figure is None:
+        fig, ax = plt.subplots(1, 1, figsize=(12, 9))
+    else:
+        fig = figure
+        fig.clear()
+        ax = fig.add_subplot(11)
+
+    control_chart_base(
+        defectives,
+        upper_control_limit=ucl,
+        lower_control_limit=lcl,
+        highlight_beyond_limits=highlight_beyond_limits,
+        highlight_zone_a=False,
+        highlight_zone_b=False,
+        highlight_zone_c=False,
+        highlight_trend=False,
+        highlight_mixture=False,
+        highlight_stratification=False,
+        highlight_overcontrol=False,
+        avg_label=r'$n\bar{p}$',
+        ax=ax
+    )
+
+    title = r'$n\bar{p}$ Chart'
+    if parameter_name is not None:
+        title += f', {parameter_name}'
+    fig.suptitle(title)
+    fig.tight_layout()
+
+    return fig
+
+
 def control_chart(
     data: (List[int], List[float], pd.Series, np.ndarray),
     parameter_name: Optional[str] = None,
@@ -1285,8 +1368,8 @@ def control_chart(
     :param highlight_stratification: True if points that are stratification violations are to be highlighted
     :param highlight_overcontrol: True if points that are overcontrol violations are to be hightlighted
     :param max_points: the maximum number of points to display ('None' to display all)
-    :param figure: an instance of matplotlib.figure.Figure
-    :return: instance of matplotlib.figure.Figure
+    :param figure: an instance of ``matplotlib.figure.Figure``
+    :return: an instance of ``matplotlib.figure.Figure``
     """
     data = coerce(data)
 
