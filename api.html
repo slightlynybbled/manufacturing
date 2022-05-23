@@ -89,11 +89,11 @@
 <li><p><strong>parameter_name</strong> – a string that shows up in the title</p></li>
 <li><p><strong>threshold_percent</strong> – the threshold at which % of units above/below the number will display on the plot</p></li>
 <li><p><strong>is_subset</strong> – False if the data represents a complete dataset, else True; determines if Ppk or Cpk are in the titles</p></li>
-<li><p><strong>figure</strong> – an instance of <code class="docutils literal notranslate"><span class="pre">matplotlig.axis.Axis</span></code></p></li>
+<li><p><strong>figure</strong> – an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p>
+<dd class="field-even"><p>an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -112,7 +112,7 @@
 <li><p><strong>parameter_name</strong> – the name of the parameter that will be displayed on the plot</p></li>
 <li><p><strong>subgroup_size</strong> – the number of samples to include in each subgroup</p></li>
 <li><p><strong>max_subgroups</strong> – the maximum number of subgroups to display</p></li>
-<li><p><strong>figure</strong> – two instances of matplotlib.axis.Axis</p></li>
+<li><p><strong>figure</strong> – an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -144,11 +144,11 @@
 <li><p><strong>highlight_stratification</strong> – True if points that are stratification violations are to be highlighted</p></li>
 <li><p><strong>highlight_overcontrol</strong> – True if points that are overcontrol violations are to be hightlighted</p></li>
 <li><p><strong>max_points</strong> – the maximum number of points to display (‘None’ to display all)</p></li>
-<li><p><strong>figure</strong> – an instance of matplotlib.figure.Figure</p></li>
+<li><p><strong>figure</strong> – an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>instance of matplotlib.figure.Figure</p>
+<dd class="field-even"><p>an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -176,11 +176,11 @@
 <li><p><strong>highlight_stratification</strong> – True if points that are stratification violations are to be highlighted</p></li>
 <li><p><strong>highlight_overcontrol</strong> – True if points that are overcontrol violations are to be hightlighted</p></li>
 <li><p><strong>max_points</strong> – the maximum number of points to display (‘None’ to display all)</p></li>
-<li><p><strong>figure</strong> – instance of matplotlib.figure.Figure</p></li>
+<li><p><strong>figure</strong> – an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an instance of matplotlib.axis.Axis</p>
+<dd class="field-even"><p>an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -209,11 +209,11 @@
 <li><p><strong>highlight_stratification</strong> – True if points that are stratification violations are to be highlighted</p></li>
 <li><p><strong>highlight_overcontrol</strong> – True if points that are overcontrol violations are to be hightlighted</p></li>
 <li><p><strong>max_points</strong> – the maximum number of points to display (‘None’ to display all)</p></li>
-<li><p><strong>figure</strong> – an instance of matplotlib.figure.Figure</p></li>
+<li><p><strong>figure</strong> – an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an instance of matplotlib.figure.Figure</p>
+<dd class="field-even"><p>an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -242,11 +242,11 @@
 <li><p><strong>highlight_stratification</strong> – True if points that are stratification violations are to be highlighted</p></li>
 <li><p><strong>highlight_overcontrol</strong> – True if points that are overcontrol violations are to be hightlighted</p></li>
 <li><p><strong>max_points</strong> – the maximum number of points to display (‘None’ to display all)</p></li>
-<li><p><strong>figure</strong> – an instance of matplotlib.figure.Figure</p></li>
+<li><p><strong>figure</strong> – an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an instance of matplotlib.figure.Figure</p>
+<dd class="field-even"><p>an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -262,17 +262,55 @@
 <li><p><cite>lotid</cite> or <cite>datetime</cite>, either of which will be used to create subgroups; if <cite>lotid</cite> is       provided, then data will be subgrouped into the defined lots; if <cite>datetime</cite> is provided,       then lot sizes will be based on time units (hour, day, week, year) and will automatically       be chosen to ensure that some defects are present in each lot size</p></li>
 </ul>
 </div></blockquote>
+<p>Assumptions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The probability of non-conformance is the same for each item</p></li>
+<li><p>Each unit is independent of the other</p></li>
+<li><p>The testing procedure is the same for each lot</p></li>
+</ul>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – a dataframe containing two columns, <cite>pass</cite> and <cite>lotid</cite> or <cite>datetime</cite></p></li>
 <li><p><strong>parameter_name</strong> – a string representing the parameter name</p></li>
 <li><p><strong>highlight_beyond_limits</strong> – <cite>True</cite> or <cite>False</cite></p></li>
-<li><p><strong>figure</strong> – instance of <cite>matplotlib.figure.Figure</cite> on which to create the plot</p></li>
+<li><p><strong>figure</strong> – an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>an instance of <cite>matplotlib.figure.Figure</cite> on which the plot has been created</p>
+<dd class="field-even"><p>an instance of <code class="docutils literal notranslate"><span class="pre">matplotlib.figure.Figure</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py" id="manufacturing.np_chart">
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">np_chart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pandas.core.series.Series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_of_lots</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight_beyond_limits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">matplotlib.figure.Figure</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">matplotlib.figure.Figure</span></span></span><a class="headerlink" href="#manufacturing.np_chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a np-chart based on the provided data.</p>
+<p>Assumptions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>True</cite> represents conformance to specification and <cite>False</cite> represents non-conformance</p></li>
+<li><p>The probability of non-conformance is the same for each item</p></li>
+<li><p>Each unit is independent of the other (no duplicates!)</p></li>
+<li><p>The testing procedure should be the same for each lot</p></li>
+</ul>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – a list, pandas.Series, or numpy.ndarray representing the data set and consisting of only True/False values</p></li>
+<li><p><strong>num_of_lots</strong> – the number of lots into which to split the data; as this number goes up, the number of units in each lot will decrease</p></li>
+<li><p><strong>parameter_name</strong> – a string representing the parameter name</p></li>
+<li><p><strong>highlight_beyond_limits</strong> – True if points beyond limits are to be highlighted</p></li>
+<li><p><strong>figure</strong> – an instance of <cite>matplotlib.figure.Figure</cite></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an instance of <cite>matplotlib.figure.Figure</cite></p>
 </dd>
 </dl>
 </dd></dl>
