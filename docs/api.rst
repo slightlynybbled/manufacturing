@@ -39,6 +39,10 @@ Plotting & Charting
 
 .. autofunction:: manufacturing.p_chart
 
+----
+
+.. autofunction:: manufacturing.np_chart
+
 Import & Export
 ---------------
 

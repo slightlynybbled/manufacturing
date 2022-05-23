@@ -140,6 +140,16 @@ that warrant further explanation:
 Additional Chart Types
 ----------------------
 
-One may also utilize the :meth:`manufacturing.p_chart()`, which requires a `pandas.DataFrame` rather than a `pandas.Series`.
+p-Chart
+#######
+
+One may utilize the :meth:`manufacturing.p_chart()`, which requires a `pandas.DataFrame` rather than a `pandas.Series`.
 
 .. image:: _static/images/p_chart.png
+
+np-Chart
+########
+
+:meth:`manufacturing.np_chart()`
+
+.. image:: _static/images/np_chart.png
