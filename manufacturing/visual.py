@@ -1253,10 +1253,13 @@ def p_chart(
     return fig
 
 
-def np_chart(data: pd.Series, num_of_lots: int = 100,
-             parameter_name: str = None,
-             highlight_beyond_limits: bool = True,
-             figure: Optional[Figure] = None) -> Figure:
+def np_chart(
+    data: pd.Series,
+    num_of_lots: int = 100,
+    parameter_name: str = None,
+    highlight_beyond_limits: bool = True,
+    figure: Optional[Figure] = None,
+) -> Figure:
     """
     Create a np-chart based on the provided data.
 
@@ -1282,7 +1285,7 @@ def np_chart(data: pd.Series, num_of_lots: int = 100,
     series = np.array_split(data, num_of_lots)
     n = len(series[-1])
     if n < 30:
-        _logger.warning('subgroup size may be too small for np chart')
+        _logger.warning("subgroup size may be too small for np chart")
 
     defectives = []
     for s in series:
@@ -1317,13 +1320,13 @@ def np_chart(data: pd.Series, num_of_lots: int = 100,
         highlight_mixture=False,
         highlight_stratification=False,
         highlight_overcontrol=False,
-        avg_label=r'$n\bar{p}$',
-        ax=ax
+        avg_label=r"$n\bar{p}$",
+        ax=ax,
     )
 
-    title = r'$n\bar{p}$ Chart'
+    title = r"$n\bar{p}$ Chart"
     if parameter_name is not None:
-        title += f', {parameter_name}'
+        title += f", {parameter_name}"
     fig.suptitle(title)
     fig.tight_layout()
 
