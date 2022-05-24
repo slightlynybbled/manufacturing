@@ -73,6 +73,25 @@
 </dl>
 </dd></dl>
 
+<hr class="docutils" />
+<dl class="py function">
+<dt class="sig sig-object py" id="manufacturing.calc_pp">
+<span class="sig-prename descclassname"><span class="pre">manufacturing.</span></span><span class="sig-name descname"><span class="pre">calc_pp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">data:</span> <span class="pre">(typing.List[int],</span> <span class="pre">typing.List[float],</span> <span class="pre">&lt;class</span> <span class="pre">'pandas.core.series.Series'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'numpy.ndarray'&gt;),</span> <span class="pre">upper_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;),</span> <span class="pre">lower_specification_limit:</span> <span class="pre">(&lt;class</span> <span class="pre">'int'&gt;,</span> <span class="pre">&lt;class</span> <span class="pre">'float'&gt;)</span></em><span class="sig-paren">)</span><a class="headerlink" href="#manufacturing.calc_pp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate and return the Pp of the provided dataset given the control limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – the data to be analyzed</p></li>
+<li><p><strong>upper_specification_limit</strong> – the upper control limit</p></li>
+<li><p><strong>lower_specification_limit</strong> – the lower control limit</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the pp level</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 <section id="plotting-charting">
 <h2>Plotting &amp; Charting<a class="headerlink" href="#plotting-charting" title="Permalink to this headline">¶</a></h2>
@@ -98,6 +117,7 @@
 </dl>
 </dd></dl>
 
+<img alt="_images/ppk_plot.png" src="_images/ppk_plot.png" />
 <hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.cpk_plot">
@@ -121,6 +141,7 @@
 </dl>
 </dd></dl>
 
+<img alt="_images/cpk_plot.png" src="_images/cpk_plot.png" />
 <hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.control_chart">
@@ -185,6 +206,7 @@
 </dl>
 </dd></dl>
 
+<img alt="_images/xmr_chart.png" src="_images/xmr_chart.png" />
 <hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.xbar_r_chart">
@@ -218,6 +240,7 @@
 </dl>
 </dd></dl>
 
+<img alt="_images/xbarr_chart.png" src="_images/xbarr_chart.png" />
 <hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.xbar_s_chart">
@@ -251,6 +274,7 @@
 </dl>
 </dd></dl>
 
+<img alt="_images/xbars_chart.png" src="_images/xbars_chart.png" />
 <hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.p_chart">
@@ -285,6 +309,7 @@
 </dl>
 </dd></dl>
 
+<img alt="_images/p_chart.png" src="_images/p_chart.png" />
 <hr class="docutils" />
 <dl class="py function">
 <dt class="sig sig-object py" id="manufacturing.np_chart">
@@ -315,6 +340,7 @@
 </dl>
 </dd></dl>
 
+<img alt="_images/np_chart.png" src="_images/np_chart.png" />
 </section>
 <section id="import-export">
 <h2>Import &amp; Export<a class="headerlink" href="#import-export" title="Permalink to this headline">¶</a></h2>
