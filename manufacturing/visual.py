@@ -128,7 +128,7 @@ def ppk_plot(
     ppk = calc_pp(
         data,
         upper_specification_limit=upper_specification_limit,
-        lower_specification_limit=lower_specification_limit
+        lower_specification_limit=lower_specification_limit,
     )
 
     lower_sigma_level = (mean - lower_specification_limit) / std
@@ -158,9 +158,9 @@ def ppk_plot(
     strings = [f"{plot_type} = {cpk:.02g}"]
 
     if plot_type == "$P_{pk}$":
-        strings.append(fr"$P_p={ppk:.3g}$")
+        strings.append(rf"$P_p={ppk:.3g}$")
     else:
-        strings.append(fr"$C_p={ppk:.3g}$")
+        strings.append(rf"$C_p={ppk:.3g}$")
     strings.append(r"$\mu = " + f"{mean:.3g}$")
     strings.append(r"$\sigma = " + f"{std:.3g}$")
 
