@@ -1,6 +1,6 @@
 import importlib.metadata
 
-from manufacturing.analysis import calc_ppk, suggest_specification_limits
+from manufacturing.analysis import calc_pp, calc_ppk, suggest_specification_limits
 from manufacturing.data_import import import_csv, import_excel
 from manufacturing.report import generate_production_report
 from manufacturing.visual import (
@@ -18,6 +18,7 @@ from manufacturing.visual import (
 
 
 __all__ = [
+    "calc_pp",
     "calc_ppk",
     "control_chart",
     "control_chart_base",
