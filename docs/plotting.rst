@@ -11,7 +11,7 @@ The :meth:`manufacturing.ppk_plot` takes all of the data - not just a sample - a
 capability.  This is not a snapshot in time but a look at the entire history.  Careful,
 which this can be can be deceiving!
 
-The ``manufacturing.ppk_plot`` will estimate the distribution based on the input
+The :meth:``manufacturing.ppk_plot`` will estimate the distribution based on the input
 data, calculate the Ppk, mean, standard deviation, and the estimated % out of control
 for each parameter.  The function will also generate a warning if the data appears
 to be non-normally distributed.
