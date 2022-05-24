@@ -72,7 +72,7 @@ def ppk_plot(
         ax = fig.add_subplot(1, 1, 1)
 
     ax.hist(data, density=True, label="data", alpha=0.3)
-    x = np.linspace(mean - 4 * std, mean + 4 * std, 100)
+    x = np.linspace(mean - 4 * std, mean + 4 * std, 1000)
     pdf = stats.norm.pdf(x, mean, std)
     ax.plot(x, pdf, label="normal fit", alpha=0.7)
 
@@ -98,13 +98,6 @@ def ppk_plot(
 
     ax.axvline(mean - 3 * std, alpha=0.2, linestyle="--")
     ax.text(mean - 3 * std, top * 1.01, s=r"-$3\sigma$", ha="center")
-
-    ax.fill_between(
-        x, pdf, where=x <= lower_specification_limit, facecolor="red", alpha=0.5
-    )
-    ax.fill_between(
-        x, pdf, where=x >= upper_specification_limit, facecolor="red", alpha=0.5
-    )
 
     lower_percent = 100.0 * stats.norm.cdf(lower_specification_limit, mean, std)
     lower_percent_text = (
@@ -140,6 +133,9 @@ def ppk_plot(
             s=f"$-{lower_sigma_level:.01f}" + r"\sigma$",
             ha="center",
         )
+        ax.fill_between(
+            x, pdf, where=(x <= lower_specification_limit), facecolor="red", alpha=0.5
+        )
     else:
         ax.text(left, top * 0.95, s=r"limit < $-6\sigma$", ha="left")
 
@@ -151,6 +147,9 @@ def ppk_plot(
             top * 0.95,
             s=f"${upper_sigma_level:.01f}" + r"\sigma$",
             ha="center",
+        )
+        ax.fill_between(
+            x, pdf, where=(x >= upper_specification_limit), facecolor="red", alpha=0.5
         )
     else:
         ax.text(right, top * 0.95, s=r"limit > $6\sigma$", ha="right")
