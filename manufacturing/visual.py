@@ -9,6 +9,7 @@ import pandas as pd
 import scipy.stats as stats
 
 from manufacturing.analysis import (
+    calc_pp,
     calc_ppk,
     control_beyond_limits,
     control_zone_a,
@@ -55,7 +56,7 @@ def ppk_plot(
     :param figure: an instance of ``matplotlib.figure.Figure``
     :return: an instance of ``matplotlib.figure.Figure``
     """
-    plot_type = "Ppk" if not is_subset else "Cpk"
+    plot_type = "$P_{pk}$" if not is_subset else "$C_{pk}$"
 
     data = coerce(data)
     data = remove_outliers(data)
@@ -99,10 +100,10 @@ def ppk_plot(
     ax.text(mean - 3 * std, top * 1.01, s=r"-$3\sigma$", ha="center")
 
     ax.fill_between(
-        x, pdf, where=x < lower_specification_limit, facecolor="red", alpha=0.5
+        x, pdf, where=x <= lower_specification_limit, facecolor="red", alpha=0.5
     )
     ax.fill_between(
-        x, pdf, where=x > upper_specification_limit, facecolor="red", alpha=0.5
+        x, pdf, where=x >= upper_specification_limit, facecolor="red", alpha=0.5
     )
 
     lower_percent = 100.0 * stats.norm.cdf(lower_specification_limit, mean, std)
@@ -123,6 +124,11 @@ def ppk_plot(
         data,
         upper_specification_limit=upper_specification_limit,
         lower_specification_limit=lower_specification_limit,
+    )
+    ppk = calc_pp(
+        data,
+        upper_specification_limit=upper_specification_limit,
+        lower_specification_limit=lower_specification_limit
     )
 
     lower_sigma_level = (mean - lower_specification_limit) / std
@@ -151,6 +157,10 @@ def ppk_plot(
 
     strings = [f"{plot_type} = {cpk:.02g}"]
 
+    if plot_type == "$P_{pk}$":
+        strings.append(fr"$P_p={ppk:.3g}$")
+    else:
+        strings.append(fr"$C_p={ppk:.3g}$")
     strings.append(r"$\mu = " + f"{mean:.3g}$")
     strings.append(r"$\sigma = " + f"{std:.3g}$")
 
