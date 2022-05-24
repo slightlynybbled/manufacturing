@@ -100,10 +100,8 @@ def calc_pp(
     data = coerce(data)
 
     normality_test(data)
-
-    pp = (upper_specification_limit - lower_specification_limit) / 6 * data.std()
-
-    _logger.debug(f"cp = {pp:.03g} on the supplied dataset of length {len(data)}")
+    pp = (upper_specification_limit - lower_specification_limit) / (6 * data.std())
+    _logger.debug(f"pp = {pp:.03g} on the supplied dataset of length {len(data)}")
 
     return pp
 
