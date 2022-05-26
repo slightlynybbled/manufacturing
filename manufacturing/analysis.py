@@ -268,8 +268,8 @@ def control_zone_a(
 
     spec_range = (upper_control_limit - lower_control_limit) / 2
     spec_center = lower_control_limit + spec_range
-    zone_b_upper_limit = spec_center + 2 * spec_range / 3
-    zone_b_lower_limit = spec_center - 2 * spec_range / 3
+    zone_a_upper_limit = spec_center + 2 * spec_range / 3
+    zone_a_lower_limit = spec_center - 2 * spec_range / 3
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
@@ -277,21 +277,21 @@ def control_zone_a(
         points = data[i : i + 3].to_numpy()
 
         try:
-            iter(zone_b_lower_limit)
-            zblls = zone_b_lower_limit[i : i + 3]
+            iter(zone_a_lower_limit)
+            zalls = zone_a_lower_limit[i : i + 3]
         except TypeError:
-            zblls = None
+            zalls = None
 
         try:
-            iter(zone_b_upper_limit)
-            zbuls = zone_b_upper_limit[i : i + 3]
+            iter(zone_a_upper_limit)
+            zbuls = zone_a_upper_limit[i : i + 3]
         except TypeError:
             zbuls = None
 
-        if zblls is not None:
-            values = [1 for p in points if p < zblls[i]]
+        if zalls is not None:
+            values = [1 for p in points if p < zalls[i]]
         else:
-            values = [1 for p in points if p < zone_b_lower_limit]
+            values = [1 for p in points if p < zone_a_lower_limit]
 
         if sum(values) > 2:
             index = i + np.arange(3)
@@ -299,12 +299,12 @@ def control_zone_a(
             _logger.info(f"zone a violation found at index {i}")
 
         if zbuls is not None:
-            values = [1 for p in points if p > zone_b_upper_limit[i]]
+            values = [1 for p in points if p > zone_a_upper_limit[i]]
         else:
-            values = [1 for p in points if p > zone_b_upper_limit]
+            values = [1 for p in points if p > zone_a_upper_limit]
 
         if sum(values) > 2:
-            index = i + np.arange(3)
+            index = i + np.arange(3) + data.index[0]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone a violation found at index {i}")
 
