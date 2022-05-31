@@ -723,6 +723,65 @@ def control_chart_base(
     return ax
 
 
+def precontrol_chart(
+    data: (List[int], List[float], pd.Series, np.ndarray),
+    parameter_name: Optional[str] = None,
+    upper_control_limit: Optional[Union[float, int]] = None,
+    lower_control_limit: Optional[Union[float, int]] = None,
+    highlight_beyond_limits=True,
+    max_points: Optional[int] = 60,
+    figure: Optional[Figure] = None,
+) -> Figure:
+    r"""
+    Create a pre-control chart  based on the input data.  Pre-control charts contain less information and are more suitable for direct usage by production personnel.
+
+    :param data: a list, pandas.Series, or numpy.ndarray representing the data set
+    :param parameter_name: a string representing the parameter name
+    :param upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit; note that this is NOT the specification limit!
+    :param lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limit; note that this is NOT the specification limit!
+    :param highlight_beyond_limits: True if points beyond limits are to be highlighted
+    :param max_points: the maximum number of points to display ('None' to display all)
+    :param figure: an instance of ``matplotlib.figure.Figure``
+    :return: an instance of ``matplotlib.figure.Figure``
+    """
+    data = coerce(data)
+    data = remove_outliers(data)
+
+    # create an I-MR chart using a combination of control_chart and moving_range
+    if figure is None:
+        fig, ax = plt.subplots(1, 1, figsize=(12, 9), sharex="all")
+    else:
+        fig = figure
+        fig.clear()
+        ax = fig.add_subplot(111)
+
+    control_chart_base(
+        data,
+        avg_label=r"$\bar{R}$",
+        upper_control_limit=upper_control_limit,
+        lower_control_limit=lower_control_limit,
+        highlight_beyond_limits=highlight_beyond_limits,
+        highlight_zone_a=False,
+        highlight_zone_b=False,
+        highlight_zone_c=False,
+        highlight_trend=False,
+        highlight_mixture=False,
+        highlight_stratification=False,
+        highlight_overcontrol=False,
+        max_points=max_points,
+        ax=ax,
+    )
+
+    fig_title = f"Pre-Control Chart"
+    if parameter_name is not None:
+        fig_title = f"{fig_title}, {parameter_name}"
+    fig.suptitle(fig_title)
+
+    fig.tight_layout()
+
+    return fig
+
+
 def x_mr_chart(
     data: (List[int], List[float], pd.Series, np.ndarray),
     parameter_name: Optional[str] = None,
