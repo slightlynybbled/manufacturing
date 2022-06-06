@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "manufacturing"
-version = "1.2.7"
+version = "1.2.8"
 description = "Six-Sigma based analysis of manufacturing data"
 readme = 'readme.md'
 authors = ["Jason R. Jones <slightlynybbled@gmail.com>"]

@@ -42,6 +42,7 @@ def ppk_plot(
     parameter_name: Optional[str] = None,
     threshold_percent: float = 0.001,
     is_subset: bool = False,
+    show_dppm: bool = False,
     figure: Optional[Figure] = None,
 ):
     """
@@ -53,6 +54,7 @@ def ppk_plot(
     :param parameter_name: a string that shows up in the title
     :param threshold_percent: the threshold at which % of units above/below the number will display on the plot
     :param is_subset: False if the data represents a complete dataset, else True; determines if Ppk or Cpk are in the titles
+    :param show_dppm: True if defective parts-per-million are to be shown
     :param figure: an instance of ``matplotlib.figure.Figure``
     :return: an instance of ``matplotlib.figure.Figure``
     """
@@ -110,6 +112,8 @@ def ppk_plot(
     higher_percent_text = (
         f"{higher_percent:.02g}% > USL" if higher_percent > threshold_percent else None
     )
+    ppm = int((lower_percent + higher_percent) * 10000)
+    ppm_text = f'DPPM={ppm}'
 
     left, right = ax.get_xlim()
     bottom, top = ax.get_ylim()
@@ -167,6 +171,8 @@ def ppk_plot(
         strings.append(lower_percent_text)
     if higher_percent_text:
         strings.append(higher_percent_text)
+    if show_dppm:
+        strings.append(ppm_text)
 
     props = dict(boxstyle="round", facecolor="white", alpha=0.75, edgecolor="grey")
     ax.text(

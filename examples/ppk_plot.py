@@ -13,6 +13,7 @@ ppk_plot(**data,
          parameter_name='Current',
          upper_specification_limit=10.1,
          lower_specification_limit=5.5,
+         show_dppm=True,
          figure=fig)
 
 plt.show()
