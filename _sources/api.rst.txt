@@ -33,6 +33,10 @@ Plotting & Charting
 
 ----
 
+.. autofunction:: manufacturing.run_chart
+
+----
+
 .. autofunction:: manufacturing.x_mr_chart
 
 .. image:: _static/images/xmr_chart.png
