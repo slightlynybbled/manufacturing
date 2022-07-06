@@ -31,7 +31,13 @@ def coerce(data: (List[int], List[float], pd.Series, np.array)) -> pd.Series:
 def remove_outliers(data: pd.Series, iqr_limit: float = 2.5) -> "pd.Series":
     # when data is considered an extreme outlier,
     # then we will re-scale the y limits
+    origin_data_len = len(data)
     data = data.copy().dropna()
+
+    data_len = len(data)
+    if data_len != origin_data_len:
+        _logger.info(f'{origin_data_len - data_len} NaN values removed from dataset')
+        origin_data_len = data_len
 
     q25 = data.quantile(0.25)
     q50 = data.quantile(0.50)
@@ -41,6 +47,9 @@ def remove_outliers(data: pd.Series, iqr_limit: float = 2.5) -> "pd.Series":
     max_data = q50 + (iqr * iqr_limit)
 
     data = data[(data >= min_data) & (data <= max_data)]
+    data_len = len(data)
+    if data_len != origin_data_len:
+        _logger.info(f'{origin_data_len - data_len} values of {data_len} determined to be outliers (outside {iqr_limit:.3g} x IQR); removed from dataset')
 
     return data.dropna().reset_index(drop=True)
 
