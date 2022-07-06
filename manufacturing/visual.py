@@ -61,10 +61,10 @@ def ppk_plot(
     plot_type = "$P_{pk}$" if not is_subset else "$C_{pk}$"
 
     data = coerce(data)
-    data = remove_outliers(data)
+    clean_data = remove_outliers(data)
 
-    mean = data.mean()
-    std = data.std()
+    mean = clean_data.mean()
+    std = clean_data.std()
 
     if figure is None:
         fig, ax = plt.subplots()
@@ -73,7 +73,7 @@ def ppk_plot(
         fig.clear()
         ax = fig.add_subplot(1, 1, 1)
 
-    ax.hist(data, density=True, label="data", alpha=0.3)
+    ax.hist(clean_data, density=True, label="data", alpha=0.3)
     x = np.linspace(mean - 4 * std, mean + 4 * std, 1000)
     pdf = stats.norm.pdf(x, mean, std)
     ax.plot(x, pdf, label="normal fit", alpha=0.7)
@@ -372,6 +372,8 @@ def control_chart_base(
     :return: an instance of `matplotlib.axis.Axis`
     """
     data = coerce(data)
+    clean_data = remove_outliers(data)
+
     try:
         iter(upper_control_limit)
         upper_control_limit = coerce(upper_control_limit)
@@ -385,21 +387,21 @@ def control_chart_base(
 
     # for purposes of gathering statistics, only use
     # data that is not considered outliers
-    mean = data.mean()
+    mean = clean_data.mean()
 
     if upper_control_limit is None:
-        upper_control_limit = mean + 3 * data.std()
+        upper_control_limit = mean + 3 * clean_data.std()
     if lower_control_limit is None:
-        lower_control_limit = mean - 3 * data.std()
+        lower_control_limit = mean - 3 * clean_data.std()
 
-    spec_range = (upper_control_limit - lower_control_limit) / 2
-    spec_center = (upper_control_limit + lower_control_limit) / 2
-    zone_c_upper_limit = spec_center + spec_range / 3
-    zone_c_lower_limit = spec_center - spec_range / 3
-    zone_b_upper_limit = spec_center + 2 * spec_range / 3
-    zone_b_lower_limit = spec_center - 2 * spec_range / 3
-    zone_a_upper_limit = spec_center + spec_range
-    zone_a_lower_limit = spec_center - spec_range
+    rng = (upper_control_limit - lower_control_limit) / 2
+    center = (upper_control_limit + lower_control_limit) / 2
+    zone_c_upper_limit = center + rng / 3
+    zone_c_lower_limit = center - rng / 3
+    zone_b_upper_limit = center + 2 * rng / 3
+    zone_b_lower_limit = center - 2 * rng / 3
+    zone_a_upper_limit = center + rng
+    zone_a_lower_limit = center - rng
 
     truncated = False
     if max_points is not None:
@@ -414,10 +416,10 @@ def control_chart_base(
     ax.plot(data, marker=".")
 
     try:
-        iter(spec_center)
-        ax.plot(spec_center, linestyle="--", color="red", alpha=0.2)
+        iter(center)
+        ax.plot(center, linestyle="--", color="red", alpha=0.2)
     except TypeError:
-        ax.axhline(spec_center, linestyle="--", color="red", alpha=0.2)
+        ax.axhline(center, linestyle="--", color="red", alpha=0.2)
 
     ax.axhline(mean, linestyle="--", color="blue", alpha=0.3, zorder=-10)
 
@@ -441,8 +443,8 @@ def control_chart_base(
             "s": f"LCL={_resolve_right(lower_control_limit):.3g}",
             "color": "red",
         },
-        {"y": (spec_center + zone_c_upper_limit) / 2, "s": "Zone C"},
-        {"y": (spec_center + zone_c_lower_limit) / 2, "s": "Zone C"},
+        {"y": (center + zone_c_upper_limit) / 2, "s": "Zone C"},
+        {"y": (center + zone_c_lower_limit) / 2, "s": "Zone C"},
         {"y": (zone_b_upper_limit + zone_c_upper_limit) / 2, "s": "Zone B"},
         {"y": (zone_b_lower_limit + zone_c_lower_limit) / 2, "s": "Zone B"},
         {"y": (zone_a_upper_limit + zone_b_upper_limit) / 2, "s": "Zone A"},
@@ -474,6 +476,9 @@ def control_chart_base(
             diameter += diameter_inc
             zorder -= 1
             show_legend = True
+
+            for i, v in beyond_limits_violations.iteritems():
+                ax.axvline(i, color='red', alpha=0.4)
 
     if highlight_zone_a:
         zone_a_violations = control_zone_a(
@@ -624,23 +629,26 @@ def control_chart_base(
             zorder -= 1
             show_legend = True
 
-    q25, q75 = data.quantile(0.25), data.quantile(0.75)
-    iqr = q75 - q25
     try:
-        min_y = min(lower_control_limit - iqr * 0.25, mean - iqr)
+        min_y = min(min(clean_data), lower_control_limit)
     except ValueError:
-        min_y = min(min(lower_control_limit), 0)
+        min_y = lower_control_limit
+
     try:
-        max_y = max(upper_control_limit + iqr * 0.25, mean + iqr)
+        max_y = max(max(clean_data), upper_control_limit)
     except ValueError:
-        max_y = max(max(upper_control_limit), mean + iqr)
-    ax.set_ylim(bottom=min_y, top=max_y)
+        max_y = upper_control_limit
+    try:
+        ax.set_ylim(bottom=min_y, top=max_y)
+    except ValueError:
+        pass
 
     # add background bands
     x_lower, x_upper = min(data.index), max(data.index)
     xs = [i for i in range(x_lower, x_upper + 1)]
     y_lower, y_upper = ax.get_ylim()
     alpha = 0.2
+
     ax.fill_between(
         xs,
         zone_a_upper_limit,
@@ -690,7 +698,7 @@ def control_chart_base(
         zone_c_lower_limit,
         zone_b_upper_limit,
         zone_b_lower_limit,
-        spec_center,
+        center,
     ]
     for edge in edges:
         try:
@@ -701,7 +709,7 @@ def control_chart_base(
     if show_hist:
         ax_hist = ax.twiny()
         ax_hist.hist(
-            data,
+            clean_data,
             density=True,
             orientation="horizontal",
             zorder=-100,
@@ -729,7 +737,12 @@ def control_chart_base(
     return ax
 
 
-def precontrol_chart(
+def precontrol_chart(*args, **kwargs):
+    _logger.warning(f'precontrol_chart depreciated and will be removed in a future version; use run_chart instead')
+    run_chart(*args, **kwargs)
+
+
+def run_chart(
     data: (List[int], List[float], pd.Series, np.ndarray),
     parameter_name: Optional[str] = None,
     upper_control_limit: Optional[Union[float, int]] = None,
@@ -751,7 +764,6 @@ def precontrol_chart(
     :return: an instance of ``matplotlib.figure.Figure``
     """
     data = coerce(data)
-    data = remove_outliers(data)
 
     # create an I-MR chart using a combination of control_chart and moving_range
     if figure is None:
@@ -828,8 +840,9 @@ def x_mr_chart(
     :return: an instance of ``matplotlib.figure.Figure``
     """
     data = coerce(data)
-    data = remove_outliers(data)
+    # data = remove_outliers(data)
     diff_data = abs(data.diff())
+    diff_data_clean = remove_outliers(diff_data)
 
     # create an I-MR chart using a combination of control_chart and moving_range
     if figure is None:
@@ -865,7 +878,7 @@ def x_mr_chart(
     # UCL = 1 + 3(d3 / d2) * mRbar
     #     = D4 * mRbar
     #     = 3.2665 * mRbar
-    mRbar = diff_data.mean()
+    mRbar = diff_data_clean.mean()
     if mr_upper_control_limit is not None:
         ucl = mr_upper_control_limit
     else:
@@ -956,12 +969,22 @@ def xbar_r_chart(
             "xbar_r_chart is recommended for subgroup sizes of more than 11"
         )
     data = coerce(data)
-    data = remove_outliers(data)
+    clean_data = remove_outliers(data)
 
     # determine how many arrays are in the data
     k = len(data) // subgroup_size
 
     # split into 'n' chunks
+    x_bars_clean = []
+    ranges_clean = []
+    clean_groups = np.array_split(clean_data.to_numpy(), k, axis=0)
+    for a in clean_groups:
+        # calculate sample average "Xbar"
+        x_bars_clean.append(a.mean())
+
+        # calculate sample range "R"
+        ranges_clean.append(abs(max(a) - min(a)))
+
     x_bars = []
     ranges = []
     groups = np.array_split(data.to_numpy(), k, axis=0)
@@ -975,8 +998,8 @@ def xbar_r_chart(
     n = subgroup_size
 
     # calculating values Xbarbar and Rbar
-    x_bar_bar = sum(x_bars) / k  # average of averages (centerline of chart)
-    r_bar = sum(ranges) / k
+    x_bar_bar = sum(x_bars_clean) / k  # average of averages (centerline of chart)
+    r_bar = sum(ranges_clean) / k
     wd = r_bar / d2_table[n]  # calculate within deviation: Wd = R_bar / d2n
 
     # using studentized control limits
@@ -1098,12 +1121,22 @@ def xbar_s_chart(
             f"of less than {len(c4_table)}"
         )
     data = coerce(data)
-    data = remove_outliers(data)
+    clean_data = remove_outliers(data)
 
     # determine how many arrays are in the data
     k = len(data) // subgroup_size
 
     # split into 'n' chunks
+    x_bars_clean = []
+    std_devs_clean = []
+    groups = np.array_split(clean_data.to_numpy(), k, axis=0)
+    for a in groups:
+        # calculate sample average "Xbar"
+        x_bars_clean.append(a.mean())
+
+        # calculate sample range "R"
+        std_devs_clean.append(a.std())
+
     x_bars = []
     std_devs = []
     groups = np.array_split(data.to_numpy(), k, axis=0)
@@ -1115,8 +1148,8 @@ def xbar_s_chart(
         std_devs.append(a.std())
 
     n = subgroup_size
-    x_bar_bar = sum(x_bars) / k  # average of averages (centerline of chart)
-    s_bar = sum(std_devs) / k  # average std dev
+    x_bar_bar = sum(x_bars_clean) / k  # average of averages (centerline of chart)
+    s_bar = sum(std_devs_clean) / k  # average std dev
 
     wd = s_bar / c4_table[n]
     dev = (3 * wd) / np.sqrt(n)
@@ -1508,7 +1541,7 @@ if __name__ == "__main__":
     data = import_csv(
         "../examples/data/example_data_with_faults.csv", columnname="value"
     )
-    data = remove_outliers(data)
+    # data = remove_outliers(data)
 
     fig, ax = plt.subplots()
     control_chart_base(data=data, ax=ax)

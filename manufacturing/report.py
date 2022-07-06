@@ -53,7 +53,7 @@ def generate_production_report(
 
     for c in df.columns:
         _logger.info(f'analyzing column "{c}"...')
-        lcl, ucl = parse_col_for_limits(c)
+        lsl, usl = parse_col_for_limits(c)
 
         text += f"## Column: {c}\n\n"
 
@@ -66,14 +66,14 @@ def generate_production_report(
                 "distributed parameter.\n\n"
             )
 
-        if lcl is not None and ucl is not None:
+        if lsl is not None and usl is not None:
             text += (
-                f"Established limits:\n\n * LCL = {lcl:.02g}\n * UCL = {ucl:.02g}\n\n"
+                f"Established limits:\n\n * LSL = {lsl:.02g}\n * USL = {usl:.02g}\n\n"
             )
         else:
-            lcl, ucl = suggest_specification_limits(df[c])
+            lsl, usl = suggest_specification_limits(df[c])
             text += (
-                f"Recommended limits:\n\n * LCL = {lcl:.02g}\n * UCL = {ucl:.02g}\n\n"
+                f"Recommended limits:\n\n * LSL = {lsl:.02g}\n * USL = {usl:.02g}\n\n"
             )
 
         fig_name = c.split("(")[0].strip()
@@ -82,8 +82,8 @@ def generate_production_report(
         fig, ax = plt.subplots(1, 1)
         ppk_plot(
             df[c],
-            upper_specification_limit=ucl,
-            lower_specification_limit=lcl,
+            upper_specification_limit=usl,
+            lower_specification_limit=lsl,
             figure=fig,
         )
         plot_name = build_path / f"ppk_plot_{fig_name}.png"
@@ -94,8 +94,8 @@ def generate_production_report(
         fig, axs = plt.subplots(1, 2, sharey=True, gridspec_kw={"width_ratios": [4, 1]})
         cpk_plot(
             df[c],
-            upper_specification_limit=ucl,
-            lower_specification_limit=lcl,
+            upper_specification_limit=usl,
+            lower_specification_limit=lsl,
             figure=fig,
         )
         plot_name = build_path / f"cpk_plot_{fig_name}.png"

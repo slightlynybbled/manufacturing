@@ -6,7 +6,7 @@ import pytest
 import manufacturing as mn
 
 
-def test_assert_true():
+def test_generate_report():
     mn.generate_production_report(
         input_file='test/data/example_data.csv'
     )
