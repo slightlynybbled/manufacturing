@@ -36,7 +36,7 @@ def test_x_mr_chart(plot_dir):
     path.mkdir(exist_ok=True)
 
     # test different sizes to ensure that they get plotted appropriately
-    data = np.random.normal(loc=10, scale=1.0, size=2)
+    data = np.random.normal(loc=10, scale=1.0, size=10)
     fig = mn.x_mr_chart(data)
     fig.savefig(path / f'test_sizes_{len(data)}.png')
 
@@ -57,9 +57,9 @@ def test_xbar_r_chart(plot_dir):
     path.mkdir(exist_ok=True)
 
     # test different sizes to ensure that they get plotted appropriately
-    data = np.random.normal(loc=10, scale=1.0, size=2)
+    data = np.random.normal(loc=10, scale=1.0, size=10)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(IndexError):
         mn.xbar_r_chart(data)
     fig = mn.control_chart(data)
     fig.savefig(path / f'test_sizes_{len(data)}.png')
@@ -88,7 +88,7 @@ def test_xbar_s_chart(plot_dir):
     path.mkdir(exist_ok=True)
 
     # test different sizes to ensure that they get plotted appropriately
-    data = np.random.normal(loc=10, scale=1.0, size=2)
+    data = np.random.normal(loc=10, scale=1.0, size=10)
 
     with pytest.raises(ValueError):
         mn.xbar_s_chart(data)
@@ -121,7 +121,7 @@ def test_control_chart(plot_dir):
     path.mkdir(exist_ok=True)
 
     # test different sizes to ensure that they get plotted appropriately
-    data = np.random.normal(loc=10, scale=1.0, size=2)
+    data = np.random.normal(loc=10, scale=1.0, size=10)
 
     fig = mn.control_chart(data)
     fig.savefig(path / f'test_sizes_{len(data)}.png')

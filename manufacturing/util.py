@@ -33,6 +33,8 @@ def remove_outliers(data: pd.Series, iqr_limit: float = 2.5) -> "pd.Series":
     # then we will re-scale the y limits
     origin_data_len = len(data)
     data = data.copy().dropna()
+    if len(data) < 10:
+        return data
 
     data_len = len(data)
     if data_len != origin_data_len:
@@ -51,7 +53,7 @@ def remove_outliers(data: pd.Series, iqr_limit: float = 2.5) -> "pd.Series":
     if data_len != origin_data_len:
         _logger.info(f'{origin_data_len - data_len} values of {data_len} determined to be outliers (outside {iqr_limit:.3g} x IQR); removed from dataset')
 
-    return data.dropna().reset_index(drop=True)
+    return data
 
 
 if __name__ == '__main__':

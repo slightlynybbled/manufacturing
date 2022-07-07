@@ -273,7 +273,7 @@ def control_zone_a(
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
-    for i in range(len(data) - 2):
+    for i in range(data.index[-3]):
         points = data[i : i + 3].to_numpy()
 
         try:
@@ -339,7 +339,7 @@ def control_zone_b(
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
-    for i in range(len(data) - 4):
+    for i in range(data.index[-4]):
         points = data[i : i + 5].to_numpy()
         try:
             iter(zone_c_lower_limit)
@@ -402,7 +402,7 @@ def control_zone_c(
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
-    for i in range(len(data) - 6):
+    for i in range(data.index[-6]):
         points = data[i : i + 7].to_numpy()
         try:
             iter(spec_center)
@@ -492,7 +492,7 @@ def control_zone_mixture(
 
     # looking for violations in which 8 points occur with none in zone C
     violations = []
-    for i in range(len(data) - 7):
+    for i in range(data.index[-7]):
         points = data[i : i + 8].to_numpy()
         values = [
             1 for p in points if p > zone_c_upper_limit and p < zone_c_lower_limit
