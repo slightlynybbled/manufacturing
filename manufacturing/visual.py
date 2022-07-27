@@ -644,7 +644,7 @@ def control_chart_base(
         pass
 
     # add background bands
-    x_lower, x_upper = min(data.index), max(data.index)
+    x_lower, x_upper = min(data.index), max(data.index)+1
     xs = [i for i in range(x_lower, x_upper + 1)]
     y_lower, y_upper = ax.get_ylim()
     alpha = 0.2
