@@ -388,11 +388,14 @@ def control_chart_base(
     # for purposes of gathering statistics, only use
     # data that is not considered outliers
     mean = clean_data.mean()
+    diff_data = abs(data.diff())
+    diff_data_clean = remove_outliers(diff_data)
+    mRbar = diff_data_clean.mean()
 
     if upper_control_limit is None:
-        upper_control_limit = mean + 3 * clean_data.std()
+        upper_control_limit = mean + 2.66 * mRbar  # from Understanding Variation, Wheeler
     if lower_control_limit is None:
-        lower_control_limit = mean - 3 * clean_data.std()
+        lower_control_limit = mean - 2.66 * mRbar  # from understanding Variation, Wheeler
 
     rng = (upper_control_limit - lower_control_limit) / 2
     center = (upper_control_limit + lower_control_limit) / 2
@@ -844,6 +847,11 @@ def x_mr_chart(
     diff_data = abs(data.diff())
     diff_data_clean = remove_outliers(diff_data)
 
+    # UCL = 1 + 3(d3 / d2) * mRbar
+    #     = D4 * mRbar
+    #     = 3.2665 * mRbar
+    mRbar = diff_data_clean.mean()
+
     # create an I-MR chart using a combination of control_chart and moving_range
     if figure is None:
         fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
@@ -875,10 +883,6 @@ def x_mr_chart(
         **params,
     )
 
-    # UCL = 1 + 3(d3 / d2) * mRbar
-    #     = D4 * mRbar
-    #     = 3.2665 * mRbar
-    mRbar = diff_data_clean.mean()
     if mr_upper_control_limit is not None:
         ucl = mr_upper_control_limit
     else:
