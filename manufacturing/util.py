@@ -7,7 +7,7 @@ import numpy as np
 _logger = logging.getLogger(__name__)
 
 
-def coerce(data: (List[int], List[float], pd.Series, np.array)) -> pd.Series:
+def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> pd.Series:
     """
     Ensures that the data is of a type that can be easily manipulated. and eliminates extreme outliers.
 
