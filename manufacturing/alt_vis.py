@@ -10,7 +10,9 @@ from manufacturing.lookup_tables import d3_table, d4_table
 
 
 def x_mr_chart(data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series],
-               x_axis_labels: Optional[List[str]] = None,
+               x_axis_ticks: Optional[List[str]] = None,
+               x_axis_label: Optional[str] = None,
+               y_axis_label: Optional[str] = None,
                baselines: Optional[List[Tuple]] = None,
                iqr_limit: float = 1.5,
                max_display: int = 60,
@@ -32,7 +34,7 @@ def x_mr_chart(data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series]
         mRbar = clean_mRs.mean()
         mR_means = np.full(len(clean_mRs), fill_value=mRbar)
 
-        x_upper_control_limit = mean + 2.66 * mRbar  # E2 = 2.66 when samples == 2
+        x_upper_control_limit = mean + 2.660 * mRbar  # E2 = 2.66 when samples == 2
         x_upper_control_limits = np.full(len(mRs), fill_value=x_upper_control_limit)
 
         x_lower_control_limit = mean - 2.66 * mRbar
@@ -110,6 +112,12 @@ def x_mr_chart(data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series]
         axs[0].text(x=max(data.index)+1, va="center", **t)
     for t in mR_texts:
         axs[1].text(x=max(data.index)+1, va="center", **t)
+
+    if x_axis_label is not None:
+        axs[1].set_xlabel(x_axis_label)
+    if y_axis_label is not None:
+        axs[0].set_ylabel(y_axis_label)
+        axs[1].set_ylabel(f'$\Delta${y_axis_label}')
 
     # set limits based on clean data in order to remove values that are clearly out of bounds
     y_data_max = max(max(clean_data[-max_display:]), max(x_upper_control_limits[-max_display:]))
