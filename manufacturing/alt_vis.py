@@ -9,6 +9,25 @@ from manufacturing.util import coerce, remove_outliers
 from manufacturing.lookup_tables import d3_table, d4_table
 
 
+def _calculate_x_mr_limits(data: pd.Series, calc_length: int = 30, iqr_limit: float = 1.5):
+    clean_data = remove_outliers(data[:calc_length], iqr_limit=iqr_limit)
+    x_bar = clean_data.mean()
+
+    mRs = abs(data.diff())
+    clean_mRs = remove_outliers(mRs[:calc_length], iqr_limit=iqr_limit)
+    mr_bar = clean_mRs.mean()
+
+    x_upper_control_limit = x_bar + 2.660 * mr_bar  # E2 = 2.66 when samples == 2
+    x_lower_control_limit = x_bar - 2.66 * mr_bar
+
+    mR_upper_control_limit = 3.267 * mr_bar
+    mR_lower_control_limit = 0.0
+
+    return data, \
+           x_bar, x_upper_control_limit, x_lower_control_limit, \
+           mr_bar, mR_upper_control_limit, mR_lower_control_limit
+
+
 def x_mr_chart(data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series],
                x_axis_ticks: Optional[List[str]] = None,
                x_axis_label: Optional[str] = None,
