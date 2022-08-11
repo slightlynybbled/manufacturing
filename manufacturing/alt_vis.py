@@ -59,6 +59,8 @@ def x_mr_chart(
 
     # validate the baselines
     for t in baselines:
+        if not isinstance(t, tuple):
+            raise ValueError('baselines must consist of a tuple of tuples')
         if len(t) != 2:
             raise ValueError('each baseline tuple must consist of a '
                              'starting index and a calculation '
