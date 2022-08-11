@@ -12,6 +12,7 @@ logging.basicConfig(level=logging.INFO)
 
 data = import_csv('../data/example_data_with_faults.csv', columnname='value')
 data = data[20:38]  # just grabbing a relatively small number of values to simulate monthly labels
+data.reset_index(drop=True, inplace=True)
 month_names = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
 x_mr_chart(data=data, x_axis_ticks=month_names, x_axis_label='sample', max_display=110,
            baselines=((0, 12), ), y_axis_label='yield rates, %')
