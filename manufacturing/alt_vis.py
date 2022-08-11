@@ -36,7 +36,7 @@ def x_mr_chart(
         x_axis_ticks: Optional[List[str]] = None,
         x_axis_label: Optional[str] = None,
         y_axis_label: Optional[str] = None,
-        baselines: Optional[Tuple[Tuple[int, int, int]]] = None,
+        baselines: Optional[Tuple[Tuple[int, int], ...]] = None,
         iqr_limit: float = 1.5,
         max_display: int = 60,
         parameter_name: Optional[str] = None) -> Figure:
@@ -235,6 +235,7 @@ def x_mr_chart(
     if parameter_name is not None:
         fig_title = f"{fig_title}, {parameter_name}"
     fig.suptitle(fig_title)
+    fig.tight_layout()
 
     return fig
 
