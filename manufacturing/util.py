@@ -7,7 +7,7 @@ import numpy as np
 _logger = logging.getLogger(__name__)
 
 
-def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> np.ndarray:
+def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> pd.Series:
     """
     Ensures that the data is of a type that can be easily manipulated. and eliminates extreme outliers.
 
@@ -16,7 +16,7 @@ def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> np.ndarray:
     """
     if not isinstance(data, pd.Series):
         _logger.debug(f"attempting to convert data into pandas.Series...")
-        data = np.asarray(data)
+        data = pd.Series(data)
         _logger.debug(f"...conversion successful")
 
     if not isinstance(data, pd.Series):
