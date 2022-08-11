@@ -28,8 +28,7 @@ def _calculate_x_mr_limits(data: pd.Series, calc_length: int = 30,
            mr, mr_bar, mR_upper_control_limit, mR_lower_control_limit
 
 
-# todo: implement x_axis_ticks
-# todo: allow provision of Figure
+# todo: allow provision of Figure prior to method being called
 # todo: make vertical marks for violations
 def x_mr_chart(
         data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series],
@@ -41,6 +40,14 @@ def x_mr_chart(
         max_display: int = 60,
         parameter_name: Optional[str] = None) -> Figure:
     data = coerce(data)
+
+    # make the x-axis ticks the same length, if it isn't already
+    if (x_axis_ticks is not None) and (len(data) != len(x_axis_ticks)):
+        new_x_axis_ticks = []
+        while len(new_x_axis_ticks) < len(data):
+            new_x_axis_ticks += x_axis_ticks
+
+        x_axis_ticks = new_x_axis_ticks[:len(data)]
 
     # place a default value here
     if baselines is None:
@@ -202,6 +209,8 @@ def x_mr_chart(
                 color='blue', alpha=0.3)
     axs[1].plot(data[-max_display:].index, mr_ucl_array[-max_display:],
                 color='red', alpha=0.3)
+    if x_axis_ticks is not None:
+        axs[1].set_xticks(data.index, labels=x_axis_ticks)
 
     for t in x_texts:
         axs[0].text(va="center", **t)
