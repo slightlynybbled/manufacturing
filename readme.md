@@ -6,11 +6,16 @@ Go to the [documentation](https://slightlynybbled.github.io/manufacturing/index.
 
 # Project Maturity
 
-Project is currently undergoing frequent updates for documentation and to add
-functionality and update documentation!!  Screenshots and features that you see
-on here may be out of date, but are in progress.
+Plots and project are reasonably mature at this point.  Calculations have been refined
+and are in-line with commonly accepted standards.
 
-Current focus is to add more plot types.
+A major v2.0 update is coming to control charts and will be available shortly in 
+`manufacturing.alt_vis` module.  For instance, instead of using `from manufacturing import x_mr_chart`,
+you would use `from manufacturing.alt_vis import x_mr_chart`.  The new API should
+allow for a greater degree of flexibility with recalculation points and the ability
+to relabel the axes.  Additionally, alternative axis labels will be able to be supplied.
+These changes will eventually become "the way", but are to be considered experimental
+until the v2.0 update.
 
 # Installation
 

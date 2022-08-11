@@ -1,5 +1,7 @@
 """
 Manual recreation of an I-MR control chart.
+
+NOTE: Using this file to test out the v2.0 interface!
 """
 import logging
 import matplotlib.pyplot as plt
