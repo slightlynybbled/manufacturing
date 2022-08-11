@@ -28,6 +28,9 @@ def _calculate_x_mr_limits(data: pd.Series, calc_length: int = 30,
            mr, mr_bar, mR_upper_control_limit, mR_lower_control_limit
 
 
+# todo: implement x_axis_ticks
+# todo: allow provision of Figure
+# todo: make vertical marks for violations
 def x_mr_chart(
         data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series],
         x_axis_ticks: Optional[List[str]] = None,
@@ -39,12 +42,28 @@ def x_mr_chart(
         parameter_name: Optional[str] = None) -> Figure:
     data = coerce(data)
 
+    # place a default value here
     if baselines is None:
         baselines = ((0, 30),)
-    elif baselines[0][0] != 0:
+
+    # always add an initial calculation to the baselines (if it isn't already present)
+    if baselines[0][0] != 0:
         baselines = ((0, 30),) + baselines
 
-    # todo: validate baselines
+    # validate the baselines
+    for t in baselines:
+        if len(t) != 2:
+            raise ValueError('each baseline tuple must consist of a '
+                             'starting index and a calculation '
+                             'length only')
+    running = 0
+    for starting_index, calc_length in baselines:
+        if starting_index < running:
+            raise ValueError(f'the starting index of baseline '
+                             f'"({starting_index}, {calc_length})" is '
+                             f'less than the previous baseline')
+        running = starting_index + running
+
     x_texts = []
     mr_texts = []
     for i, baseline in enumerate(baselines):
@@ -57,7 +76,7 @@ def x_mr_chart(
 
         values = _calculate_x_mr_limits(
             data=data[starting_index:starting_index + data_length],
-            calc_length=calculation_length)
+            calc_length=calculation_length, iqr_limit=iqr_limit)
         x_bar, x_ucl, x_lcl, mr, mr_bar, mr_ucl, mr_lcl = values
 
         try:
