@@ -206,11 +206,37 @@ def x_mr_chart(
     axs[0].plot(data[-max_display:].index, x_lcl_array[-max_display:],
                 color='red', alpha=0.3)
 
+    ax_hist = axs[0].twiny()
+    ax_hist.hist(
+        remove_outliers(data),
+        density=True,
+        orientation="horizontal",
+        zorder=-100,
+        alpha=0.3,
+        color="orange"
+    )
+    _, xmax = ax_hist.get_xlim()
+    ax_hist.set_xlim(0, xmax * 5)
+    ax_hist.get_xaxis().set_visible(False)
+
     axs[1].plot(data[-max_display:].index, mr_array[-max_display:], marker='o')
     axs[1].plot(data[-max_display:].index, mr_bar_array[-max_display:],
                 color='blue', alpha=0.3)
     axs[1].plot(data[-max_display:].index, mr_ucl_array[-max_display:],
                 color='red', alpha=0.3)
+    ax_hist = axs[1].twiny()
+    ax_hist.hist(
+        remove_outliers(mr_array),
+        density=True,
+        orientation="horizontal",
+        zorder=-100,
+        alpha=0.3,
+        color="orange"
+    )
+    _, xmax = ax_hist.get_xlim()
+    ax_hist.set_xlim(0, xmax * 5)
+    ax_hist.get_xaxis().set_visible(False)
+
     if x_axis_ticks is not None:
         axs[1].set_xticks(data.index, labels=x_axis_ticks)
 
@@ -246,6 +272,7 @@ def x_mr_chart(
     if parameter_name is not None:
         fig_title = f"{fig_title}, {parameter_name}"
     fig.suptitle(fig_title)
+
     fig.tight_layout()
 
     return fig

@@ -31,6 +31,7 @@ def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> pd.Series:
 def remove_outliers(data: pd.Series, iqr_limit: Optional[float] = 1.5) -> "pd.Series":
     # when data is considered an extreme outlier,
     # then we will re-scale the y limits
+    data = coerce(data)
     origin_data_len = len(data)
     if iqr_limit is None:
         return data
