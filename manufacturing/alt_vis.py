@@ -29,17 +29,18 @@ def _calculate_x_mr_limits(data: pd.Series, calc_length: int = 30,
            mr, mr_bar, mR_upper_control_limit, mR_lower_control_limit
 
 
-# todo: allow provision of Figure prior to method being called
-# todo: make vertical marks for violations
+# todo: allow ucl and lcl overrides
 def x_mr_chart(
         data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series],
+        parameter_name: Optional[str] = None,
         x_axis_ticks: Optional[List[str]] = None,
         x_axis_label: Optional[str] = None,
         y_axis_label: Optional[str] = None,
         baselines: Optional[Tuple[Tuple[int, int], ...]] = None,
         iqr_limit: float = 1.5,
-        max_display: int = 60,
-        parameter_name: Optional[str] = None) -> Figure:
+        max_points: int = 60,
+        figure: Optional['Figure'] = None,
+) -> Figure:
     data = coerce(data)
 
     # make the x-axis ticks the same length, if it isn't already
@@ -225,9 +226,18 @@ def x_mr_chart(
 
     # collect into a dataframe
     df = pd.concat([data, x_bar, x_ucl, x_lcl, mr, mr_bar, mr_ucl, mr_lcl], axis=1)
-    df = df[-max_display:]
+    df = df[-max_points:]
 
-    fig, axs = plt.subplots(2, 1, sharex='all', figsize=(12, 9))
+    # -------------------------------------
+    # Begin plotting process
+    if figure is None:
+        fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
+    else:
+        fig = figure
+        fig.clear()
+        ax0 = fig.add_subplot(211)
+        ax1 = fig.add_subplot(212, sharex=ax0)
+        axs = [ax0, ax1]
 
     axs[0].plot(df['x'], marker='o')
     axs[0].plot(df['x_bar'], color='blue', alpha=0.3)
