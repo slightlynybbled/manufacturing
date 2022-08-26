@@ -31,8 +31,13 @@ def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> pd.Series:
 
 
 def remove_outliers(data: pd.Series, iqr_limit: Optional[float] = 1.5) -> "pd.Series":
-    # when data is considered an extreme outlier,
-    # then we will re-scale the y limits
+    """
+    Removes outliers from the data
+
+    :param data: a ``pandas.Series`` containing the data from which to remove the outliers
+    :param iqr_limit: a ``float`` containing the inter-quartile range limit
+    :return: the original data as a ``pandas.Series`` but with outliers removed; index remains unchanged
+    """
     data = coerce(data)
     origin_data_len = len(data)
     if iqr_limit is None:
@@ -57,7 +62,7 @@ def remove_outliers(data: pd.Series, iqr_limit: Optional[float] = 1.5) -> "pd.Se
     data = data[(data >= min_data) & (data <= max_data)]
     data_len = len(data)
     if data_len != origin_data_len:
-        _logger.info(f'{origin_data_len - data_len} values of {data_len} determined to be outliers (outside {iqr_limit:.3g} x IQR); removed from dataset')
+        _logger.info(f'{origin_data_len - data_len} values of {data_len} determined to be outliers (outside {iqr_limit:.3g} x IQR)')
 
     return data
 
