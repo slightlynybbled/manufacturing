@@ -7,11 +7,18 @@ import numpy as np
 
 from manufacturing.alt_analysis import control_beyond_limits
 from manufacturing.util import coerce, remove_outliers
-from manufacturing.lookup_tables import d3_table, d4_table
 
 
 def _calculate_x_mr_limits(data: pd.Series, calc_length: int = 30,
                            iqr_limit: float = 1.5):
+    r"""
+    Calculate the limits based on the data provided
+
+    :param data: the data on which to base the calculations
+    :param calc_length: the length of the data
+    :param iqr_limit: a floating-point value which specifies the IQR limit for calculation purposes
+    :return:
+    """
     clean_data = remove_outliers(data[:calc_length], iqr_limit=iqr_limit)
     x_bar = clean_data.mean()
 
@@ -61,7 +68,7 @@ def x_mr_chart(
     :param y_axis_label: an alternate label for the y-axis
     :param baselines: a series of tuples, each containing a starting point and
     ending point for the baseline calculation; for instance if ``((10, 20), )`` is specified, then the calculations will take place on the values between samples 10 and 20
-    :param iqr_limit: a floating-point value which specifies the IQR limit for calculation purposes
+    :param iqr_limit: a floating-point value which specifies the IQR limit for UCL and LCL calculation purposes
     :param max_points: the maximum number of samples to display on the plot
     :param figure: an instance of ``matplotlib.figure.Figure``
     :return:
