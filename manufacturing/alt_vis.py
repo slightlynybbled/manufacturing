@@ -29,10 +29,13 @@ def _calculate_x_mr_limits(data: pd.Series, calc_length: int = 30,
            mr, mr_bar, mR_upper_control_limit, mR_lower_control_limit
 
 
-# todo: allow ucl and lcl overrides
 def x_mr_chart(
         data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series],
         parameter_name: Optional[str] = None,
+        x_upper_control_limit: Optional[Union[float, int]] = None,
+        x_lower_control_limit: Optional[Union[float, int]] = None,
+        mr_upper_control_limit: Optional[Union[float, int]] = None,
+        mr_lower_control_limit: Optional[Union[float, int]] = None,
         x_axis_ticks: Optional[List[str]] = None,
         x_axis_label: Optional[str] = None,
         y_axis_label: Optional[str] = None,
@@ -43,7 +46,15 @@ def x_mr_chart(
 ) -> Figure:
     data = coerce(data)
 
-    # make the x-axis ticks the same length, if it isn't already
+    # -------------------------------------
+    # Validation
+    #   The first section involves validation and ensuring
+    #   that the data provided meets certain specifications
+    #   so that it can be adequately plotted.
+
+    # when x_axis_ticks are provided, make the x-axis ticks the same
+    # length as the data, if it isn't already; the x_axis_ticks will
+    # be repeated if shorter than the data
     if (x_axis_ticks is not None) and (len(data) != len(x_axis_ticks)):
         new_x_axis_ticks = []
         while len(new_x_axis_ticks) < len(data):
@@ -75,8 +86,13 @@ def x_mr_chart(
                              f'less than the previous baseline')
         running = starting_index + running
 
+    # -------------------------------------
+    # UCL & LCL Calculation
+    #   Calculate UCL and LCL limits (or allocate if overrides were provided)
+    #   and calculate where each of the text locations are to be placed.
     x_texts = []
     mr_texts = []
+
     for i, baseline in enumerate(baselines):
         starting_index, calculation_length = baseline
         try:
@@ -89,6 +105,12 @@ def x_mr_chart(
             data=data[starting_index:starting_index + data_length],
             calc_length=calculation_length, iqr_limit=iqr_limit)
         x_bar, x_ucl, x_lcl, mr, mr_bar, mr_ucl, mr_lcl = values
+
+        # enforce overrides, if specified
+        x_ucl = x_upper_control_limit if x_upper_control_limit else x_ucl
+        x_lcl = x_lower_control_limit if x_lower_control_limit else x_lcl
+        mr_ucl = mr_upper_control_limit if mr_upper_control_limit else mr_ucl
+        mr_lcl = mr_lower_control_limit if mr_lower_control_limit else mr_lcl
 
         try:
             x_bar_array = np.append(x_bar_array,
@@ -199,8 +221,9 @@ def x_mr_chart(
             mr_lcl_array = np.full(data_length, fill_value=mr_lcl)
 
     # -------------------------------------
-    # Group generated arrays into a single
-    # dataframe in preparation for plotting
+    # Collection
+    #   Group generated arrays into a single
+    #   dataframe in preparation for plotting
     data.rename('x', inplace=True)
 
     x_bar = coerce(x_bar_array)
@@ -229,7 +252,7 @@ def x_mr_chart(
     df = df[-max_points:]
 
     # -------------------------------------
-    # Begin plotting process
+    # Plotting
     if figure is None:
         fig, axs = plt.subplots(2, 1, figsize=(12, 9), sharex="all")
     else:
