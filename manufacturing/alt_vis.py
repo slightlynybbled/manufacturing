@@ -5,7 +5,8 @@ import pandas as pd
 from matplotlib.figure import Figure
 import numpy as np
 
-from manufacturing.alt_analysis import control_beyond_limits, control_zone_a, control_zone_b, control_zone_c
+from manufacturing.alt_analysis import control_beyond_limits, control_zone_a, \
+    control_zone_b, control_zone_c, control_zone_trend
 from manufacturing.util import coerce, remove_outliers
 
 
@@ -46,6 +47,7 @@ def x_mr_chart(
         highlight_zone_a: bool = True,
         highlight_zone_b: bool = True,
         highlight_zone_c: bool = True,
+        highlight_trend: bool = True,
         x_axis_ticks: Optional[List[str]] = None,
         x_axis_label: Optional[str] = None,
         y_axis_label: Optional[str] = None,
@@ -457,6 +459,26 @@ def x_mr_chart(
                 marker="o",
                 label="zone c",
                 edgecolor="green",
+                zorder=zorder,
+            )
+            diameter += diameter_inc
+            zorder -= 1
+            show_legend = True
+
+    if highlight_zone_c is True:
+        trend_violations = control_zone_trend(
+            df, data_name='x'
+        )
+        if len(trend_violations):
+            axs[0].scatter(
+                trend_violations.index,
+                trend_violations.values,
+                s=diameter,
+                linewidth=1,
+                color="none",
+                marker="o",
+                label="trend",
+                edgecolor="purple",
                 zorder=zorder,
             )
             diameter += diameter_inc

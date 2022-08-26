@@ -44,7 +44,7 @@ def control_zone_a(data: pd.DataFrame,
 
     violations = []
     for i in range(df.index[0], df.index[-3]):
-        points = df.loc[i:i+2]
+        points = df.loc[i:i + 2]
 
         if sum(points['above_zone_b']) >= 2 or sum(points['below_zone_b']) <= -2:
             value = df[data_name].loc[i]
@@ -81,7 +81,7 @@ def control_zone_b(data: pd.DataFrame,
 
     violations = []
     for i in range(df.index[0], df.index[-5]):
-        points = df.loc[i:i+4]
+        points = df.loc[i:i + 4]
 
         if sum(points['above_zone_c']) >= 4 or sum(points['below_zone_c']) <= -4:
             _logger.debug(f'zone b violation found at {i}')
@@ -116,7 +116,7 @@ def control_zone_c(data: pd.DataFrame,
 
     violations = []
     for i in range(df.index[0], df.index[-8]):
-        points = df.loc[i:i+7]
+        points = df.loc[i:i + 7]
 
         if sum(points['above_center']) == 8 or sum(points['below_center']) == -8:
             value = df[data_name].loc[i]
@@ -131,3 +131,30 @@ def control_zone_c(data: pd.DataFrame,
     s = pd.concat(violations)
     return s
 
+
+def control_zone_trend(data: pd.DataFrame,
+                       data_name: str) -> pd.Series:
+    df = data.copy()
+    df['diff'] = df[data_name].diff()
+    df['rising'] = df['diff'] > 0
+    df['falling'] = df['diff'] < 0
+
+    # look for trend violations, which are violations
+    #  in which 7 consecutive points are trending up or down
+    violations = []
+    for i in range(df.index[0], df.index[-7]):
+        points = df.loc[i:i + 6]
+
+        if sum(points['rising']) == 7 or sum(points['falling']) == 7:
+            value = df[data_name].loc[i]
+            _logger.info(f'trend violation found at {i} ({value})')
+            violations.append(
+                pd.Series(data=points[data_name], index=points.index)
+            )
+
+    if len(violations) == 0:
+        return pd.Series(dtype="float64")
+
+    s = pd.concat(violations)
+
+    return s
