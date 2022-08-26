@@ -5,7 +5,7 @@ import pandas as pd
 from matplotlib.figure import Figure
 import numpy as np
 
-from manufacturing.alt_analysis import control_beyond_limits
+from manufacturing.alt_analysis import control_beyond_limits, control_zone_a
 from manufacturing.util import coerce, remove_outliers
 
 
@@ -43,6 +43,7 @@ def x_mr_chart(
         x_lower_control_limit: Optional[Union[float, int]] = None,
         mr_upper_control_limit: Optional[Union[float, int]] = None,
         mr_lower_control_limit: Optional[Union[float, int]] = None,
+        highlight_zone_a: bool = True,
         x_axis_ticks: Optional[List[str]] = None,
         x_axis_label: Optional[str] = None,
         y_axis_label: Optional[str] = None,
@@ -354,24 +355,78 @@ def x_mr_chart(
     axs[1].set_ylim(0, y_data_max)
 
     # ----- Plot beyond limits violations ---------------
+    diameter = 30
+    diameter_inc = 35
+    zorder = 100
+    show_legend = False
+
     beyond_limits_violations_x = control_beyond_limits(
-        df['x'],
-        upper_control_limits=df['x_ucl'],
-        lower_control_limits=df['x_lcl'],
+        df, data_name='x', ucl_name='x_ucl', lcl_name='x_lcl',
     )
     for i, v in beyond_limits_violations_x.iteritems():
         axs[0].axvline(i, color='red', alpha=0.4)
+    if len(beyond_limits_violations_x):
+        axs[0].scatter(
+            beyond_limits_violations_x.index,
+            beyond_limits_violations_x.values,
+            s=diameter,
+            linewidth=1,
+            color="none",
+            marker="o",
+            label="beyond limits",
+            edgecolor="red",
+            zorder=zorder,
+        )
+        diameter += diameter_inc
+        zorder -= 1
+        show_legend = True
 
     beyond_limits_violations_r = control_beyond_limits(
-        df['mr'],
-        upper_control_limits=df['mr_ucl'],
-        lower_control_limits=df['mr_lcl'],
+        df, data_name='mr', ucl_name='mr_ucl', lcl_name='mr_lcl'
     )
     for i, v in beyond_limits_violations_r.iteritems():
         axs[1].axvline(i, color='red', alpha=0.4)
+    if len(beyond_limits_violations_r):
+        axs[1].scatter(
+            beyond_limits_violations_r.index,
+            beyond_limits_violations_r.values,
+            s=diameter,
+            linewidth=1,
+            color="none",
+            marker="o",
+            label="beyond limits",
+            edgecolor="red",
+            zorder=zorder,
+        )
+        diameter += diameter_inc
+        zorder -= 1
+
+    if highlight_zone_a is True:
+        zone_a_violations_x = control_zone_a(
+            df, data_name='x', ucl_name='x_ucl', lcl_name='x_lcl'
+        )
+        if len(zone_a_violations_x):
+            axs[0].scatter(
+                zone_a_violations_x.index,
+                zone_a_violations_x.values,
+                s=diameter,
+                linewidth=1,
+                color="none",
+                marker="o",
+                label="zone a",
+                edgecolor="orange",
+                zorder=zorder,
+            )
+            diameter += diameter_inc
+            zorder -= 1
+            show_legend = True
 
     for ax in axs:
         ax.grid()
+
+    if show_legend:
+        legend = axs[0].legend(loc="lower left")
+        legend.set_zorder(200)
 
     fig_title = f"X-mR Chart"
     if parameter_name is not None:
