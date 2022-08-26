@@ -44,6 +44,28 @@ def x_mr_chart(
         max_points: int = 60,
         figure: Optional['Figure'] = None,
 ) -> Figure:
+    r"""
+    Create an XmR Chart
+
+    :param data: the data to plot
+    :param parameter_name: the parameter name
+    :param x_upper_control_limit: overrides the calculated x upper control limit
+    :param x_lower_control_limit: overrides the calculated x lower control limit
+    :param mr_upper_control_limit: overrides the calculated mR upper control limit
+    :param mr_lower_control_limit: overrides the calculated mR lower control limit
+    :param x_axis_ticks: an iterable which allows the user to specify alternate x-axis
+    ticks (i.e. ``['Sun', 'Mon', 'Tues', 'Wed', 'Thu', 'Fri', 'Sat']``); when the
+    data is longer than the ticks, then the ticks will be repeated until they match
+    the data
+    :param x_axis_label: an alternate label for the x-axis
+    :param y_axis_label: an alternate label for the y-axis
+    :param baselines: a series of tuples, each containing a starting point and
+    ending point for the baseline calculation; for instance if ``((10, 20), )`` is specified, then the calculations will take place on the values between samples 10 and 20
+    :param iqr_limit: a floating-point value which specifies the IQR limit for calculation purposes
+    :param max_points: the maximum number of samples to display on the plot
+    :param figure: an instance of ``matplotlib.figure.Figure``
+    :return:
+    """
     data = coerce(data)
 
     # -------------------------------------
@@ -92,7 +114,6 @@ def x_mr_chart(
     #   and calculate where each of the text locations are to be placed.
     x_texts = []
     mr_texts = []
-
     for i, baseline in enumerate(baselines):
         starting_index, calculation_length = baseline
         try:
