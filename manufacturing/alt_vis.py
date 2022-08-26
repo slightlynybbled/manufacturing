@@ -5,7 +5,7 @@ import pandas as pd
 from matplotlib.figure import Figure
 import numpy as np
 
-from manufacturing.alt_analysis import control_beyond_limits, control_zone_a
+from manufacturing.alt_analysis import control_beyond_limits, control_zone_a, control_zone_b, control_zone_c
 from manufacturing.util import coerce, remove_outliers
 
 
@@ -44,6 +44,8 @@ def x_mr_chart(
         mr_upper_control_limit: Optional[Union[float, int]] = None,
         mr_lower_control_limit: Optional[Union[float, int]] = None,
         highlight_zone_a: bool = True,
+        highlight_zone_b: bool = True,
+        highlight_zone_c: bool = True,
         x_axis_ticks: Optional[List[str]] = None,
         x_axis_label: Optional[str] = None,
         y_axis_label: Optional[str] = None,
@@ -415,6 +417,46 @@ def x_mr_chart(
                 marker="o",
                 label="zone a",
                 edgecolor="orange",
+                zorder=zorder,
+            )
+            diameter += diameter_inc
+            zorder -= 1
+            show_legend = True
+
+    if highlight_zone_b is True:
+        zone_b_violations_x = control_zone_b(
+            df, data_name='x', ucl_name='x_ucl', lcl_name='x_lcl'
+        )
+        if len(zone_b_violations_x):
+            axs[0].scatter(
+                zone_b_violations_x.index,
+                zone_b_violations_x.values,
+                s=diameter,
+                linewidth=1,
+                color="none",
+                marker="o",
+                label="zone b",
+                edgecolor="blue",
+                zorder=zorder,
+            )
+            diameter += diameter_inc
+            zorder -= 1
+            show_legend = True
+
+    if highlight_zone_c is True:
+        zone_c_violations_x = control_zone_c(
+            df, data_name='x', ucl_name='x_ucl', lcl_name='x_lcl'
+        )
+        if len(zone_c_violations_x):
+            axs[0].scatter(
+                zone_c_violations_x.index,
+                zone_c_violations_x.values,
+                s=diameter,
+                linewidth=1,
+                color="none",
+                marker="o",
+                label="zone c",
+                edgecolor="green",
                 zorder=zorder,
             )
             diameter += diameter_inc
