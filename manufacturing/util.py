@@ -25,6 +25,8 @@ def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> pd.Series:
             "floats, a pandas.Series, or numpy.array"
         )
 
+    data.dropna(inplace=True)
+
     return data
 
 

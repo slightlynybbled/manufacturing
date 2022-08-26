@@ -5,6 +5,7 @@ import pandas as pd
 from matplotlib.figure import Figure
 import numpy as np
 
+from manufacturing.alt_analysis import control_beyond_limits
 from manufacturing.util import coerce, remove_outliers
 from manufacturing.lookup_tables import d3_table, d4_table
 
@@ -196,15 +197,42 @@ def x_mr_chart(
         except NameError:
             mr_lcl_array = np.full(data_length, fill_value=mr_lcl)
 
+    # -------------------------------------
+    # Group generated arrays into a single
+    # dataframe in preparation for plotting
+    data.rename('x', inplace=True)
+
+    x_bar = coerce(x_bar_array)
+    x_bar.rename('x_bar', inplace=True)
+
+    x_ucl = coerce(x_ucl_array)
+    x_ucl.rename('x_ucl', inplace=True)
+
+    x_lcl = coerce(x_lcl_array)
+    x_lcl.rename('x_lcl', inplace=True)
+
+    mr = coerce(mr_array)
+    mr.rename('mr', inplace=True)
+
+    mr_bar = coerce(mr_bar_array)
+    mr_bar.rename('mr_bar', inplace=True)
+
+    mr_ucl = coerce(mr_ucl_array)
+    mr_ucl.rename('mr_ucl', inplace=True)
+
+    mr_lcl = coerce(mr_lcl_array)
+    mr_lcl.rename('mr_lcl', inplace=True)
+
+    # collect into a dataframe
+    df = pd.concat([data, x_bar, x_ucl, x_lcl, mr, mr_bar, mr_ucl, mr_lcl], axis=1)
+    df = df[-max_display:]
+
     fig, axs = plt.subplots(2, 1, sharex='all', figsize=(12, 9))
 
-    axs[0].plot(data[-max_display:], marker='o')
-    axs[0].plot(data[-max_display:].index, x_bar_array[-max_display:],
-                color='blue', alpha=0.3)
-    axs[0].plot(data[-max_display:].index, x_ucl_array[-max_display:],
-                color='red', alpha=0.3)
-    axs[0].plot(data[-max_display:].index, x_lcl_array[-max_display:],
-                color='red', alpha=0.3)
+    axs[0].plot(df['x'], marker='o')
+    axs[0].plot(df['x_bar'], color='blue', alpha=0.3)
+    axs[0].plot(df['x_ucl'], color='red', alpha=0.3)
+    axs[0].plot(df['x_lcl'], color='red', alpha=0.3)
 
     ax_hist = axs[0].twiny()
     ax_hist.hist(
@@ -219,11 +247,10 @@ def x_mr_chart(
     ax_hist.set_xlim(0, xmax * 5)
     ax_hist.get_xaxis().set_visible(False)
 
-    axs[1].plot(data[-max_display:].index, mr_array[-max_display:], marker='o')
-    axs[1].plot(data[-max_display:].index, mr_bar_array[-max_display:],
-                color='blue', alpha=0.3)
-    axs[1].plot(data[-max_display:].index, mr_ucl_array[-max_display:],
-                color='red', alpha=0.3)
+    axs[1].plot(df['mr'], marker='o')
+    axs[1].plot(df['mr_bar'], color='blue', alpha=0.3)
+    axs[1].plot(df['mr_ucl'], color='red', alpha=0.3)
+    axs[1].plot(df['mr_lcl'], color='red', alpha=0.3)
     ax_hist = axs[1].twiny()
     ax_hist.hist(
         remove_outliers(mr_array),
@@ -252,18 +279,35 @@ def x_mr_chart(
         axs[1].set_ylabel(f'$\Delta${y_axis_label}')
 
     # set limits based on clean data in order to remove values that are clearly out of bounds
-    y_data_max = max(x_ucl_array)
-    y_data_min = min(x_lcl_array)
+    y_data_max = max(df['x_ucl'])
+    y_data_min = min(df['x_lcl'])
     y_data_range = y_data_max - y_data_min
     y_data_range_extension = y_data_range * 0.2
     y_data_max += y_data_range_extension
     y_data_min -= y_data_range_extension
     axs[0].set_ylim(y_data_min, y_data_max)
 
-    y_data_max = max(mr_ucl_array)
+    y_data_max = max(df['mr_ucl'])
     y_data_range = y_data_max * 0.1
     y_data_max += y_data_range
     axs[1].set_ylim(0, y_data_max)
+
+    # ----- Plot beyond limits violations ---------------
+    beyond_limits_violations_x = control_beyond_limits(
+        df['x'],
+        upper_control_limits=df['x_ucl'],
+        lower_control_limits=df['x_lcl'],
+    )
+    for i, v in beyond_limits_violations_x.iteritems():
+        axs[0].axvline(i, color='red', alpha=0.4)
+
+    beyond_limits_violations_r = control_beyond_limits(
+        df['mr'],
+        upper_control_limits=df['mr_ucl'],
+        lower_control_limits=df['mr_lcl'],
+    )
+    for i, v in beyond_limits_violations_r.iteritems():
+        axs[1].axvline(i, color='red', alpha=0.4)
 
     for ax in axs:
         ax.grid()
