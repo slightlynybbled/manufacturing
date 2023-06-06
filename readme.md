@@ -21,11 +21,17 @@ until the v2.0 update.
 
 To install from `pypi`:
 
-    pip install manufacturing
+    $>pip install manufacturing
 
 To install from source download and install using poetry:
 
-    poetry install
+    $>poetry install
+
+# Building
+
+    $>poetry update
+    $>poetry build
+
 
 # Usage
 
