@@ -480,7 +480,7 @@ def control_chart_base(
             zorder -= 1
             show_legend = True
 
-            for i, v in beyond_limits_violations.iteritems():
+            for i, v in beyond_limits_violations.items():
                 ax.axvline(i, color='red', alpha=0.4)
 
     if highlight_zone_a:
