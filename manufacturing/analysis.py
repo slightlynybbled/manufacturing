@@ -188,19 +188,15 @@ def calc_ppk(
 
     normality_test(data)
 
-    zupper = abs(
-        calc_ppu(
-            data=data,
-            upper_specification_limit=upper_specification_limit,
-            skip_normality_test=True,
-        )
+    zupper = calc_ppu(
+        data=data,
+        upper_specification_limit=upper_specification_limit,
+        skip_normality_test=True,
     )
-    zlower = abs(
-        calc_ppl(
-            data=data,
-            lower_specification_limit=lower_specification_limit,
-            skip_normality_test=True,
-        )
+    zlower = calc_ppl(
+        data=data,
+        lower_specification_limit=lower_specification_limit,
+        skip_normality_test=True,
     )
 
     cpk = min(zupper, zlower)

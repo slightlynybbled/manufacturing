@@ -128,13 +128,13 @@ def ppk_plot(
         lower_specification_limit=lower_specification_limit,
     )
 
-    lower_sigma_level = (mean - lower_specification_limit) / std
+    lower_sigma_level = -(mean - lower_specification_limit) / std
     if lower_sigma_level < 6.0:
         ax.axvline(lower_specification_limit, color="red", alpha=0.25, label="limits")
         ax.text(
             lower_specification_limit,
             top * 0.95,
-            s=f"$-{lower_sigma_level:.01f}" + r"\sigma$",
+            s=f"${lower_sigma_level:.01f}" + r"\sigma$",
             ha="center",
         )
         ax.fill_between(

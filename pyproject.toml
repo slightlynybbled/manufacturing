@@ -7,10 +7,10 @@ authors = ["Jason R. Jones <slightlynybbled@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
-matplotlib = "^3.5.1"
+python = ">=3.9,<3.12"
+matplotlib = "^3.8.0"
 openpyxl = "^3.0.9"
-pandas = "^1.4.2"
+pandas = "^2.1.0"
 scipy = "^1.7.0"
 xlrd = "^2.0.1"
 

@@ -1,4 +1,7 @@
 import logging
+
+from matplotlib.pyplot import show
+
 from manufacturing.analysis import calc_pp, calc_ppk
 from manufacturing.visual import ppk_plot
 
@@ -23,3 +26,6 @@ ppk = calc_ppk(data_set, **spec_limits)
 
 print(f'Pp = {pp:.3g}')
 print(f'Ppk = {ppk:.3g}')
+
+ppk_plot(data_set, **spec_limits)
+show()
