@@ -63,6 +63,9 @@ def ppk_plot(
     data = coerce(data)
     clean_data = remove_outliers(data)
 
+    if len(data) < 10:
+        raise ValueError('data length is too short')
+
     mean = clean_data.mean()
     std = clean_data.std()
 
@@ -221,6 +224,9 @@ def cpk_plot(
 
     data = coerce(data)
     data = remove_outliers(data)
+
+    if len(data) < 10:
+        raise ValueError('data length is too short')
 
     # todo: offer options of historical subgrouping, such as subgroup
     #  history = 'all' or 'recent', something that
