@@ -2,9 +2,9 @@ name: Publish 📦 to TestPyPI
 on:
   push:
     tags:
-      - v[0-9]+.[0-9]+.[0-9]+-alpha[1-9]*
-      - v[0-9]+.[0-9]+.[0-9]+-beta[1-9]*
-      - v[0-9]+.[0-9]+.[0-9]+-rc[1-9]*
+      - v[0-9]+.[0-9]+.[0-9]+-alpha[0-9]*
+      - v[0-9]+.[0-9]+.[0-9]+-beta[0-9]*
+      - v[0-9]+.[0-9]+.[0-9]+-rc[0-9]*
 
 jobs:
   build-n-publish:
@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@master
+        uses: actions/checkout@release/v1
 
       - name: Set up Python 3.x
         uses: actions/setup-python@v1
