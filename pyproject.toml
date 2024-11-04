@@ -1,6 +1,6 @@
 [project]
 name = "manufacturing"
-version = "1.5.0"
+version = "1.5.0-alpha0"
 description = "Six-Sigma based analysis of manufacturing data"
 authors = [
     {name = "Jason R. Jones", email = "slightlynybbled@gmail.com"},
