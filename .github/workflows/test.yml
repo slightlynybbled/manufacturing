@@ -14,26 +14,22 @@ jobs:
         uses: actions/checkout@master
 
       - name: Set up Python 3.x
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
           python-version: 3.x
 
-      - name: Install packages
-        run: |
-          python -m pip install --upgrade pip
-          pip install -U poetry twine wheel
-          poetry install
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
 
       - name: Run Tests
-        run: poetry run pytest --cov=manufacturing --cov-report=html
+        run: uv run pytest --cov=manufacturing --cov-report=html
 
       - name: Build docs
         run: |
           mkdir gh-pages
           touch gh-pages/.nojekyll
           cd docs/
-          poetry run sphinx-build -b html . _build
-          cp -r _build/* ../gh-pages/
+          uv run sphinx-build -b html . _build
 
       - name: Build wheel file in `dist/`
-        run: poetry build
+        run: uv build
