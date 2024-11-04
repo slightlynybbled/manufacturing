@@ -4,12 +4,12 @@ To provide analysis tools and metrics useful in manufacturing environments.
 
 Go to the [documentation](https://slightlynybbled.github.io/manufacturing/index.html).
 
-# Project Maturity
+## Project Maturity
 
 Plots and project are reasonably mature at this point.  Calculations have been refined
 and are in-line with commonly accepted standards.
 
-A major v2.0 update is coming to control charts and will be available shortly in 
+A major v2.0 update is coming to control charts and will be available in 
 `manufacturing.alt_vis` module.  For instance, instead of using `from manufacturing import x_mr_chart`,
 you would use `from manufacturing.alt_vis import x_mr_chart`.  The new API should
 allow for a greater degree of flexibility with recalculation points and the ability
@@ -17,25 +17,29 @@ to relabel the axes.  Additionally, alternative axis labels will be able to be s
 These changes will eventually become "the way", but are to be considered experimental
 until the v2.0 update.
 
-# Installation
+## Installation
 
 To install from `pypi`:
 
     $>pip install manufacturing
 
-To install from source download and install using poetry:
+## Building
 
-    $>poetry install
+This package uses [uv](https://docs.astral.sh/uv/) to manage the workflow.
 
-# Building
+    $>git clone <this repository>
+    $>cd manufacturing
+    $manufacturing/>uv build
 
-    $>poetry update
-    $>poetry build
+## Testing
 
+Tests will take a while to run - it is generating several hundred plots in the background.
 
-# Usage
+    $>uv run pytest
 
-## Cpk Visualization
+## Usage
+
+### Cpk Visualization
 
 The most useful feature of the `manufacturing` package is the visualization of Cpk.
 As hinted previously, the `ppk_plot()` function is the primary method for display of
@@ -50,7 +54,7 @@ Cpk visual information.  First, get your data into a `list`, `numpy.array`, or
 In this example, it appears that the manufacturing processes are not up to the task of 
 making consistent product within the specified limits.
 
-## Zone Control Visualization
+### Zone Control Visualization
 
 Another useful feature is the zone control visualization.
 
@@ -65,11 +69,11 @@ the dataset requires.  However, if you wish to call a specific type of control c
  - `xbar_s_chart`
  - `p_chart`
 
-# Contributions
+## Contributions
 
 Contributions are welcome!  
 
-## RoadMap
+### RoadMap
 
 Items marked out were added most recently.
 
@@ -86,7 +90,7 @@ Items marked out were added most recently.
  - Add `c chart`
  - Add automated testing (partially implemented)
 
-# Gallery
+## Gallery
 
 ![Ppk example](docs/_static/images/ppk_plot.png)
 
