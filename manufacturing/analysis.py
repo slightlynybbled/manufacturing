@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Union
 
 import pandas as pd
 import numpy as np
@@ -172,32 +172,43 @@ def calc_ppl(
 
 def calc_ppk(
     data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_specification_limit: (int, float),
-    lower_specification_limit: (int, float),
+    upper_specification_limit: Union[int, float, None] = None,
+    lower_specification_limit: Union[int, float, None] = None,
 ):
     """
-    Calculate and return the Pp (upper) of the provided dataset given the upper control limit.
+    Calculate and return the Pp (upper and lower) of the provided dataset given the
+    upper control limit and lower control limit.
 
     :param data: the data to be analyzed
     :param upper_specification_limit: the upper specification limit
     :param lower_specification_limit: the lower control limit
     :return: the ppk level
     """
+    if upper_specification_limit is None and lower_specification_limit is None:
+        raise ValueError("The upper_specification_limit and lower_specification_limit cannot both be None")
+
     _logger.debug("calculating ppk...")
     data = coerce(data)
 
     normality_test(data)
 
-    zupper = calc_ppu(
-        data=data,
-        upper_specification_limit=upper_specification_limit,
-        skip_normality_test=True,
-    )
-    zlower = calc_ppl(
-        data=data,
-        lower_specification_limit=lower_specification_limit,
-        skip_normality_test=True,
-    )
+    if upper_specification_limit is not None:
+        zupper = calc_ppu(
+            data=data,
+            upper_specification_limit=upper_specification_limit,
+            skip_normality_test=True,
+        )
+    else:
+        zupper = np.inf
+
+    if lower_specification_limit is not None:
+        zlower = calc_ppl(
+            data=data,
+            lower_specification_limit=lower_specification_limit,
+            skip_normality_test=True,
+        )
+    else:
+        zlower = np.inf
 
     cpk = min(zupper, zlower)
 

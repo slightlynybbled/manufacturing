@@ -1,6 +1,6 @@
 [project]
 name = "manufacturing"
-version = "1.5.0"
+version = "1.6.0"
 description = "Six-Sigma based analysis of manufacturing data"
 authors = [
     {name = "Jason R. Jones", email = "slightlynybbled@gmail.com"},
@@ -49,3 +49,5 @@ include = ["manufacturing"]  # package names should match these glob patterns ([
 exclude = []  # exclude packages matching these glob patterns (empty by default)
 namespaces = false  # to disable scanning PEP 420 namespaces (true by default)
 
+[tool.pytest.ini_options]
+addopts = "-x"

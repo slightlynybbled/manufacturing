@@ -147,6 +147,7 @@ def test_ppk_plot(plot_dir):
     # test different sizes to ensure that they get plotted appropriately
     data = np.random.normal(loc=10, scale=1.0, size=2)
     with pytest.raises(ValueError):
+        # tests for the minimum size of data
         mn.ppk_plot(data=data, upper_specification_limit=12,
                     lower_specification_limit=8)
 
@@ -158,6 +159,39 @@ def test_ppk_plot(plot_dir):
 
         plt.cla()
         plt.close('all')
+
+
+def test_ppk_plot_invalid_limits(plot_dir):
+    path = plot_dir / 'ppk_plot'
+    path.mkdir(exist_ok=True)
+
+    data = np.random.normal(loc=10, scale=1.0, size=2000)
+    with pytest.raises(ValueError):
+        mn.ppk_plot(data=data)
+
+
+def test_ppk_plot_usl_only(plot_dir):
+    path = plot_dir / 'ppk_plot'
+    path.mkdir(exist_ok=True)
+
+    data = np.random.normal(loc=10, scale=1.0, size=2000)
+    fig = mn.ppk_plot(data=data, upper_specification_limit=12)
+    fig.savefig(path / f'test_ppk_plot_usl_only{len(data)}.png')
+
+    plt.cla()
+    plt.close('all')
+
+
+def test_ppk_plot_lsl_only(plot_dir):
+    path = plot_dir / 'ppk_plot'
+    path.mkdir(exist_ok=True)
+
+    data = np.random.normal(loc=10, scale=1.0, size=2000)
+    fig = mn.ppk_plot(data=data, lower_specification_limit=8)
+    fig.savefig(path / f'test_ppk_plot_lsl_only{len(data)}.png')
+
+    plt.cla()
+    plt.close('all')
 
 
 def test_cpk_plot(plot_dir):

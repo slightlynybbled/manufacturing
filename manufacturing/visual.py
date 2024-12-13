@@ -37,8 +37,8 @@ ListValues = NewType("ListValues", Union[List[int], List[float], pd.Series, np.n
 
 def ppk_plot(
     data: ListValues,
-    upper_specification_limit: (int, float),
-    lower_specification_limit: (int, float),
+    upper_specification_limit: Union[int, float, None] = None,
+    lower_specification_limit: Union[int, float, None] = None,
     parameter_name: Optional[str] = None,
     threshold_percent: float = 0.001,
     is_subset: bool = False,
@@ -58,6 +58,10 @@ def ppk_plot(
     :param figure: an instance of ``matplotlib.figure.Figure``
     :return: an instance of ``matplotlib.figure.Figure``
     """
+    if upper_specification_limit is None and lower_specification_limit is None:
+        raise ValueError("the upper_specification_limit and lower_specification_limit "
+                         "cannot both be None")
+
     plot_type = "$P_{pk}$" if not is_subset else "$C_{pk}$"
 
     data = coerce(data)
@@ -104,17 +108,26 @@ def ppk_plot(
     ax.axvline(mean - 3 * std, alpha=0.2, linestyle="--")
     ax.text(mean - 3 * std, top * 1.01, s=r"-$3\sigma$", ha="center")
 
-    lower_percent = 100.0 * stats.norm.cdf(lower_specification_limit, mean, std)
-    lower_percent_text = (
-        f"{lower_percent:.02g}% < LSL" if lower_percent > threshold_percent else None
-    )
+    if lower_specification_limit is not None:
+        lower_percent = 100.0 * stats.norm.cdf(lower_specification_limit, mean, std)
+        lower_percent_text = (
+            f"{lower_percent:.02g}% < LSL" if lower_percent > threshold_percent else None
+        )
+    else:
+        lower_percent = 0.0
+        lower_percent_text = None
 
-    higher_percent = 100.0 - 100.0 * stats.norm.cdf(
-        upper_specification_limit, mean, std
-    )
-    higher_percent_text = (
-        f"{higher_percent:.02g}% > USL" if higher_percent > threshold_percent else None
-    )
+    if upper_specification_limit is not None:
+        higher_percent = 100.0 - 100.0 * stats.norm.cdf(
+            upper_specification_limit, mean, std
+        )
+        higher_percent_text = (
+            f"{higher_percent:.02g}% > USL" if higher_percent > threshold_percent else None
+        )
+    else:
+        higher_percent = 0.0
+        higher_percent_text = None
+
     ppm = int((lower_percent + higher_percent) * 10000)
     ppm_text = f'DPPM={ppm}'
 
@@ -125,48 +138,55 @@ def ppk_plot(
         upper_specification_limit=upper_specification_limit,
         lower_specification_limit=lower_specification_limit,
     )
-    ppk = calc_pp(
-        data,
-        upper_specification_limit=upper_specification_limit,
-        lower_specification_limit=lower_specification_limit,
-    )
 
-    lower_sigma_level = -(mean - lower_specification_limit) / std
-    if lower_sigma_level < 6.0:
-        ax.axvline(lower_specification_limit, color="red", alpha=0.25, label="limits")
-        ax.text(
-            lower_specification_limit,
-            top * 0.95,
-            s=f"${lower_sigma_level:.01f}" + r"\sigma$",
-            ha="center",
-        )
-        ax.fill_between(
-            x, pdf, where=(x <= lower_specification_limit), facecolor="red", alpha=0.5
+    if upper_specification_limit is not None and lower_specification_limit is not None:
+        ppk = calc_pp(
+            data,
+            upper_specification_limit=upper_specification_limit,
+            lower_specification_limit=lower_specification_limit,
         )
     else:
-        ax.text(left, top * 0.95, s=r"limit < $-6\sigma$", ha="left")
+        ppk = None
 
-    upper_sigma_level = (upper_specification_limit - mean) / std
-    if upper_sigma_level < 6.0:
-        ax.axvline(upper_specification_limit, color="red", alpha=0.25)
-        ax.text(
-            upper_specification_limit,
-            top * 0.95,
-            s=f"${upper_sigma_level:.01f}" + r"\sigma$",
-            ha="center",
-        )
-        ax.fill_between(
-            x, pdf, where=(x >= upper_specification_limit), facecolor="red", alpha=0.5
-        )
-    else:
-        ax.text(right, top * 0.95, s=r"limit > $6\sigma$", ha="right")
+    if lower_specification_limit is not None:
+        lower_sigma_level = -(mean - lower_specification_limit) / std
+        if lower_sigma_level < 6.0:
+            ax.axvline(lower_specification_limit, color="red", alpha=0.25, label="limits")
+            ax.text(
+                lower_specification_limit,
+                top * 0.95,
+                s=f"${lower_sigma_level:.01f}" + r"\sigma$",
+                ha="center",
+            )
+            ax.fill_between(
+                x, pdf, where=(x <= lower_specification_limit), facecolor="red", alpha=0.5
+            )
+        else:
+            ax.text(left, top * 0.95, s=r"limit < $-6\sigma$", ha="left")
+
+    if upper_specification_limit is not None:
+        upper_sigma_level = (upper_specification_limit - mean) / std
+        if upper_sigma_level < 6.0:
+            ax.axvline(upper_specification_limit, color="red", alpha=0.25)
+            ax.text(
+                upper_specification_limit,
+                top * 0.95,
+                s=f"${upper_sigma_level:.01f}" + r"\sigma$",
+                ha="center",
+            )
+            ax.fill_between(
+                x, pdf, where=(x >= upper_specification_limit), facecolor="red", alpha=0.5
+            )
+        else:
+            ax.text(right, top * 0.95, s=r"limit > $6\sigma$", ha="right")
 
     strings = [f"{plot_type} = {cpk:.02g}"]
 
-    if plot_type == "$P_{pk}$":
-        strings.append(rf"$P_p={ppk:.3g}$")
-    else:
-        strings.append(rf"$C_p={ppk:.3g}$")
+    if ppk is not None:
+        if plot_type == "$P_{pk}$":
+            strings.append(rf"$P_p={ppk:.3g}$")
+        else:
+            strings.append(rf"$C_p={ppk:.3g}$")
     strings.append(r"$\mu = " + f"{mean:.3g}$")
     strings.append(r"$\sigma = " + f"{std:.3g}$")
 
