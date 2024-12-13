@@ -22,7 +22,7 @@ def parse_col_for_limits(columnname: str):
     """
     lsl, usl = None, None
     if "(" in columnname and ")" in columnname:
-        _logger.info(f"parentheses detected, loading thresholds")
+        _logger.info("parentheses detected, loading thresholds")
         strings = columnname.split("(")[1].replace(")", "")
         strings = strings.strip()
         if not strings:

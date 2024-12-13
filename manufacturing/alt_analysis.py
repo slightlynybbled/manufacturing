@@ -1,8 +1,6 @@
 import logging
 
-import numpy as np
 import pandas as pd
-from manufacturing.util import coerce
 
 _logger = logging.getLogger(__name__)
 

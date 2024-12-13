@@ -121,7 +121,7 @@ def generate_production_report(
 
     extension = splitext(str(output_file))[1].replace(".", "")
     if extension == "pdf":
-        args = ["pandoc", f"report.md", "-o", f"{title}.pdf"]
+        args = ["pandoc", "report.md", "-o", f"{title}.pdf"]
     elif extension == "html":
         args = ["pandoc", "-s", "report.md", "-o", f"{title}.html"]
     else:

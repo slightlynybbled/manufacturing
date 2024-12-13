@@ -15,9 +15,9 @@ def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> pd.Series:
     :return: a pandas Series
     """
     if not isinstance(data, pd.Series):
-        _logger.debug(f"attempting to convert data into pandas.Series...")
+        _logger.debug("attempting to convert data into pandas.Series...")
         data = pd.Series(data)
-        _logger.debug(f"...conversion successful")
+        _logger.debug("...conversion successful")
 
     if not isinstance(data, pd.Series):
         raise ValueError(

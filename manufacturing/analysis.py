@@ -224,9 +224,9 @@ def calc_ppk(
         ratio = 1.0 / ratio
     if ratio > 1.5:
         _logger.warning(
-            f"the zupper and zlower limits are strongly "
-            f"imbalanced, indicating that the process is off-center "
-            f"with reference to the limits"
+            "the zupper and zlower limits are strongly "
+            "imbalanced, indicating that the process is off-center "
+            "with reference to the limits"
         )
 
     return cpk
@@ -575,9 +575,6 @@ def control_zone_overcontrol(
     """
     _logger.debug("identifying over-control violations...")
     data = coerce(data)
-
-    spec_range = (upper_control_limit - lower_control_limit) / 2
-    spec_center = lower_control_limit + spec_range
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []

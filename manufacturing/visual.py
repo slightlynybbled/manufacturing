@@ -767,7 +767,7 @@ def control_chart_base(
 
 
 def precontrol_chart(*args, **kwargs):
-    _logger.warning(f'precontrol_chart depreciated and will be removed in a future version; use run_chart instead')
+    _logger.warning('precontrol_chart depreciated and will be removed in a future version; use run_chart instead')
     run_chart(*args, **kwargs)
 
 
@@ -819,7 +819,7 @@ def run_chart(
         ax=ax,
     )
 
-    fig_title = f"Pre-Control Chart"
+    fig_title = "Pre-Control Chart"
     if parameter_name is not None:
         fig_title = f"{fig_title}, {parameter_name}"
     fig.suptitle(fig_title)
@@ -939,7 +939,7 @@ def x_mr_chart(
     axs[0].set_title("Individual")
     axs[1].set_title("Moving Range")
 
-    fig_title = f"X-mR Chart"
+    fig_title = "X-mR Chart"
     if parameter_name is not None:
         fig_title = f"{fig_title}, {parameter_name}"
     fig.suptitle(fig_title)
@@ -1321,7 +1321,7 @@ def p_chart(
     else:
         raise ValueError('"datetime" or "lotid" must be columns within the dataframe')
 
-    pbar = len(data[data["pass"] == False]) / len(data)
+    pbar = len(data[data["pass"] == False]) / len(data)  # noqa: E712
 
     ps = []
     ucls = []
@@ -1380,7 +1380,7 @@ def p_chart(
     else:
         ax.set_ylim(0.0)
 
-    fig_title = f"P-Chart"
+    fig_title = "P-Chart"
     if parameter_name is not None:
         fig_title = f"{fig_title}, {parameter_name}"
     fig.suptitle(fig_title)

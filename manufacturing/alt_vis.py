@@ -492,7 +492,7 @@ def x_mr_chart(
         legend = axs[0].legend(loc="lower left")
         legend.set_zorder(200)
 
-    fig_title = f"X-mR Chart"
+    fig_title = "X-mR Chart"
     if parameter_name is not None:
         fig_title = f"{fig_title}, {parameter_name}"
     fig.suptitle(fig_title)
