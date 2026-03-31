@@ -1,5 +1,4 @@
 import logging
-from typing import List, Union
 
 import pandas as pd
 import numpy as np
@@ -11,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 
 def normality_test(
-    data: (List[int], List[float], pd.Series, np.ndarray), alpha: float = 0.05
+    data: list[int] | list[float] | pd.Series | np.ndarray, alpha: float = 0.05
 ):
     """
     Checks the data for normality and returns True if normality is not rejected.
@@ -62,7 +61,7 @@ def normality_test(
 
 
 def suggest_specification_limits(
-    data: (List[int], List[float], pd.Series, np.ndarray), sigma_level: float = 3.0
+    data: list[int] | list[float] | pd.Series | np.ndarray, sigma_level: float = 3.0
 ):
     """
     Given a data set and a sigma level, returns a tuple of specification limits.
@@ -83,9 +82,9 @@ def suggest_specification_limits(
 
 
 def calc_pp(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_specification_limit: (int, float),
-    lower_specification_limit: (int, float),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_specification_limit: int | float,
+    lower_specification_limit: int | float,
 ):
     """
     Calculate and return the Pp of the provided dataset given the specification limits.
@@ -106,8 +105,8 @@ def calc_pp(
 
 
 def calc_ppu(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_specification_limit: (int, float),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_specification_limit: int | float,
     skip_normality_test: bool = True,
 ):
     """
@@ -136,8 +135,8 @@ def calc_ppu(
 
 
 def calc_ppl(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    lower_specification_limit: (int, float),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    lower_specification_limit: int | float,
     skip_normality_test=True,
 ):
     """
@@ -166,9 +165,9 @@ def calc_ppl(
 
 
 def calc_ppk(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_specification_limit: Union[int, float, None] = None,
-    lower_specification_limit: Union[int, float, None] = None,
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_specification_limit: int | float | None = None,
+    lower_specification_limit: int | float | None = None,
 ):
     """
     Calculate and return the Pp (upper and lower) of the provided dataset given the
@@ -229,9 +228,9 @@ def calc_ppk(
 
 
 def control_beyond_limits(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_control_limit: int | float,
+    lower_control_limit: int | float,
 ) -> pd.Series:
     """
     Returns a pandas.Series with all points which are beyond the limits.
@@ -254,9 +253,9 @@ def control_beyond_limits(
 
 
 def control_zone_a(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_control_limit: int | float,
+    lower_control_limit: int | float,
 ) -> pd.Series:
     """
     Returns a pandas.Series containing the data in which 2 out of 3 are in zone A or beyond.
@@ -320,9 +319,9 @@ def control_zone_a(
 
 
 def control_zone_b(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_control_limit: int | float,
+    lower_control_limit: int | float,
 ) -> pd.Series:
     """
     Returns a pandas.Series containing the data in which 4 out of 5 are in zone B or beyond.
@@ -385,9 +384,9 @@ def control_zone_b(
 
 
 def control_zone_c(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_control_limit: int | float,
+    lower_control_limit: int | float,
 ):
     """
     Returns a pandas.Series containing the data in which 7 consecutive points are on the same side.
@@ -432,7 +431,7 @@ def control_zone_c(
 
 
 def control_zone_trend(
-    data: (List[int], List[float], pd.Series, np.ndarray),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
 ) -> pd.Series:
     """
     Returns a pandas.Series containing the data in which 7 consecutive points are in the same direction
@@ -470,9 +469,9 @@ def control_zone_trend(
 
 
 def control_zone_mixture(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_control_limit: int | float,
+    lower_control_limit: int | float,
 ) -> pd.Series:
     """
     Returns a pandas.Series containing the data in which 8 consecutive points occur with none in zone C
@@ -510,9 +509,9 @@ def control_zone_mixture(
 
 
 def control_zone_stratification(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_control_limit: int | float,
+    lower_control_limit: int | float,
 ) -> pd.Series:
     """
     Returns a pandas.Series containing the data in which 15 consecutive points occur within zone C
@@ -552,9 +551,9 @@ def control_zone_stratification(
 
 
 def control_zone_overcontrol(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    upper_control_limit: (int, float),
-    lower_control_limit: (int, float),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_control_limit: int | float,
+    lower_control_limit: int | float,
 ):
     """
     Returns a pandas.Series containing the data in which 14 consecutive points are alternating in direction.

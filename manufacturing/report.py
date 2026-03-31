@@ -16,8 +16,8 @@ _logger = logging.getLogger(__name__)
 
 
 def generate_production_report(
-    input_file: (str, Path),
-    output_file: Path = None,
+    input_file: str | Path,
+    output_file: Path | None = None,
     title: str = "Production Report",
     **kwargs,
 ):

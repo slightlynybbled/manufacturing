@@ -1,5 +1,4 @@
 import logging
-from typing import List, Optional
 
 import pandas as pd
 import numpy as np
@@ -7,7 +6,7 @@ import numpy as np
 _logger = logging.getLogger(__name__)
 
 
-def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> pd.Series:
+def coerce(data: list[int] | list[float] | pd.Series | np.ndarray) -> pd.Series:
     """
     Ensures that the data is a pandas Series and drops NaN values.
 
@@ -30,7 +29,7 @@ def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> pd.Series:
     return data
 
 
-def remove_outliers(data: pd.Series, iqr_limit: Optional[float] = 1.5) -> "pd.Series":
+def remove_outliers(data: pd.Series, iqr_limit: float | None = 1.5) -> "pd.Series":
     """
     Removes outliers from the data
 

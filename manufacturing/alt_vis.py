@@ -1,5 +1,3 @@
-from typing import List, Optional, Tuple, Union
-
 import matplotlib.pyplot as plt
 import pandas as pd
 from matplotlib.figure import Figure
@@ -51,23 +49,23 @@ def _calculate_x_mr_limits(
 
 
 def x_mr_chart(
-    data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series],
-    parameter_name: Optional[str] = None,
-    x_upper_control_limit: Optional[Union[float, int]] = None,
-    x_lower_control_limit: Optional[Union[float, int]] = None,
-    mr_upper_control_limit: Optional[Union[float, int]] = None,
-    mr_lower_control_limit: Optional[Union[float, int]] = None,
+    data: list[int] | list[float] | tuple | np.ndarray | pd.Series,
+    parameter_name: str | None = None,
+    x_upper_control_limit: float | int | None = None,
+    x_lower_control_limit: float | int | None = None,
+    mr_upper_control_limit: float | int | None = None,
+    mr_lower_control_limit: float | int | None = None,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
     highlight_zone_c: bool = True,
     highlight_trend: bool = True,
-    x_axis_ticks: Optional[List[str]] = None,
-    x_axis_label: Optional[str] = None,
-    y_axis_label: Optional[str] = None,
-    baselines: Optional[Tuple[Tuple[int, int], ...]] = None,
+    x_axis_ticks: list[str] | None = None,
+    x_axis_label: str | None = None,
+    y_axis_label: str | None = None,
+    baselines: tuple[tuple[int, int], ...] | None = None,
     iqr_limit: float = 1.5,
     max_points: int = 60,
-    figure: Optional["Figure"] = None,
+    figure: Figure | None = None,
 ) -> Figure:
     r"""
     Create an XmR Chart

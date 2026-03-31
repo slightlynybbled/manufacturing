@@ -1,5 +1,4 @@
 import logging
-from typing import List, NewType, Optional, Union
 
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -32,18 +31,16 @@ from manufacturing.util import coerce, remove_outliers
 
 _logger = logging.getLogger(__name__)
 
-ListValues = NewType("ListValues", Union[List[int], List[float], pd.Series, np.ndarray])
-
 
 def ppk_plot(
-    data: ListValues,
-    upper_specification_limit: Union[int, float, None] = None,
-    lower_specification_limit: Union[int, float, None] = None,
-    parameter_name: Optional[str] = None,
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_specification_limit: int | float | None = None,
+    lower_specification_limit: int | float | None = None,
+    parameter_name: str | None = None,
     threshold_percent: float = 0.001,
     is_subset: bool = False,
     show_dppm: bool = False,
-    figure: Optional[Figure] = None,
+    figure: Figure | None = None,
 ):
     """
     Shows the statistical distribution of the data along with Ppk/Cpk and limits.
@@ -234,13 +231,13 @@ def ppk_plot(
 
 
 def cpk_plot(
-    data: ListValues,
-    upper_specification_limit: (int, float),
-    lower_specification_limit: (int, float),
-    parameter_name: Optional[str] = None,
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_specification_limit: int | float,
+    lower_specification_limit: int | float,
+    parameter_name: str | None = None,
     subgroup_size: int = 30,
     max_subgroups: int = 10,
-    figure: Optional[Figure] = None,
+    figure: Figure | None = None,
 ) -> Figure:
     """
     Boxplot the Cpk in subgroups os size `subgroup_size`.
@@ -367,7 +364,7 @@ def control_plot(*args, **kwargs) -> Axis:
     return control_chart_base(*args, **kwargs)
 
 
-def _resolve_right(value) -> Union[int, float]:
+def _resolve_right(value) -> int | float:
     try:
         iter(value)
         return value.iloc[-1]
@@ -377,9 +374,21 @@ def _resolve_right(value) -> Union[int, float]:
 
 
 def control_chart_base(
-    data: ListValues,
-    upper_control_limit: Optional[Union[int, float, ListValues]] = None,
-    lower_control_limit: Optional[Union[int, float, ListValues]] = None,
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    upper_control_limit: int
+    | float
+    | list[int]
+    | list[float]
+    | pd.Series
+    | np.ndarray
+    | None = None,
+    lower_control_limit: int
+    | float
+    | list[int]
+    | list[float]
+    | pd.Series
+    | np.ndarray
+    | None = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -388,10 +397,10 @@ def control_chart_base(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
-    max_points: Optional[int] = 60,
-    avg_label: Optional[str] = "avg",
+    max_points: int | None = 60,
+    avg_label: str | None = "avg",
     show_hist: bool = True,
-    ax: Optional[Axis] = None,
+    ax: Axis | None = None,
 ) -> Axis:
     """
     Create a control plot based on the input data.
@@ -794,13 +803,13 @@ def precontrol_chart(*args, **kwargs):
 
 
 def run_chart(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    parameter_name: Optional[str] = None,
-    upper_control_limit: Optional[Union[float, int]] = None,
-    lower_control_limit: Optional[Union[float, int]] = None,
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    parameter_name: str | None = None,
+    upper_control_limit: float | int | None = None,
+    lower_control_limit: float | int | None = None,
     highlight_beyond_limits=True,
-    max_points: Optional[int] = 60,
-    figure: Optional[Figure] = None,
+    max_points: int | None = 60,
+    figure: Figure | None = None,
 ) -> Figure:
     r"""
     Create a pre-control chart  based on the input data.  Pre-control charts contain less information and are more suitable for direct usage by production personnel.
@@ -852,12 +861,12 @@ def run_chart(
 
 
 def x_mr_chart(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    parameter_name: Optional[str] = None,
-    x_upper_control_limit: Optional[Union[float, int]] = None,
-    x_lower_control_limit: Optional[Union[float, int]] = None,
-    mr_upper_control_limit: Optional[Union[float, int]] = None,
-    mr_lower_control_limit: Optional[Union[float, int]] = None,
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    parameter_name: str | None = None,
+    x_upper_control_limit: float | int | None = None,
+    x_lower_control_limit: float | int | None = None,
+    mr_upper_control_limit: float | int | None = None,
+    mr_lower_control_limit: float | int | None = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -866,8 +875,8 @@ def x_mr_chart(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
-    max_points: Optional[int] = 60,
-    figure: Optional[Figure] = None,
+    max_points: int | None = 60,
+    figure: Figure | None = None,
 ) -> Figure:
     r"""
     Create a :math:`X-mR` control plot based on the input data.
@@ -972,13 +981,13 @@ def x_mr_chart(
 
 
 def xbar_r_chart(
-    data: (List[int], List[float], pd.Series, np.ndarray),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
     subgroup_size: int = 4,
-    parameter_name: Optional[str] = None,
-    xbar_upper_control_limit: Optional[Union[float, int]] = None,
-    xbar_lower_control_limit: Optional[Union[float, int]] = None,
-    r_upper_control_limit: Optional[Union[float, int]] = None,
-    r_lower_control_limit: Optional[Union[float, int]] = None,
+    parameter_name: str | None = None,
+    xbar_upper_control_limit: float | int | None = None,
+    xbar_lower_control_limit: float | int | None = None,
+    r_upper_control_limit: float | int | None = None,
+    r_lower_control_limit: float | int | None = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -987,8 +996,8 @@ def xbar_r_chart(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
-    max_points: Optional[int] = 60,
-    figure: Optional[Figure] = None,
+    max_points: int | None = 60,
+    figure: Figure | None = None,
 ) -> Figure:
     r"""
     Create a :math:`\bar{X}-R` control plot based on the input data.
@@ -1123,13 +1132,13 @@ def xbar_r_chart(
 
 
 def xbar_s_chart(
-    data: (List[int], List[float], pd.Series, np.ndarray),
+    data: list[int] | list[float] | pd.Series | np.ndarray,
     subgroup_size: int = 12,
-    parameter_name: Optional[str] = None,
-    xbar_upper_control_limit: Optional[Union[float, int]] = None,
-    xbar_lower_control_limit: Optional[Union[float, int]] = None,
-    s_upper_control_limit: Optional[Union[float, int]] = None,
-    s_lower_control_limit: Optional[Union[float, int]] = None,
+    parameter_name: str | None = None,
+    xbar_upper_control_limit: float | int | None = None,
+    xbar_lower_control_limit: float | int | None = None,
+    s_upper_control_limit: float | int | None = None,
+    s_lower_control_limit: float | int | None = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -1138,8 +1147,8 @@ def xbar_s_chart(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
-    max_points: Optional[int] = 60,
-    figure: Optional[Figure] = None,
+    max_points: int | None = 60,
+    figure: Figure | None = None,
 ) -> Figure:
     r"""
     Create a moving :math:`\bar{X}-S` control plot based on the input data.  Recommended for datasets \
@@ -1271,10 +1280,10 @@ def xbar_s_chart(
 
 
 def p_chart(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    parameter_name: Optional[str] = None,
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    parameter_name: str | None = None,
     highlight_beyond_limits: bool = True,
-    figure: Optional[Figure] = None,
+    figure: Figure | None = None,
 ) -> Figure:
     """
     Create a p-chart based on the provided data.  The `data` must be a dataframe \
@@ -1416,9 +1425,9 @@ def p_chart(
 def np_chart(
     data: pd.Series,
     num_of_lots: int = 100,
-    parameter_name: str = None,
+    parameter_name: str | None = None,
     highlight_beyond_limits: bool = True,
-    figure: Optional[Figure] = None,
+    figure: Figure | None = None,
 ) -> Figure:
     """
     Create a np-chart based on the provided data.
@@ -1494,12 +1503,12 @@ def np_chart(
 
 
 def control_chart(
-    data: (List[int], List[float], pd.Series, np.ndarray),
-    parameter_name: Optional[str] = None,
-    x_upper_control_limit: Optional[Union[float, int]] = None,
-    x_lower_control_limit: Optional[Union[float, int]] = None,
-    r_upper_control_limit: Optional[Union[float, int]] = None,
-    r_lower_control_limit: Optional[Union[float, int]] = None,
+    data: list[int] | list[float] | pd.Series | np.ndarray,
+    parameter_name: str | None = None,
+    x_upper_control_limit: float | int | None = None,
+    x_lower_control_limit: float | int | None = None,
+    r_upper_control_limit: float | int | None = None,
+    r_lower_control_limit: float | int | None = None,
     highlight_beyond_limits: bool = True,
     highlight_zone_a: bool = True,
     highlight_zone_b: bool = True,
@@ -1508,8 +1517,8 @@ def control_chart(
     highlight_mixture: bool = False,
     highlight_stratification: bool = False,
     highlight_overcontrol: bool = False,
-    max_points: Optional[int] = 60,
-    figure: Optional[Figure] = None,
+    max_points: int | None = 60,
+    figure: Figure | None = None,
 ) -> Figure:
     """
     Automatically selects the most appropriate type of control chart, \
