@@ -9,7 +9,7 @@ _logger = logging.getLogger(__name__)
 
 def coerce(data: (List[int], List[float], pd.Series, np.ndarray)) -> pd.Series:
     """
-    Ensures that the data is of a type that can be easily manipulated. and eliminates extreme outliers.
+    Ensures that the data is a pandas Series and drops NaN values.
 
     :param data: a list or list-like iterable
     :return: a pandas Series
@@ -49,7 +49,7 @@ def remove_outliers(data: pd.Series, iqr_limit: Optional[float] = 1.5) -> "pd.Se
 
     data_len = len(data)
     if data_len != origin_data_len:
-        _logger.info(f'{origin_data_len - data_len} NaN values removed from dataset')
+        _logger.info(f"{origin_data_len - data_len} NaN values removed from dataset")
         origin_data_len = data_len
 
     q25 = data.quantile(0.25)
@@ -62,12 +62,14 @@ def remove_outliers(data: pd.Series, iqr_limit: Optional[float] = 1.5) -> "pd.Se
     data = data[(data >= min_data) & (data <= max_data)]
     data_len = len(data)
     if data_len != origin_data_len:
-        _logger.info(f'{origin_data_len - data_len} values of {data_len} determined to be outliers (outside {iqr_limit:.3g} x IQR)')
+        _logger.info(
+            f"{origin_data_len - data_len} values of {data_len} determined to be outliers (outside {iqr_limit:.3g} x IQR)"
+        )
 
     return data
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     s = pd.Series([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
     s_clean = remove_outliers(s)
     print(s, s_clean)

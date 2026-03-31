@@ -11,7 +11,7 @@ The :meth:`manufacturing.ppk_plot` takes all of the data - not just a sample - a
 capability.  This is not a snapshot in time but a look at the entire history.  Careful,
 which this can be can be deceiving!
 
-The :meth:``manufacturing.ppk_plot`` will estimate the distribution based on the input
+The :meth:`manufacturing.ppk_plot` will estimate the distribution based on the input
 data, calculate the Ppk, mean, standard deviation, and the estimated % out of control
 for each parameter.  The function will also generate a warning if the data appears
 to be non-normally distributed.
@@ -66,7 +66,7 @@ not be in control.
 Zone Control Chart
 ------------------
 
-Perhaps the most useful chart is the :meth:`manufacturing.control_plot`, also known as a
+Perhaps the most useful chart is the :meth:`manufacturing.control_chart`, also known as a
 Zone Control Plot.  This plot will highlight up to 8 different rules or violations
 based on the input data set.  If a control chart rule is not violated, then it will
 not be placed on the chart.
@@ -74,10 +74,10 @@ not be placed on the chart.
 There are three different types of control charts defined within ``manufacturing``:
 
  * :meth:`manufacturing.x_mr_chart()` for small data sets
- * :meth:`manufacturing.xbar_r_chart()` for subgroups between 2 and 10, inclusive
- * :meth:`manufacturing.xbar_s_chart()` for subgroups larger than 11, inclusive
+ * :meth:`manufacturing.xbar_r_chart()` for subgroups between 2 and 11, inclusive
+ * :meth:`manufacturing.xbar_s_chart()` for subgroups 11 or larger
 
-Using the :meth:`manufacturing.control_plot` function will automatically select the appropriate
+Using the :meth:`manufacturing.control_chart` function will automatically select the appropriate
 control chart type based on the number of data points supplied.
 
 .. list-table:: Control Chart Rules by Severity
@@ -108,7 +108,7 @@ control chart type based on the number of data points supplied.
 
     # the 'data' variable contains a list of integers, floats,
     # numpy array, or pandas Series
-    mn.control_plot(data)
+    mn.control_chart(data)
 
 Depending on the data set, the above command could result in the creation of an
 :math:`X-mR` chart, :math:`\bar{X}-R` chart, or :math:`\bar{X}-S` chart.

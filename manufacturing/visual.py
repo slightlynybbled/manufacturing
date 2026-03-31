@@ -46,11 +46,11 @@ def ppk_plot(
     figure: Optional[Figure] = None,
 ):
     """
-    Shows the statistical distribution of the data along with CPK and limits.
+    Shows the statistical distribution of the data along with Ppk/Cpk and limits.
 
     :param data: a list, pandas.Series, or numpy.ndarray representing the data set
-    :param upper_specification_limit: an integer or float which represents the upper control limit, commonly called the UCL
-    :param lower_specification_limit: an integer or float which represents the upper control limit, commonly called the UCL
+    :param upper_specification_limit: an integer or float which represents the upper specification limit (USL)
+    :param lower_specification_limit: an integer or float which represents the lower specification limit (LSL)
     :param parameter_name: a string that shows up in the title
     :param threshold_percent: the threshold at which % of units above/below the number will display on the plot
     :param is_subset: False if the data represents a complete dataset, else True; determines if Ppk or Cpk are in the titles
@@ -59,8 +59,10 @@ def ppk_plot(
     :return: an instance of ``matplotlib.figure.Figure``
     """
     if upper_specification_limit is None and lower_specification_limit is None:
-        raise ValueError("the upper_specification_limit and lower_specification_limit "
-                         "cannot both be None")
+        raise ValueError(
+            "the upper_specification_limit and lower_specification_limit "
+            "cannot both be None"
+        )
 
     plot_type = "$P_{pk}$" if not is_subset else "$C_{pk}$"
 
@@ -68,7 +70,7 @@ def ppk_plot(
     clean_data = remove_outliers(data)
 
     if len(data) < 10:
-        raise ValueError('data length is too short')
+        raise ValueError("data length is too short")
 
     mean = clean_data.mean()
     std = clean_data.std()
@@ -111,7 +113,9 @@ def ppk_plot(
     if lower_specification_limit is not None:
         lower_percent = 100.0 * stats.norm.cdf(lower_specification_limit, mean, std)
         lower_percent_text = (
-            f"{lower_percent:.02g}% < LSL" if lower_percent > threshold_percent else None
+            f"{lower_percent:.02g}% < LSL"
+            if lower_percent > threshold_percent
+            else None
         )
     else:
         lower_percent = 0.0
@@ -122,14 +126,16 @@ def ppk_plot(
             upper_specification_limit, mean, std
         )
         higher_percent_text = (
-            f"{higher_percent:.02g}% > USL" if higher_percent > threshold_percent else None
+            f"{higher_percent:.02g}% > USL"
+            if higher_percent > threshold_percent
+            else None
         )
     else:
         higher_percent = 0.0
         higher_percent_text = None
 
     ppm = int((lower_percent + higher_percent) * 10000)
-    ppm_text = f'DPPM={ppm}'
+    ppm_text = f"DPPM={ppm}"
 
     left, right = ax.get_xlim()
     bottom, top = ax.get_ylim()
@@ -151,7 +157,9 @@ def ppk_plot(
     if lower_specification_limit is not None:
         lower_sigma_level = -(mean - lower_specification_limit) / std
         if lower_sigma_level < 6.0:
-            ax.axvline(lower_specification_limit, color="red", alpha=0.25, label="limits")
+            ax.axvline(
+                lower_specification_limit, color="red", alpha=0.25, label="limits"
+            )
             ax.text(
                 lower_specification_limit,
                 top * 0.95,
@@ -159,7 +167,11 @@ def ppk_plot(
                 ha="center",
             )
             ax.fill_between(
-                x, pdf, where=(x <= lower_specification_limit), facecolor="red", alpha=0.5
+                x,
+                pdf,
+                where=(x <= lower_specification_limit),
+                facecolor="red",
+                alpha=0.5,
             )
         else:
             ax.text(left, top * 0.95, s=r"limit < $-6\sigma$", ha="left")
@@ -175,7 +187,11 @@ def ppk_plot(
                 ha="center",
             )
             ax.fill_between(
-                x, pdf, where=(x >= upper_specification_limit), facecolor="red", alpha=0.5
+                x,
+                pdf,
+                where=(x >= upper_specification_limit),
+                facecolor="red",
+                alpha=0.5,
             )
         else:
             ax.text(right, top * 0.95, s=r"limit > $6\sigma$", ha="right")
@@ -230,8 +246,8 @@ def cpk_plot(
     Boxplot the Cpk in subgroups os size `subgroup_size`.
 
     :param data: a list, pandas.Series, or ``numpy.ndarray`` representing the data set
-    :param upper_specification_limit: an integer or float which represents the upper specification limit, commonly called the USL
-    :param lower_specification_limit: an integer or float which represents the upper specification limit, commonly called the LSL
+    :param upper_specification_limit: an integer or float which represents the upper specification limit (USL)
+    :param lower_specification_limit: an integer or float which represents the lower specification limit (LSL)
     :param parameter_name: the name of the parameter that will be displayed on the plot
     :param subgroup_size: the number of samples to include in each subgroup
     :param max_subgroups: the maximum number of subgroups to display
@@ -246,7 +262,7 @@ def cpk_plot(
     data = remove_outliers(data)
 
     if len(data) < 10:
-        raise ValueError('data length is too short')
+        raise ValueError("data length is too short")
 
     # todo: offer options of historical subgrouping, such as subgroup
     #  history = 'all' or 'recent', something that
@@ -339,7 +355,7 @@ def cpk_plot(
 
 def control_plot(*args, **kwargs) -> Axis:
     """
-    Depreciated - not recommended for usage.  Left for historical reasons.  Use ``control_chart`` instead.
+    Deprecated - not recommended for usage.  Left for historical reasons.  Use ``control_chart`` instead.
 
     :param args:
     :param kwargs:
@@ -419,9 +435,13 @@ def control_chart_base(
     mRbar = diff_data_clean.mean()
 
     if upper_control_limit is None:
-        upper_control_limit = mean + 2.66 * mRbar  # from Understanding Variation, Wheeler
+        upper_control_limit = (
+            mean + 2.66 * mRbar
+        )  # from Understanding Variation, Wheeler
     if lower_control_limit is None:
-        lower_control_limit = mean - 2.66 * mRbar  # from understanding Variation, Wheeler
+        lower_control_limit = (
+            mean - 2.66 * mRbar
+        )  # from understanding Variation, Wheeler
 
     rng = (upper_control_limit - lower_control_limit) / 2
     center = (upper_control_limit + lower_control_limit) / 2
@@ -507,7 +527,7 @@ def control_chart_base(
             show_legend = True
 
             for i, v in beyond_limits_violations.items():
-                ax.axvline(i, color='red', alpha=0.4)
+                ax.axvline(i, color="red", alpha=0.4)
 
     if highlight_zone_a:
         zone_a_violations = control_zone_a(
@@ -673,7 +693,7 @@ def control_chart_base(
         pass
 
     # add background bands
-    x_lower, x_upper = min(data.index), max(data.index)+1
+    x_lower, x_upper = min(data.index), max(data.index) + 1
     xs = [i for i in range(x_lower, x_upper + 1)]
     y_lower, y_upper = ax.get_ylim()
     alpha = 0.2
@@ -767,7 +787,9 @@ def control_chart_base(
 
 
 def precontrol_chart(*args, **kwargs):
-    _logger.warning('precontrol_chart depreciated and will be removed in a future version; use run_chart instead')
+    _logger.warning(
+        "precontrol_chart depreciated and will be removed in a future version; use run_chart instead"
+    )
     run_chart(*args, **kwargs)
 
 
@@ -972,7 +994,7 @@ def xbar_r_chart(
     Create a :math:`\bar{X}-R` control plot based on the input data.
 
     :param data: a list, pandas.Series, or numpy.ndarray representing the data set
-    :param subgroup_size: an integer that determines the subgroup size
+    :param subgroup_size: an integer that determines the subgroup size (requires at least 3 subgroups)
     :param parameter_name: a string representing the parameter name
     :param xbar_upper_control_limit: an optional parameter which, when present, will override the internally calculated upper control limit for the X plot; note that this is NOT the specification limit!
     :param xbar_lower_control_limit: an optional parameter which, when present, will override the internally calculated lower control limit for the X plot; note that this is NOT the specification limit!
@@ -999,6 +1021,8 @@ def xbar_r_chart(
             "xbar_r_chart is recommended for subgroup sizes of more than 11"
         )
     data = coerce(data)
+    if len(data) < subgroup_size * 3:
+        raise ValueError("xbar_r_chart requires at least three subgroups of data")
     clean_data = remove_outliers(data)
 
     # determine how many arrays are in the data
@@ -1142,8 +1166,7 @@ def xbar_s_chart(
     """
     if subgroup_size < 11:
         raise ValueError(
-            "xbar_s_chart or x_mr_chart is recommended for "
-            "subgroup sizes less than 11"
+            "xbar_s_chart or x_mr_chart is recommended for subgroup sizes less than 11"
         )
     elif subgroup_size > len(c4_table):
         raise ValueError(
@@ -1285,7 +1308,7 @@ def p_chart(
     if "datetime" not in columns and "lotid" not in columns:
         raise ValueError('the dataframe must contain "lotid" or "datetime"')
 
-    if "lot_id" not in columns and "datetime" in columns:
+    if "lotid" not in columns and "datetime" in columns:
         data["datetime"] = pd.to_datetime(data["datetime"])
         data.set_index("datetime", inplace=True)
 
@@ -1527,7 +1550,7 @@ def control_chart(
         "figure": figure,
     }
 
-    if len(data) < max_points:
+    if max_points is None or len(data) < max_points:
         return x_mr_chart(
             data,
             x_upper_control_limit=x_upper_control_limit,

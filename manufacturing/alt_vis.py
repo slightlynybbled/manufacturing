@@ -5,20 +5,26 @@ import pandas as pd
 from matplotlib.figure import Figure
 import numpy as np
 
-from manufacturing.alt_analysis import control_beyond_limits, control_zone_a, \
-    control_zone_b, control_zone_c, control_zone_trend
+from manufacturing.alt_analysis import (
+    control_beyond_limits,
+    control_zone_a,
+    control_zone_b,
+    control_zone_c,
+    control_zone_trend,
+)
 from manufacturing.util import coerce, remove_outliers
 
 
-def _calculate_x_mr_limits(data: pd.Series, calc_length: int = 30,
-                           iqr_limit: float = 1.5):
+def _calculate_x_mr_limits(
+    data: pd.Series, calc_length: int = 30, iqr_limit: float = 1.5
+):
     r"""
     Calculate the limits based on the data provided
 
     :param data: the data on which to base the calculations
     :param calc_length: the length of the data
     :param iqr_limit: a floating-point value which specifies the IQR limit for calculation purposes
-    :return:
+    :return: tuple of calculated centers, limits, and moving-range series
     """
     clean_data = remove_outliers(data[:calc_length], iqr_limit=iqr_limit)
     x_bar = clean_data.mean()
@@ -33,28 +39,35 @@ def _calculate_x_mr_limits(data: pd.Series, calc_length: int = 30,
     mR_upper_control_limit = 3.267 * mr_bar
     mR_lower_control_limit = 0.0
 
-    return x_bar, x_upper_control_limit, x_lower_control_limit, \
-           mr, mr_bar, mR_upper_control_limit, mR_lower_control_limit
+    return (
+        x_bar,
+        x_upper_control_limit,
+        x_lower_control_limit,
+        mr,
+        mr_bar,
+        mR_upper_control_limit,
+        mR_lower_control_limit,
+    )
 
 
 def x_mr_chart(
-        data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series],
-        parameter_name: Optional[str] = None,
-        x_upper_control_limit: Optional[Union[float, int]] = None,
-        x_lower_control_limit: Optional[Union[float, int]] = None,
-        mr_upper_control_limit: Optional[Union[float, int]] = None,
-        mr_lower_control_limit: Optional[Union[float, int]] = None,
-        highlight_zone_a: bool = True,
-        highlight_zone_b: bool = True,
-        highlight_zone_c: bool = True,
-        highlight_trend: bool = True,
-        x_axis_ticks: Optional[List[str]] = None,
-        x_axis_label: Optional[str] = None,
-        y_axis_label: Optional[str] = None,
-        baselines: Optional[Tuple[Tuple[int, int], ...]] = None,
-        iqr_limit: float = 1.5,
-        max_points: int = 60,
-        figure: Optional['Figure'] = None,
+    data: Union[List[int], List[float], Tuple, np.ndarray, pd.Series],
+    parameter_name: Optional[str] = None,
+    x_upper_control_limit: Optional[Union[float, int]] = None,
+    x_lower_control_limit: Optional[Union[float, int]] = None,
+    mr_upper_control_limit: Optional[Union[float, int]] = None,
+    mr_lower_control_limit: Optional[Union[float, int]] = None,
+    highlight_zone_a: bool = True,
+    highlight_zone_b: bool = True,
+    highlight_zone_c: bool = True,
+    highlight_trend: bool = True,
+    x_axis_ticks: Optional[List[str]] = None,
+    x_axis_label: Optional[str] = None,
+    y_axis_label: Optional[str] = None,
+    baselines: Optional[Tuple[Tuple[int, int], ...]] = None,
+    iqr_limit: float = 1.5,
+    max_points: int = 60,
+    figure: Optional["Figure"] = None,
 ) -> Figure:
     r"""
     Create an XmR Chart
@@ -76,7 +89,7 @@ def x_mr_chart(
     :param iqr_limit: a floating-point value which specifies the IQR limit for UCL and LCL calculation purposes
     :param max_points: the maximum number of samples to display on the plot
     :param figure: an instance of ``matplotlib.figure.Figure``
-    :return:
+    :return: a ``matplotlib.figure.Figure`` instance
     """
     data = coerce(data)
 
@@ -94,7 +107,7 @@ def x_mr_chart(
         while len(new_x_axis_ticks) < len(data):
             new_x_axis_ticks += x_axis_ticks
 
-        x_axis_ticks = new_x_axis_ticks[:len(data)]
+        x_axis_ticks = new_x_axis_ticks[: len(data)]
 
     # place a default value here
     if baselines is None:
@@ -107,17 +120,21 @@ def x_mr_chart(
     # validate the baselines
     for t in baselines:
         if not isinstance(t, tuple):
-            raise ValueError('baselines must consist of a tuple of tuples')
+            raise ValueError("baselines must consist of a tuple of tuples")
         if len(t) != 2:
-            raise ValueError('each baseline tuple must consist of a '
-                             'starting index and a calculation '
-                             'length only')
+            raise ValueError(
+                "each baseline tuple must consist of a "
+                "starting index and a calculation "
+                "length only"
+            )
     running = 0
     for starting_index, calc_length in baselines:
         if starting_index < running:
-            raise ValueError(f'the starting index of baseline '
-                             f'"({starting_index}, {calc_length})" is '
-                             f'less than the previous baseline')
+            raise ValueError(
+                f"the starting index of baseline "
+                f'"({starting_index}, {calc_length})" is '
+                f"less than the previous baseline"
+            )
         running = starting_index + running
 
     # -------------------------------------
@@ -135,8 +152,10 @@ def x_mr_chart(
             data_length = len(data) - starting_index
 
         values = _calculate_x_mr_limits(
-            data=data[starting_index:starting_index + data_length],
-            calc_length=calculation_length, iqr_limit=iqr_limit)
+            data=data[starting_index : starting_index + data_length],
+            calc_length=calculation_length,
+            iqr_limit=iqr_limit,
+        )
         x_bar, x_ucl, x_lcl, mr, mr_bar, mr_ucl, mr_lcl = values
 
         # enforce overrides, if specified
@@ -146,25 +165,25 @@ def x_mr_chart(
         mr_lcl = mr_lower_control_limit if mr_lower_control_limit else mr_lcl
 
         try:
-            x_bar_array = np.append(x_bar_array,
-                                    np.full(data_length, fill_value=x_bar))
+            x_bar_array = np.append(x_bar_array, np.full(data_length, fill_value=x_bar))
         except NameError:
             x_bar_array = np.full(data_length, fill_value=x_bar)
 
-        x_texts.append({
-            "x": starting_index + data_length,
-            "y": x_bar,
-            "s": r"$\bar{X}$=" + f"{x_bar:.3g}",
-            "color": "blue",
-            "zorder": 100,
-            "bbox": dict(
-                facecolor="white", edgecolor="blue", boxstyle="round", alpha=0.8
-            ),
-        })
+        x_texts.append(
+            {
+                "x": starting_index + data_length,
+                "y": x_bar,
+                "s": r"$\bar{X}$=" + f"{x_bar:.3g}",
+                "color": "blue",
+                "zorder": 100,
+                "bbox": dict(
+                    facecolor="white", edgecolor="blue", boxstyle="round", alpha=0.8
+                ),
+            }
+        )
 
         try:
-            x_ucl_array = np.append(x_ucl_array,
-                                    np.full(data_length, fill_value=x_ucl))
+            x_ucl_array = np.append(x_ucl_array, np.full(data_length, fill_value=x_ucl))
         except NameError:
             x_ucl_array = np.full(data_length, fill_value=x_ucl)
 
@@ -176,15 +195,13 @@ def x_mr_chart(
                 "color": "red",
                 "zorder": 100,
                 "bbox": dict(
-                    facecolor="white", edgecolor="red", boxstyle="round",
-                    alpha=0.8
+                    facecolor="white", edgecolor="red", boxstyle="round", alpha=0.8
                 ),
             }
         )
 
         try:
-            x_lcl_array = np.append(x_lcl_array,
-                                    np.full(data_length, fill_value=x_lcl))
+            x_lcl_array = np.append(x_lcl_array, np.full(data_length, fill_value=x_lcl))
         except NameError:
             x_lcl_array = np.full(data_length, fill_value=x_lcl)
 
@@ -196,8 +213,7 @@ def x_mr_chart(
                 "color": "red",
                 "zorder": 100,
                 "bbox": dict(
-                    facecolor="white", edgecolor="red", boxstyle="round",
-                    alpha=0.8
+                    facecolor="white", edgecolor="red", boxstyle="round", alpha=0.8
                 ),
             }
         )
@@ -208,8 +224,9 @@ def x_mr_chart(
             mr_array = mr
 
         try:
-            mr_bar_array = np.append(mr_bar_array,
-                                     np.full(data_length, fill_value=mr_bar))
+            mr_bar_array = np.append(
+                mr_bar_array, np.full(data_length, fill_value=mr_bar)
+            )
         except NameError:
             mr_bar_array = np.full(data_length, fill_value=mr_bar)
 
@@ -221,15 +238,15 @@ def x_mr_chart(
                 "color": "blue",
                 "zorder": 100,
                 "bbox": dict(
-                    facecolor="white", edgecolor="blue", boxstyle="round",
-                    alpha=0.8
+                    facecolor="white", edgecolor="blue", boxstyle="round", alpha=0.8
                 ),
             }
         )
 
         try:
-            mr_ucl_array = np.append(mr_ucl_array,
-                                     np.full(data_length, fill_value=mr_ucl))
+            mr_ucl_array = np.append(
+                mr_ucl_array, np.full(data_length, fill_value=mr_ucl)
+            )
         except NameError:
             mr_ucl_array = np.full(data_length, fill_value=mr_ucl)
 
@@ -241,15 +258,15 @@ def x_mr_chart(
                 "color": "red",
                 "zorder": 100,
                 "bbox": dict(
-                    facecolor="white", edgecolor="red", boxstyle="round",
-                    alpha=0.8
+                    facecolor="white", edgecolor="red", boxstyle="round", alpha=0.8
                 ),
             }
         )
 
         try:
-            mr_lcl_array = np.append(mr_lcl_array,
-                                     np.full(data_length, fill_value=mr_lcl))
+            mr_lcl_array = np.append(
+                mr_lcl_array, np.full(data_length, fill_value=mr_lcl)
+            )
         except NameError:
             mr_lcl_array = np.full(data_length, fill_value=mr_lcl)
 
@@ -257,28 +274,28 @@ def x_mr_chart(
     # Collection
     #   Group generated arrays into a single
     #   dataframe in preparation for plotting
-    data.rename('x', inplace=True)
+    data.rename("x", inplace=True)
 
     x_bar = coerce(x_bar_array)
-    x_bar.rename('x_bar', inplace=True)
+    x_bar.rename("x_bar", inplace=True)
 
     x_ucl = coerce(x_ucl_array)
-    x_ucl.rename('x_ucl', inplace=True)
+    x_ucl.rename("x_ucl", inplace=True)
 
     x_lcl = coerce(x_lcl_array)
-    x_lcl.rename('x_lcl', inplace=True)
+    x_lcl.rename("x_lcl", inplace=True)
 
     mr = coerce(mr_array)
-    mr.rename('mr', inplace=True)
+    mr.rename("mr", inplace=True)
 
     mr_bar = coerce(mr_bar_array)
-    mr_bar.rename('mr_bar', inplace=True)
+    mr_bar.rename("mr_bar", inplace=True)
 
     mr_ucl = coerce(mr_ucl_array)
-    mr_ucl.rename('mr_ucl', inplace=True)
+    mr_ucl.rename("mr_ucl", inplace=True)
 
     mr_lcl = coerce(mr_lcl_array)
-    mr_lcl.rename('mr_lcl', inplace=True)
+    mr_lcl.rename("mr_lcl", inplace=True)
 
     # collect into a dataframe
     df = pd.concat([data, x_bar, x_ucl, x_lcl, mr, mr_bar, mr_ucl, mr_lcl], axis=1)
@@ -295,10 +312,10 @@ def x_mr_chart(
         ax1 = fig.add_subplot(212, sharex=ax0)
         axs = [ax0, ax1]
 
-    axs[0].plot(df['x'], marker='o')
-    axs[0].plot(df['x_bar'], color='blue', alpha=0.3)
-    axs[0].plot(df['x_ucl'], color='red', alpha=0.3)
-    axs[0].plot(df['x_lcl'], color='red', alpha=0.3)
+    axs[0].plot(df["x"], marker="o")
+    axs[0].plot(df["x_bar"], color="blue", alpha=0.3)
+    axs[0].plot(df["x_ucl"], color="red", alpha=0.3)
+    axs[0].plot(df["x_lcl"], color="red", alpha=0.3)
 
     ax_hist = axs[0].twiny()
     ax_hist.hist(
@@ -307,16 +324,16 @@ def x_mr_chart(
         orientation="horizontal",
         zorder=-100,
         alpha=0.3,
-        color="orange"
+        color="orange",
     )
     _, xmax = ax_hist.get_xlim()
     ax_hist.set_xlim(0, xmax * 5)
     ax_hist.get_xaxis().set_visible(False)
 
-    axs[1].plot(df['mr'], marker='o')
-    axs[1].plot(df['mr_bar'], color='blue', alpha=0.3)
-    axs[1].plot(df['mr_ucl'], color='red', alpha=0.3)
-    axs[1].plot(df['mr_lcl'], color='red', alpha=0.3)
+    axs[1].plot(df["mr"], marker="o")
+    axs[1].plot(df["mr_bar"], color="blue", alpha=0.3)
+    axs[1].plot(df["mr_ucl"], color="red", alpha=0.3)
+    axs[1].plot(df["mr_lcl"], color="red", alpha=0.3)
     ax_hist = axs[1].twiny()
     ax_hist.hist(
         remove_outliers(mr_array),
@@ -324,7 +341,7 @@ def x_mr_chart(
         orientation="horizontal",
         zorder=-100,
         alpha=0.3,
-        color="orange"
+        color="orange",
     )
     _, xmax = ax_hist.get_xlim()
     ax_hist.set_xlim(0, xmax * 5)
@@ -342,18 +359,18 @@ def x_mr_chart(
         axs[1].set_xlabel(x_axis_label)
     if y_axis_label is not None:
         axs[0].set_ylabel(y_axis_label)
-        axs[1].set_ylabel(f'$\Delta${y_axis_label}')
+        axs[1].set_ylabel(f"$\Delta${y_axis_label}")
 
     # set limits based on clean data in order to remove values that are clearly out of bounds
-    y_data_max = max(df['x_ucl'])
-    y_data_min = min(df['x_lcl'])
+    y_data_max = max(df["x_ucl"])
+    y_data_min = min(df["x_lcl"])
     y_data_range = y_data_max - y_data_min
     y_data_range_extension = y_data_range * 0.2
     y_data_max += y_data_range_extension
     y_data_min -= y_data_range_extension
     axs[0].set_ylim(y_data_min, y_data_max)
 
-    y_data_max = max(df['mr_ucl'])
+    y_data_max = max(df["mr_ucl"])
     y_data_range = y_data_max * 0.1
     y_data_max += y_data_range
     axs[1].set_ylim(0, y_data_max)
@@ -365,10 +382,13 @@ def x_mr_chart(
     show_legend = False
 
     beyond_limits_violations_x = control_beyond_limits(
-        df, data_name='x', ucl_name='x_ucl', lcl_name='x_lcl',
+        df,
+        data_name="x",
+        ucl_name="x_ucl",
+        lcl_name="x_lcl",
     )
     for i, v in beyond_limits_violations_x.iteritems():
-        axs[0].axvline(i, color='red', alpha=0.4)
+        axs[0].axvline(i, color="red", alpha=0.4)
     if len(beyond_limits_violations_x):
         axs[0].scatter(
             beyond_limits_violations_x.index,
@@ -386,10 +406,10 @@ def x_mr_chart(
         show_legend = True
 
     beyond_limits_violations_r = control_beyond_limits(
-        df, data_name='mr', ucl_name='mr_ucl', lcl_name='mr_lcl'
+        df, data_name="mr", ucl_name="mr_ucl", lcl_name="mr_lcl"
     )
     for i, v in beyond_limits_violations_r.iteritems():
-        axs[1].axvline(i, color='red', alpha=0.4)
+        axs[1].axvline(i, color="red", alpha=0.4)
     if len(beyond_limits_violations_r):
         axs[1].scatter(
             beyond_limits_violations_r.index,
@@ -407,7 +427,7 @@ def x_mr_chart(
 
     if highlight_zone_a is True:
         zone_a_violations_x = control_zone_a(
-            df, data_name='x', ucl_name='x_ucl', lcl_name='x_lcl'
+            df, data_name="x", ucl_name="x_ucl", lcl_name="x_lcl"
         )
         if len(zone_a_violations_x):
             axs[0].scatter(
@@ -427,7 +447,7 @@ def x_mr_chart(
 
     if highlight_zone_b is True:
         zone_b_violations_x = control_zone_b(
-            df, data_name='x', ucl_name='x_ucl', lcl_name='x_lcl'
+            df, data_name="x", ucl_name="x_ucl", lcl_name="x_lcl"
         )
         if len(zone_b_violations_x):
             axs[0].scatter(
@@ -447,7 +467,7 @@ def x_mr_chart(
 
     if highlight_zone_c is True:
         zone_c_violations_x = control_zone_c(
-            df, data_name='x', ucl_name='x_ucl', lcl_name='x_lcl'
+            df, data_name="x", ucl_name="x_ucl", lcl_name="x_lcl"
         )
         if len(zone_c_violations_x):
             axs[0].scatter(
@@ -466,9 +486,7 @@ def x_mr_chart(
             show_legend = True
 
     if highlight_zone_c is True:
-        trend_violations = control_zone_trend(
-            df, data_name='x'
-        )
+        trend_violations = control_zone_trend(df, data_name="x")
         if len(trend_violations):
             axs[0].scatter(
                 trend_violations.index,
@@ -502,7 +520,7 @@ def x_mr_chart(
     return fig
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     values = np.random.normal(loc=10.0, scale=1.0, size=20)
 
     fig = x_mr_chart(values)

@@ -1,6 +1,7 @@
 """
 Contains several lookup table constants.
 """
+
 import numpy as np
 
 c4_table = [

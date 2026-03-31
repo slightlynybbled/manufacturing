@@ -3,6 +3,7 @@ Manual recreation of an I-MR control chart.
 
 NOTE: Using this file to test out the v2.0 interface!
 """
+
 import logging
 import matplotlib.pyplot as plt
 from manufacturing import import_csv
@@ -10,11 +11,13 @@ from manufacturing.alt_vis import x_mr_chart
 
 logging.basicConfig(level=logging.INFO)
 
-data = import_csv('../data/example_data_with_faults.csv', columnname='value')
-x_mr_chart(data=data,
-           x_axis_label='sample',
-           max_points=110,
-           baselines=((100, 30), (151, 30)),
-           y_axis_label='resistance, $\Omega$')
+data = import_csv("../data/example_data_with_faults.csv", columnname="value")
+x_mr_chart(
+    data=data,
+    x_axis_label="sample",
+    max_points=110,
+    baselines=((100, 30), (151, 30)),
+    y_axis_label="resistance, $\Omega$",
+)
 
 plt.show()

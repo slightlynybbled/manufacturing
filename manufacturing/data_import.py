@@ -56,7 +56,7 @@ def import_csv(
     :param file_path: the path to the file on the local file system
     :param columnname: the column name to which the data is associated
     :param kwargs: keyword arguments to be passed directly into `pandas.read_csv()`
-    :return: a dict containing a pandas series and the limits of the data to be analyzed
+    :return: a ``pandas.Series`` if no limits are embedded, otherwise a dict with ``data`` and limits
     """
     df = pd.read_csv(file_path, **kwargs)
 
@@ -84,14 +84,14 @@ def import_excel(
     :param file_path: the path to the file on the local file system
     :param columnname: the column name to which the data is associated
     :param kwargs: keyword arguments to be passed directly into `pandas.read_excel()`
-    :return: a pandas series of the data which is to be analyzed
+    :return: a ``pandas.Series`` if no limits are embedded, otherwise a dict with ``data`` and limits
     """
     df = pd.read_excel(file_path, **kwargs)
 
     lsl, usl = parse_col_for_limits(columnname)
 
     if lsl is None and usl is None:
-        return {"data": df[columnname]}
+        return df[columnname]
     else:
         data = {"data": df[columnname]}
 

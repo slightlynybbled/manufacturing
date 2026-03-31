@@ -1,6 +1,7 @@
 """
 Manual recreation of an I-MR control chart.
 """
+
 import logging
 import matplotlib.pyplot as plt
 import numpy as np
@@ -26,9 +27,12 @@ data[22] = 8.2
 data[23] = 9.3
 data[24] = 9.0
 
-x_mr_chart(data, parameter_name='Demonstration of Over-Control',
-           highlight_mixture=True,
-           highlight_stratification=True,
-           highlight_overcontrol=True)
+x_mr_chart(
+    data,
+    parameter_name="Demonstration of Over-Control",
+    highlight_mixture=True,
+    highlight_stratification=True,
+    highlight_overcontrol=True,
+)
 
 plt.show()

@@ -9,33 +9,43 @@ Go to the [documentation](https://slightlynybbled.github.io/manufacturing/index.
 Plots and project are reasonably mature at this point.  Calculations have been refined
 and are in-line with commonly accepted standards.
 
-A major v2.0 update is coming to control charts and will be available in 
+A major v3.0 update is coming to control charts and will be available in 
 `manufacturing.alt_vis` module.  For instance, instead of using `from manufacturing import x_mr_chart`,
 you would use `from manufacturing.alt_vis import x_mr_chart`.  The new API should
 allow for a greater degree of flexibility with recalculation points and the ability
 to relabel the axes.  Additionally, alternative axis labels will be able to be supplied.
 These changes will eventually become "the way", but are to be considered experimental
-until the v2.0 update.
+until the v3.0 update.
 
 ## Installation
 
 To install from `pypi`:
 
-    $>pip install manufacturing
+```bash
+pip install manufacturing
+```
+
+or, if you use `uv`:
+
+```bash
+uv add manufacturing
+```
 
 ## Building
 
 This package uses [uv](https://docs.astral.sh/uv/) to manage the workflow.
 
-    $>git clone <this repository>
-    $>cd manufacturing
-    $manufacturing/>uv build
+```bash
+uv build
+```
 
 ## Testing
 
 Tests will take a while to run - it is generating several hundred plots in the background.
 
-    $>uv run pytest
+```bash
+uv run pytest
+```
 
 ## Usage
 

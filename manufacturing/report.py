@@ -25,10 +25,10 @@ def generate_production_report(
     Generate a report
 
     :param input_file: the input file to be analyzed
-    :param output_file: the output file to be analyzed
+    :param output_file: optional output file path for a rendered report (pdf or html)
     :param title: the title of the report
     :param kwargs: the keyword args to be passed into `pandas.read_csv()` or `pandas.read_excel()` methods
-    :return:
+    :return: None
     """
     _logger.info("attempting to generate report...")
 
@@ -36,10 +36,10 @@ def generate_production_report(
         _logger.debug("coercing `str` to `Path`")
         input_file = Path(input_file)
 
-    if input_file.name.endswith("csv"):
+    if input_file.suffix.lower() == ".csv":
         _logger.debug("csv file detected")
         df = pd.read_csv(input_file, **kwargs)
-    elif input_file.name.endswith("csv"):
+    elif input_file.suffix.lower() in {".xlsx", ".xls"}:
         _logger.debug("ms excel file detected")
         df = pd.read_excel(input_file, **kwargs)
     else:
@@ -49,7 +49,7 @@ def generate_production_report(
     build_path.mkdir(parents=True, exist_ok=True)
 
     text = f"# {title}\n\n"
-    text += f'Report generated: {datetime.now().strftime("%Y-%m-%d %H:%M")}\n\n'
+    text += f"Report generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n"
 
     for c in df.columns:
         _logger.info(f'analyzing column "{c}"...')

@@ -1,12 +1,12 @@
 [project]
 name = "manufacturing"
-version = "1.6.0"
+version = "2.0.0"
 description = "Six-Sigma based analysis of manufacturing data"
 authors = [
     {name = "Jason R. Jones", email = "slightlynybbled@gmail.com"},
 ]
 readme = {file = "readme.md", content-type = "text/markdown"}
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = [
     "matplotlib>=3.8.0",
     "openpyxl>=3.0.9",
@@ -31,8 +31,8 @@ build-backend = "setuptools.build_meta"
 Documentation = "https://slightlynybbled.github.io/manufacturing/index.html"
 Repository = "https://github.com/slightlynybbled/manufacturing"
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "coverage",
     "pytest",
     "pytest-cov",
@@ -41,6 +41,8 @@ dev-dependencies = [
     "twine",
     "wheel",
 ]
+
+[tool.uv]
 package = true
 
 [tool.setuptools.packages.find]

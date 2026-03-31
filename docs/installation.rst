@@ -1,24 +1,24 @@
 Installation
 ============
 
-From setup.py
--------------
+From source
+-----------
 
 Use this method to get the latest features. Note that this may result in an installation
 that is not stable!
 
-Clone this repository and install into your python environment using setuptools.:
+Clone this repository and install into your python environment using pip:
 
 .. code-block:: bash
 
     $ git clone https://github.com/slightlynybbled/manufacturing
     $ cd manufacturing
-    $ python setup.py install
+    $ python -m pip install .
 
-From Wheel File
+From wheel file
 ---------------
 
-Download the wheel file and install from pip.:
+Download the wheel file and install from pip:
 
 .. code-block:: bash
 

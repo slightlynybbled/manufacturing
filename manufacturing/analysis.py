@@ -14,7 +14,7 @@ def normality_test(
     data: (List[int], List[float], pd.Series, np.ndarray), alpha: float = 0.05
 ):
     """
-    Checks the data for normality and returns True if normality can't be demonstrated False.
+    Checks the data for normality and returns True if normality is not rejected.
 
     :param data: the data to be analyzed
     :param alpha: the P-value for the threshold; the standard is 0.05, but this can be manipulated
@@ -65,13 +65,12 @@ def suggest_specification_limits(
     data: (List[int], List[float], pd.Series, np.ndarray), sigma_level: float = 3.0
 ):
     """
-    Given a data set and a sigma level, will return a dict containing the `upper_control_limit` and \
-    `lower_control_limit`. values
+    Given a data set and a sigma level, returns a tuple of specification limits.
 
     :param data: the data to be analyzed
     :param sigma_level: the sigma level; the default value is 3.0, but some users \
     may prefer a higher sigma level for their process
-    :return: a ``tuple`` containing the ``upper_specification_limit`` and ``upper_specification_limit`` keys
+    :return: a ``tuple`` of ``(lower_specification_limit, upper_specification_limit)``
     """
     _logger.debug("defining specification limits...")
     data = coerce(data)
@@ -89,11 +88,11 @@ def calc_pp(
     lower_specification_limit: (int, float),
 ):
     """
-    Calculate and return the Pp of the provided dataset given the control limits.
+    Calculate and return the Pp of the provided dataset given the specification limits.
 
     :param data: the data to be analyzed
-    :param upper_specification_limit: the upper control limit
-    :param lower_specification_limit: the lower control limit
+    :param upper_specification_limit: the upper specification limit
+    :param lower_specification_limit: the lower specification limit
     :return: the pp level
     """
     _logger.debug("calculating pp...")
@@ -112,10 +111,10 @@ def calc_ppu(
     skip_normality_test: bool = True,
 ):
     """
-    Calculate and return the Pp (upper) of the provided dataset given the upper control limit.
+    Calculate and return the Pp (upper) of the provided dataset given the upper specification limit.
 
     :param data: the data to be analyzed
-    :param upper_specification_limit: the upper control limit
+    :param upper_specification_limit: the upper specification limit
     :param skip_normality_test: used when the normality test is not necessary
     :return: the pp level
     """
@@ -130,9 +129,7 @@ def calc_ppu(
 
     ppu = (upper_specification_limit - mean) / (3 * std_dev)
 
-    _logger.debug(
-        f"dataset of length {len(data)}, " f"mean={mean}, " f"std_dev={std_dev}"
-    )
+    _logger.debug(f"dataset of length {len(data)}, mean={mean}, std_dev={std_dev}")
     _logger.debug(f"ppu = {ppu}")
 
     return ppu
@@ -144,10 +141,10 @@ def calc_ppl(
     skip_normality_test=True,
 ):
     """
-    Calculate and return the Pp (lower) of the provided dataset given the lower control limit.
+    Calculate and return the Pp (lower) of the provided dataset given the lower specification limit.
 
     :param data: the data to be analyzed
-    :param lower_specification_limit: the lower control limit
+    :param lower_specification_limit: the lower specification limit
     :param skip_normality_test: used when the normality test is not necessary
     :return: the pp level
     """
@@ -162,9 +159,7 @@ def calc_ppl(
 
     ppl = (mean - lower_specification_limit) / (3 * std_dev)
 
-    _logger.debug(
-        f"dataset of length {len(data)}, " f"mean={mean}, " f"std_dev={std_dev}"
-    )
+    _logger.debug(f"dataset of length {len(data)}, mean={mean}, std_dev={std_dev}")
     _logger.debug(f"ppl = {ppl}")
 
     return ppl
@@ -177,15 +172,17 @@ def calc_ppk(
 ):
     """
     Calculate and return the Pp (upper and lower) of the provided dataset given the
-    upper control limit and lower control limit.
+    upper and/or lower specification limits.
 
     :param data: the data to be analyzed
     :param upper_specification_limit: the upper specification limit
-    :param lower_specification_limit: the lower control limit
+    :param lower_specification_limit: the lower specification limit
     :return: the ppk level
     """
     if upper_specification_limit is None and lower_specification_limit is None:
-        raise ValueError("The upper_specification_limit and lower_specification_limit cannot both be None")
+        raise ValueError(
+            "The upper_specification_limit and lower_specification_limit cannot both be None"
+        )
 
     _logger.debug("calculating ppk...")
     data = coerce(data)
@@ -213,21 +210,20 @@ def calc_ppk(
     cpk = min(zupper, zlower)
 
     _logger.debug(
-        f"dataset of length {len(data)}, "
-        f"zupper={zupper:.03g}, "
-        f"zlower={zlower:.03g}"
+        f"dataset of length {len(data)}, zupper={zupper:.03g}, zlower={zlower:.03g}"
     )
     _logger.debug(f"cpk = {cpk:.03g}")
 
-    ratio = zupper / zlower
-    if ratio < 1:
-        ratio = 1.0 / ratio
-    if ratio > 1.5:
-        _logger.warning(
-            "the zupper and zlower limits are strongly "
-            "imbalanced, indicating that the process is off-center "
-            "with reference to the limits"
-        )
+    if np.isfinite(zupper) and np.isfinite(zlower) and zupper > 0 and zlower > 0:
+        ratio = zupper / zlower
+        if ratio < 1:
+            ratio = 1.0 / ratio
+        if ratio > 1.5:
+            _logger.warning(
+                "the zupper and zlower limits are strongly "
+                "imbalanced, indicating that the process is off-center "
+                "with reference to the limits"
+            )
 
     return cpk
 
@@ -280,38 +276,38 @@ def control_zone_a(
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
-    for i in range(data.index[-3]):
-        points = data[i : i + 3].to_numpy()
+    for i in range(len(data) - 2):
+        points = data.iloc[i : i + 3].to_numpy()
 
         try:
             iter(zone_a_lower_limit)
-            zalls = zone_a_lower_limit[i : i + 3]
+            zalls = zone_a_lower_limit.iloc[i : i + 3]
         except TypeError:
             zalls = None
 
         try:
             iter(zone_a_upper_limit)
-            zbuls = zone_a_upper_limit[i : i + 3]
+            zbuls = zone_a_upper_limit.iloc[i : i + 3]
         except TypeError:
             zbuls = None
 
         if zalls is not None:
-            values = [1 for p in points if p < zalls[i]]
+            values = [1 for p, z in zip(points, zalls) if p < z]
         else:
             values = [1 for p in points if p < zone_a_lower_limit]
 
-        if sum(values) > 2:
-            index = i + np.arange(len(points))
+        if sum(values) >= 2:
+            index = data.index[i : i + 3]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone a violation found at index {i}")
 
         if zbuls is not None:
-            values = [1 for p in points if p > zone_a_upper_limit[i]]
+            values = [1 for p, z in zip(points, zbuls) if p > z]
         else:
             values = [1 for p in points if p > zone_a_upper_limit]
 
-        if sum(values) > 2:
-            index = i + np.arange(len(points)) + data.index[0]
+        if sum(values) >= 2:
+            index = data.index[i : i + 3]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone a violation found at index {i}")
 
@@ -346,36 +342,36 @@ def control_zone_b(
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
-    for i in range(data.index[-4]):
-        points = data[i : i + 5].to_numpy()
+    for i in range(len(data) - 4):
+        points = data.iloc[i : i + 5].to_numpy()
         try:
             iter(zone_c_lower_limit)
-            zclls = zone_c_lower_limit[i : i + 5]
+            zclls = zone_c_lower_limit.iloc[i : i + 5]
         except TypeError:
             zclls = None
 
         try:
             iter(zone_c_upper_limit)
-            zculs = zone_c_upper_limit[i : i + 5]
+            zculs = zone_c_upper_limit.iloc[i : i + 5]
         except TypeError:
             zculs = None
 
         if zclls is not None:
-            values = [1 for p in points if p < zclls[i]]
+            values = [1 for p, z in zip(points, zclls) if p < z]
         else:
             values = [1 for p in points if p < zone_c_lower_limit]
 
         if sum(values) > 3:
-            index = i + np.arange(len(points)) + data.index[0]
+            index = data.index[i : i + 5]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone b violation found at index {i}")
 
         if zculs is not None:
-            values = [1 for p in points if p > zculs[i]]
+            values = [1 for p, z in zip(points, zculs) if p > z]
         else:
             values = [1 for p in points if p > zone_c_upper_limit]
         if sum(values) > 3:
-            index = i + np.arange(len(points)) + data.index[0]
+            index = data.index[i : i + 5]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone b violation found at index {i}")
 
@@ -409,11 +405,11 @@ def control_zone_c(
 
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
-    for i in range(data.index[-6]):
-        points = data[i : i + 7].to_numpy()
+    for i in range(len(data) - 6):
+        points = data.iloc[i : i + 7].to_numpy()
         try:
             iter(spec_center)
-            center_points = spec_center[i : i + 7]
+            center_points = spec_center.iloc[i : i + 7]
         except TypeError:
             center_points = None
 
@@ -423,7 +419,7 @@ def control_zone_c(
             values = [1 if p > spec_center else -1 for p in points]
 
         if abs(sum(values)) > 6:
-            index = i + np.arange(len(points)) + data.index[0]
+            index = data.index[i : i + 7]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"zone c violation found at index {i}")
 
@@ -436,10 +432,10 @@ def control_zone_c(
 
 
 def control_zone_trend(
-    data: (List[int], List[float], pd.Series, np.ndarray)
+    data: (List[int], List[float], pd.Series, np.ndarray),
 ) -> pd.Series:
     """
-    Returns a pandas.Series containing the data in which 6 consecutive points are in the same direction
+    Returns a pandas.Series containing the data in which 7 consecutive points are in the same direction
     :param data:
     :return:
     """
@@ -454,19 +450,16 @@ def control_zone_trend(
     # look for trend violations, which are violations
     #  in which 7 consecutive points are trending up or down
     violations = []
-    for i, d in enumerate(diff_data):
+    for i in range(len(diff_data) - 6):
         # first, look for up-trends
         pos_dataset = [v for v in diff_data[i : i + 7] if v >= 0]
         neg_dataset = [v for v in diff_data[i : i + 7] if v <= 0]
 
         if len(pos_dataset) >= 7 or len(neg_dataset) >= 7:
-            points = data[i : i + 7].to_numpy()
-            index = i + np.arange(len(points)) + data.index[0]
-            try:
-                violations.append(pd.Series(index=index, data=points))
-                _logger.info(f"trend violation found at index {i+6}")
-            except KeyError:
-                break
+            points = data.iloc[i : i + 7].to_numpy()
+            index = data.index[i : i + 7]
+            violations.append(pd.Series(index=index, data=points))
+            _logger.info(f"trend violation found at index {i + 6}")
 
     if len(violations) == 0:
         return pd.Series(dtype="float64")
@@ -499,14 +492,12 @@ def control_zone_mixture(
 
     # looking for violations in which 8 points occur with none in zone C
     violations = []
-    for i in range(data.index[-7]):
-        points = data[i : i + 8].to_numpy()
-        values = [
-            1 for p in points if p > zone_c_upper_limit and p < zone_c_lower_limit
-        ]
+    for i in range(len(data) - 7):
+        points = data.iloc[i : i + 8].to_numpy()
+        values = [1 for p in points if p > zone_c_upper_limit or p < zone_c_lower_limit]
 
         if sum(values) > 7:
-            index = i + np.arange(len(points))
+            index = data.index[i : i + 8]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"mixture violation found at index {i}")
 
@@ -542,12 +533,12 @@ def control_zone_stratification(
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
     for i in range(len(data) - 14):
-        points = data[i : i + 15].to_numpy()
+        points = data.iloc[i : i + 15].to_numpy()
         values = [
             1 if zone_c_lower_limit < p < zone_c_upper_limit else 0 for p in points
         ]
         if sum(values) > 14:
-            index = i + np.arange(len(points))
+            index = data.index[i : i + 15]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"stratification violation found at index {i}")
 
@@ -579,7 +570,7 @@ def control_zone_overcontrol(
     # looking for violations in which 2 out of 3 are in zone A or beyond
     violations = []
     for i in range(len(data) - 14):
-        points = data[i : i + 14].to_numpy()
+        points = data.iloc[i : i + 14].to_numpy()
         diffs = np.diff(points)
 
         values = [1 if d > 0 else d for d in diffs]
@@ -597,7 +588,7 @@ def control_zone_overcontrol(
             last_value = v
 
         if count >= 13:
-            index = i + np.arange(len(points))
+            index = data.index[i : i + 14]
             violations.append(pd.Series(data=points, index=index))
             _logger.info(f"overcontrol violation found at index {i}")
 
